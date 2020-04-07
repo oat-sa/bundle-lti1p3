@@ -24,7 +24,6 @@ namespace OAT\Bundle\Lti1p3Bundle\Action\Jwks;
 
 use OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class JwksAction
 {
@@ -36,7 +35,7 @@ class JwksAction
         $this->exporter = $exporter;
     }
 
-    public function __invoke(string $keySetName): Response
+    public function __invoke(string $keySetName): JsonResponse
     {
         return new JsonResponse($this->exporter->export($keySetName));
     }
