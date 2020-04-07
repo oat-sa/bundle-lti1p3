@@ -44,12 +44,12 @@ class Lti1p3TestKernel extends Kernel
 
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
-        $routes->import(__DIR__ .'/../../../Resources/config/routing/jwks.yaml');
+        $routes->import(__DIR__  . '/../../../Resources/config/routing/jwks.yaml');
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
-        $loader->load(__DIR__ .'/../../../Resources/config/services.yaml');
+        $loader->load(__DIR__ . '/../../../Resources/config/services.yaml');
         $loader->load(__DIR__ . '/config.yaml');
         $loader->load(__DIR__ . DIRECTORY_SEPARATOR . getenv('LTI_CONFIG_FILE'));
     }
