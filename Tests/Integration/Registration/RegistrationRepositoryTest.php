@@ -65,7 +65,7 @@ class RegistrationRepositoryTest extends KernelTestCase
         $this->assertNull($this->subject->findByPlatformIssuer('invalid'));
     }
 
-    public function testFindByTolIssuer(): void
+    public function testFindByToolIssuer(): void
     {
         $result = $this->subject->findByToolIssuer('http://tool.com', 'client_id');
 
