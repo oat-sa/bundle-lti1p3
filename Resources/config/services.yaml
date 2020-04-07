@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        public: false
+
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
+        class: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
+
+    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
+        class: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
+
+    OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface']
+
+    OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
+        tags: ['controller.service_arguments']
+
