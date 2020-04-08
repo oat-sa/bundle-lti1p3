@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\HealthCheckBundle\Tests\Functional\Action\Jwks;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Jwks;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
