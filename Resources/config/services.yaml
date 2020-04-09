@@ -1,0 +1,35 @@
+services:
+    _defaults:
+        public: false
+
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory: ~
+
+    OAT\Library\Lti1p3Core\Platform\PlatformFactory: ~
+
+    OAT\Library\Lti1p3Core\Tool\ToolFactory: ~
+
+    OAT\Library\Lti1p3Core\Registration\RegistrationFactory: ~
+
+    OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilder:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory']
+
+    OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\RegistrationRepositoryBuilder:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory'
+            - '@OAT\Library\Lti1p3Core\Platform\PlatformFactory'
+            - '@OAT\Library\Lti1p3Core\Tool\ToolFactory'
+            - '@OAT\Library\Lti1p3Core\Registration\RegistrationFactory'
+
+    OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface']
+
+    OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
+        tags: ['controller.service_arguments']
+
+    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
+        alias: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
+
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
+        alias: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
+

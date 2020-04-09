@@ -1,0 +1,6 @@
+framework:
+    test: true
+
+services:
+    logger:
+        class: Psr\Log\NullLogger
