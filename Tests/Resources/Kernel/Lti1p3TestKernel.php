@@ -45,6 +45,7 @@ class Lti1p3TestKernel extends Kernel
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
         $routes->import(__DIR__  . '/../../../Resources/config/routing/jwks.yaml');
+        $routes->import(__DIR__  . '/../../../Resources/config/routing/tool.yaml');
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
