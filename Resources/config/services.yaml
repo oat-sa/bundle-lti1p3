@@ -73,3 +73,9 @@ services:
             - '@OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator'
         tags: ['controller.service_arguments']
 
+    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
+        alias: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
+
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
+        alias: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
+

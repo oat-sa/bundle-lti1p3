@@ -27,9 +27,7 @@ use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\RegistrationRepositoryBu
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Configuration;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Lti1p3Extension;
 use OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository;
-use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
-use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -64,7 +62,6 @@ class BuilderPass implements CompilerPassInterface
             ->setArguments([$configuration]);
 
         $container->setDefinition(KeyChainRepository::class, $keyChainRepositoryDefinition);
-        $container->setAlias(KeyChainRepositoryInterface::class, KeyChainRepository::class);
 
         return $this;
     }
@@ -79,7 +76,6 @@ class BuilderPass implements CompilerPassInterface
             ->setPublic(true);
 
         $container->setDefinition(RegistrationRepository::class, $registrationRepositoryDefinition);
-        $container->setAlias(RegistrationRepositoryInterface::class, RegistrationRepository::class);
 
         return $this;
     }
