@@ -40,8 +40,6 @@ class OidcLoginInitiationActionTest extends WebTestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->client = static::createClient();
 
         $this->registration = static::$container
@@ -51,13 +49,17 @@ class OidcLoginInitiationActionTest extends WebTestCase
 
     public function testValidLoginInitiationWithPostMethod(): void
     {
-        $this->client->request(Request::METHOD_POST, '/oidc/login-initiation', [
-            'iss' => $this->registration->getPlatform()->getAudience(),
-            'login_hint' => 'login_hint',
-            'target_link_uri'  => 'target_link_uri',
-            'client_id' => 'client_id',
-            'lti_deployment_id' => 'deploymentId1',
-        ]);
+        $this->client->request(
+            Request::METHOD_POST,
+            '/oidc/login-initiation',
+            [
+                'iss' => $this->registration->getPlatform()->getAudience(),
+                'login_hint' => 'login_hint',
+                'target_link_uri'  => 'target_link_uri',
+                'client_id' => 'client_id',
+                'lti_deployment_id' => 'deploymentId1',
+            ]
+        );
 
         $response = $this->client->getResponse();
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -105,13 +107,17 @@ class OidcLoginInitiationActionTest extends WebTestCase
 
     public function testLoginInitiationWithInvalidClientId(): void
     {
-        $this->client->request(Request::METHOD_POST, '/oidc/login-initiation', [
-            'iss' => $this->registration->getPlatform()->getAudience(),
-            'login_hint' => 'login_hint',
-            'target_link_uri'  => 'target_link_uri',
-            'client_id' => 'invalid',
-            'lti_deployment_id' => 'deploymentId1',
-        ]);
+        $this->client->request(
+            Request::METHOD_POST,
+            '/oidc/login-initiation',
+            [
+                'iss' => $this->registration->getPlatform()->getAudience(),
+                'login_hint' => 'login_hint',
+                'target_link_uri'  => 'target_link_uri',
+                'client_id' => 'invalid',
+                'lti_deployment_id' => 'deploymentId1',
+            ]
+        );
 
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
@@ -121,13 +127,17 @@ class OidcLoginInitiationActionTest extends WebTestCase
 
     public function testLoginInitiationWithInvalidDeploymentId(): void
     {
-        $this->client->request(Request::METHOD_POST, '/oidc/login-initiation', [
-            'iss' => $this->registration->getPlatform()->getAudience(),
-            'login_hint' => 'login_hint',
-            'target_link_uri'  => 'target_link_uri',
-            'client_id' => 'client_id',
-            'lti_deployment_id' => 'invalid',
-        ]);
+        $this->client->request(
+            Request::METHOD_POST,
+            '/oidc/login-initiation',
+            [
+                'iss' => $this->registration->getPlatform()->getAudience(),
+                'login_hint' => 'login_hint',
+                'target_link_uri'  => 'target_link_uri',
+                'client_id' => 'client_id',
+                'lti_deployment_id' => 'invalid',
+            ]
+        );
 
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
