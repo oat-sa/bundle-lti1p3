@@ -2,6 +2,29 @@ services:
     _defaults:
         public: false
 
+    ########### Vendor services
+    CoderCat\JWKToPEM\JWKConverter: ~
+
+    Lcobucci\JWT\Builder: ~
+
+    Lcobucci\JWT\Parsing\Encoder: ~
+
+    Lcobucci\JWT\Parser: ~
+
+    Lcobucci\JWT\Signer:
+        class: Lcobucci\JWT\Signer\Rsa\Sha256
+
+    Nyholm\Psr7\Factory\Psr17Factory: ~
+
+    Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
+        class: Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory
+        arguments:
+            - '@Nyholm\Psr7\Factory\Psr17Factory'
+            - '@Nyholm\Psr7\Factory\Psr17Factory'
+            - '@Nyholm\Psr7\Factory\Psr17Factory'
+            - '@Nyholm\Psr7\Factory\Psr17Factory'
+
+    ########### Core lib services
     OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory: ~
 
     OAT\Library\Lti1p3Core\Platform\PlatformFactory: ~
@@ -10,6 +33,16 @@ services:
 
     OAT\Library\Lti1p3Core\Registration\RegistrationFactory: ~
 
+    OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface:
+        class: OAT\Library\Lti1p3Core\Security\Nonce\NonceGenerator
+
+    OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
+            - '@Lcobucci\JWT\Builder'
+            - '@Lcobucci\JWT\Signer'
+
+    ########### Bundle services
     OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilder:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory']
 
@@ -23,7 +56,20 @@ services:
     OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface']
 
+    OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
+            - '@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder'
+
+    ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
+        tags: ['controller.service_arguments']
+
+    OAT\Bundle\Lti1p3Bundle\Action\Tool\OidcLoginInitiationAction:
+        arguments:
+            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator'
         tags: ['controller.service_arguments']
 

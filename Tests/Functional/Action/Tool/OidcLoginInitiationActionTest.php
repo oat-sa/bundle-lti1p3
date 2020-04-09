@@ -49,6 +49,6 @@ class OidcLoginInitiationActionTest extends WebTestCase
         ]);
 
         $response = $this->client->getResponse();
-        echo($response->getContent());
+        file_put_contents('aaa.html', $response->getContent());
     }
 }

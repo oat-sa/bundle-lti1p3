@@ -43,6 +43,7 @@ class OidcLoginInitiationAction
 
     public function __invoke(Request $request): JsonResponse
     {
-        var_dump($this->initiator->initiate($this->factory->createRequest($request)));
+
+        $this->initiator->initiate($this->factory->createRequest($request));
     }
 }
