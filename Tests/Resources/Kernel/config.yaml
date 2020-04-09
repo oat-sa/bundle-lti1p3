@@ -4,11 +4,3 @@ framework:
 services:
     logger:
         class: Psr\Log\NullLogger
-
-    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
-        class: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
-        public: true
-
-    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
-        class: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
-        public: true

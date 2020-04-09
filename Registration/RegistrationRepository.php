@@ -31,7 +31,7 @@ class RegistrationRepository implements RegistrationRepositoryInterface
     private $registrations;
 
     /** @param RegistrationInterface[] $registrations */
-    public function __construct(array $registrations)
+    public function __construct(array $registrations = [])
     {
         foreach ($registrations as $registration) {
             $this->registrations[$registration->getIdentifier()] = $registration;
