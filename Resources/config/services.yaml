@@ -1,51 +1,29 @@
 services:
     _defaults:
         public: false
-        autowire: true
-        autoconfigure: true
 
-    ### BUNDLE SERVICES ###
-    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
-        class: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory: ~
 
-    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
-        class: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
+    OAT\Library\Lti1p3Core\Platform\PlatformFactory: ~
 
-    OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter: ~
+    OAT\Library\Lti1p3Core\Tool\ToolFactory: ~
 
-    OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder: ~
+    OAT\Library\Lti1p3Core\Registration\RegistrationFactory: ~
 
-    OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface:
-        class: OAT\Library\Lti1p3Core\Security\Nonce\NonceGenerator
+    OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilder:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory']
 
-    OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator: ~
+    OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\RegistrationRepositoryBuilder:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory'
+            - '@OAT\Library\Lti1p3Core\Platform\PlatformFactory'
+            - '@OAT\Library\Lti1p3Core\Tool\ToolFactory'
+            - '@OAT\Library\Lti1p3Core\Registration\RegistrationFactory'
+
+    OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface']
 
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
         tags: ['controller.service_arguments']
 
-    OAT\Bundle\Lti1p3Bundle\Action\Tool\OidcLoginInitiationAction:
-        tags: ['controller.service_arguments']
-
-    ### VENDORS SERVICES ###
-    CoderCat\JWKToPEM\JWKConverter: ~
-
-    Lcobucci\JWT\Parsing\Encoder: ~
-
-    Lcobucci\JWT\Builder: ~
-
-    Lcobucci\JWT\Parser: ~
-
-    Lcobucci\JWT\Signer:
-        class: Lcobucci\JWT\Signer\Rsa\Sha256
-
-    Nyholm\Psr7\Factory\Psr17Factory: ~
-
-    Symfony\Component\Yaml\Parser: ~
-
-    Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
-        class: Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory
-        arguments:
-            - '@Nyholm\Psr7\Factory\Psr17Factory'
-            - '@Nyholm\Psr7\Factory\Psr17Factory'
-            - '@Nyholm\Psr7\Factory\Psr17Factory'
-            - '@Nyholm\Psr7\Factory\Psr17Factory'

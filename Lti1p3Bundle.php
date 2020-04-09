@@ -22,16 +22,16 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle;
 
-use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Compiler\DependencyBuilderPass;
+use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Compiler\BuilderPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class Lti1p3Bundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
-        $container->addCompilerPass(new DependencyBuilderPass());
+        $container->addCompilerPass(new BuilderPass());
     }
 }

@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Integration\DependencyInjection\Compiler;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Integration\DependencyInjection\Builder;
 
 use InvalidArgumentException;
 use OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository;
@@ -28,22 +28,19 @@ use OAT\Bundle\Lti1p3Bundle\Tests\Resources\Kernel\Lti1p3TestKernel;
 use OAT\Library\Lti1p3Core\Platform\PlatformInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
-use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
-use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
-use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
 use OAT\Library\Lti1p3Core\Tool\ToolInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /** @see Lti1p3TestKernel */
-class DependencyBuilderPassTest extends KernelTestCase
+class RegistrationRepositoryBuilderPassTest extends KernelTestCase
 {
-    public static function tearDownAfterClass(): void
+    public function tearDown(): void
     {
-        // ensure next test classes will execute with correct ENV conditions
+        // ensure next tests will execute with correct ENV conditions
         putenv('LTI_CONFIG_FILE=lti1p3.yaml');
     }
 
-    public function testItFailsOnInvalidPlatform(): void
+    public function testBuildFailsOnInvalidPlatform(): void
     {
         putenv('LTI_CONFIG_FILE=lti/invalidPlatform.yaml');
 
@@ -55,7 +52,7 @@ class DependencyBuilderPassTest extends KernelTestCase
         static::$container->get(RegistrationRepositoryInterface::class);
     }
 
-    public function testItFailsOnInvalidTool(): void
+    public function testBuildFailsOnInvalidTool(): void
     {
         putenv('LTI_CONFIG_FILE=lti/invalidTool.yaml');
 
@@ -67,7 +64,7 @@ class DependencyBuilderPassTest extends KernelTestCase
         static::$container->get(RegistrationRepositoryInterface::class);
     }
 
-    public function testItFailsOnInvalidPlatformKeyChain(): void
+    public function testBuildFailsOnInvalidPlatformKeyChain(): void
     {
         putenv('LTI_CONFIG_FILE=lti/invalidPlatformKeyChain.yaml');
 
@@ -79,7 +76,7 @@ class DependencyBuilderPassTest extends KernelTestCase
         static::$container->get(RegistrationRepositoryInterface::class);
     }
 
-    public function testItFailsOnInvalidToolKeyChain(): void
+    public function testBuildFailsOnInvalidToolKeyChain(): void
     {
         putenv('LTI_CONFIG_FILE=lti/invalidToolKeyChain.yaml');
 
@@ -91,38 +88,17 @@ class DependencyBuilderPassTest extends KernelTestCase
         static::$container->get(RegistrationRepositoryInterface::class);
     }
 
-    public function testItBuildsTheKeyChainRepositoryFromConfigFile(): void
+    public function testBuildRepositoryCanFind(): void
     {
         putenv('LTI_CONFIG_FILE=lti1p3.yaml');
 
         static::bootKernel();
-        $subject = static::$container->get(KeyChainRepositoryInterface::class);
 
-        $this->assertInstanceOf(KeyChainRepository::class, $subject);
+        $repository = static::$container->get(RegistrationRepositoryInterface::class);
 
-        $platformKeyChain = $subject->find('kid1');
-        $this->assertInstanceOf(KeyChainInterface::class, $platformKeyChain);
-        $this->assertEquals('kid1', $platformKeyChain->getIdentifier());
-        $this->assertEquals('platformSet', $platformKeyChain->getKeySetName());
+        $this->assertInstanceOf(RegistrationRepository::class, $repository);
 
-        $toolKeyChain = $subject->find('kid2');
-        $this->assertInstanceOf(KeyChainInterface::class, $toolKeyChain);
-        $this->assertEquals('kid2', $toolKeyChain->getIdentifier());
-        $this->assertEquals('toolSet', $toolKeyChain->getKeySetName());
-
-        $this->assertNull($subject->find('invalid'));
-    }
-
-    public function testItBuildsTheRegistrationRepositoryFromConfigFile(): void
-    {
-        putenv('LTI_CONFIG_FILE=lti1p3.yaml');
-
-        static::bootKernel();
-        $subject = static::$container->get(RegistrationRepositoryInterface::class);
-
-        $this->assertInstanceOf(RegistrationRepository::class, $subject);
-
-        $registration = $subject->find('testRegistration');
+        $registration = $repository->find('testRegistration');
         $this->assertInstanceOf(RegistrationInterface::class, $registration);
         $this->assertEquals('testRegistration', $registration->getIdentifier());
         $this->assertEquals('client_id', $registration->getClientId());
