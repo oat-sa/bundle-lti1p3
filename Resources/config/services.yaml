@@ -62,6 +62,12 @@ services:
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
             - '@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder'
 
+    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
+        alias: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
+
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
+        alias: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
+
     ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
@@ -72,10 +78,4 @@ services:
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator'
         tags: ['controller.service_arguments']
-
-    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
-        alias: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
-
-    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
-        alias: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
 

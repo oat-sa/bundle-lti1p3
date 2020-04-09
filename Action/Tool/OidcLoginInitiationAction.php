@@ -22,10 +22,12 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Action\Tool;
 
+use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class OidcLoginInitiationAction
 {
@@ -41,9 +43,14 @@ class OidcLoginInitiationAction
         $this->initiator = $initiator;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): Response
     {
+        try {
+            $oidcAuthenticationRequest = $this->initiator->initiate($this->factory->createRequest($request));
 
-        $this->initiator->initiate($this->factory->createRequest($request));
+            return new RedirectResponse($oidcAuthenticationRequest->toUrl());
+        } catch (LtiException $exception) {
+            return new Response($exception->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
     }
 }
