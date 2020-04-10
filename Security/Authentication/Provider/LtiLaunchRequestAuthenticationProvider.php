@@ -56,7 +56,8 @@ class LtiLaunchRequestAuthenticationProvider implements AuthenticationProviderIn
             return new LtiLaunchRequestToken($validationResult);
         } catch (Throwable $exception) {
             throw new AuthenticationException(
-                sprintf('LTI launch request authentication failed: %s', $exception->getMessage()));
+                sprintf('LTI launch request authentication failed: %s', $exception->getMessage())
+            );
         }
     }
 }
