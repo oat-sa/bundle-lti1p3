@@ -24,11 +24,9 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\LtiLaunchRequestToken;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class LtiLaunchRequestAuthenticationListener
 {
@@ -51,7 +49,7 @@ class LtiLaunchRequestAuthenticationListener
         $this->factory = $factory;
     }
 
-    public function __invoke(RequestEvent $event)
+    public function __invoke(RequestEvent $event): void
     {
         $request = $event->getRequest();
 
@@ -62,26 +60,6 @@ class LtiLaunchRequestAuthenticationListener
         $token = new LtiLaunchRequestToken();
         $token->setAttribute('request', $this->factory->createRequest($request));
 
-        try {
-            $authToken = $this->manager->authenticate($token);
-            $this->storage->setToken($authToken);
-
-            return;
-        } catch (AuthenticationException $failed) {
-            // ... you might log something here
-
-            // To deny the authentication clear the token. This will redirect to the login page.
-            // Make sure to only clear your token, not those of other authentication listeners.
-            // $token = $this->tokenStorage->getToken();
-            // if ($token instanceof WsseUserToken && $this->providerKey === $token->getProviderKey()) {
-            //     $this->tokenStorage->setToken(null);
-            // }
-            // return;
-        }
-
-        // By default deny authorization
-        $response = new Response();
-        $response->setStatusCode(Response::HTTP_FORBIDDEN);
-        $event->setResponse($response);
+        $this->storage->setToken($this->manager->authenticate($token));
     }
 }

@@ -27,6 +27,7 @@ use OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Throwable;
 
 class LtiLaunchRequestAuthenticationProvider implements AuthenticationProviderInterface
 {
@@ -46,9 +47,16 @@ class LtiLaunchRequestAuthenticationProvider implements AuthenticationProviderIn
     public function authenticate(TokenInterface $token): TokenInterface
     {
         try {
-            return new LtiLaunchRequestToken($this->validator->validate($token->getAttribute('request')));
-        } catch (\Throwable $exception) {
-            throw new AuthenticationException('LTI launch request authentication failed');
+            $validationResult = $this->validator->validate($token->getAttribute('request'));
+
+            if ($validationResult->hasFailures()) {
+                throw new AuthenticationException(implode(', ', $validationResult->getFailures()));
+            }
+
+            return new LtiLaunchRequestToken($validationResult);
+        } catch (Throwable $exception) {
+            throw new AuthenticationException(
+                sprintf('LTI launch request authentication failed: %s', $exception->getMessage()));
         }
     }
 }
