@@ -4,4 +4,4 @@ CHANGELOG
 0.1.0
 -----
 
-* TODO
+* Provided LTI launch messages handling (optionally with OIDC) as a tool
