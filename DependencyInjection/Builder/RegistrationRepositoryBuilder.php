@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder;
 
 use InvalidArgumentException;
-use OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository;
+use OAT\Bundle\Lti1p3Bundle\Repository\RegistrationRepository;
 use OAT\Library\Lti1p3Core\Platform\PlatformFactory;
 use OAT\Library\Lti1p3Core\Platform\PlatformInterface;
 use OAT\Library\Lti1p3Core\Registration\Registration;
