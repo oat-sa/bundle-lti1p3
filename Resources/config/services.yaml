@@ -72,7 +72,7 @@ services:
         class: OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcher
         arguments:
             - '@GuzzleHttp\ClientInterface'
-            - '@cache.app'
+            - '@CoderCat\JWKToPEM\JWKConverter'
 
     OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator:
         arguments:
