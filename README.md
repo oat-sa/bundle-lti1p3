@@ -91,14 +91,15 @@ launch:
     controller: App\Controller\LaunchController
 ```
 
-You can protect it in your application security configuration by putting it behind the `lti1p3_message` firewall:
+You can protect it in your application security configuration by putting it behind the `lti1p3_message` listener firewall:
 ```yaml
+# config/packages/security.yaml
 security:
     firewalls:
-        lti1p3_message:
+        my_lti_firewall:
             pattern:   ^/tool/launch
             stateless: true
-            lti1p3_message: true
+            lti1p3_message: true # this value to true to activate the firewall listener
 ```
 
 And finally, from your controller, if the LTI launch was performed with success, you can access the token:
@@ -110,6 +111,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\LtiLaunchRequestToken;
+use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 
@@ -128,13 +130,14 @@ class LaunchController
         /** @var LtiLaunchRequestToken $token */
         $token = $this->security->getToken();
 
-        $message = $token->getLtiMessage();       // to get LTI launch message [LtiMessageInterface]
+        /** @var LtiMessageInterface $message */
+        $message = $token->getLtiMessage();       // to get LTI launch message
+
         $user = $token->getUser();                // to get LTI launch user identifier
         $roles = $token->getRoleNames();          // to get LTI launch roles
         $results = $token->getValidationResult(); // to get LTI launch validation result details
 
-
-        // ... your logic here
+        // ... 
     }
 }
 ```
