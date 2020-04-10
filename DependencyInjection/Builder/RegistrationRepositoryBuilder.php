@@ -26,7 +26,6 @@ use InvalidArgumentException;
 use OAT\Bundle\Lti1p3Bundle\Repository\RegistrationRepository;
 use OAT\Library\Lti1p3Core\Platform\PlatformFactory;
 use OAT\Library\Lti1p3Core\Platform\PlatformInterface;
-use OAT\Library\Lti1p3Core\Registration\Registration;
 use OAT\Library\Lti1p3Core\Registration\RegistrationFactory;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
@@ -194,7 +193,7 @@ class RegistrationRepositoryBuilder
                 );
             }
 
-            $registration = new Registration(
+            $registration = $this->registrationFactory->create(
                 $registrationId,
                 $registrationData['client_id'],
                 $platforms[$registrationData['platform']],

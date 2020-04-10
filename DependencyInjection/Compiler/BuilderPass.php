@@ -43,7 +43,7 @@ class BuilderPass implements CompilerPassInterface
 
         $this
             ->defineKeyChainRepository($container, $configuration)
-            ->defineNonceRepository($container, $configuration)
+            ->defineNonceRepository($container)
             ->defineRegistrationRepository($container, $configuration);
     }
 
@@ -68,7 +68,7 @@ class BuilderPass implements CompilerPassInterface
         return $this;
     }
 
-    private function defineNonceRepository(ContainerBuilder $container, array $configuration): self
+    private function defineNonceRepository(ContainerBuilder $container): self
     {
         $nonceRepositoryDefinition = new Definition(NonceRepository::class);
         $nonceRepositoryDefinition->setClass(NonceRepository::class);
