@@ -96,6 +96,14 @@ services:
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\LtiLaunchRequestAuthenticationProvider:
         arguments: ['@OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator']
 
+    OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder:
+        arguments: ['@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder']
+        public: true
+
+    OAT\Library\Lti1p3Core\Launch\Builder\OidcLaunchRequestBuilder:
+        arguments: ['@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder']
+        public: true
+
     ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']

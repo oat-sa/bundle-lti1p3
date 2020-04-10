@@ -71,7 +71,7 @@ class LtiLaunchRequestToken extends AbstractToken
             $userIdentity = $validationResult->getLtiMessage()->getUserIdentity();
 
             if (null !== $userIdentity) {
-                $this->setUser($userIdentity->getName());
+                $this->setUser($userIdentity->getIdentifier());
             }
 
             $this->roleNames = $validationResult->getLtiMessage()->getRoles();

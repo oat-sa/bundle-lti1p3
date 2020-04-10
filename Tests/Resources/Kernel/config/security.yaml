@@ -1,0 +1,14 @@
+security:
+    providers:
+        users_in_memory: { memory: null }
+
+    firewalls:
+        lti1p3_message:
+            pattern:   ^/test/launch
+            stateless: true
+            lti1p3_message: true
+        main:
+            anonymous: lazy
+            provider: users_in_memory
+
+    access_control:
