@@ -31,7 +31,7 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class LaunchSecurityFactory implements SecurityFactoryInterface
+class LtiLaunchRequestSecurityFactory implements SecurityFactoryInterface
 {
     public function getPosition(): string
     {
