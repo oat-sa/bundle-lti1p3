@@ -79,6 +79,66 @@ lti1p3:
     - on the deployments ids `deploymentId1` and `deploymentId2`
     - using the oauth2 client id `client_id`
 
+### Security
+
+You can, as a tool, automate the protection of any endpoint behind a built in LTI 1.3 firewall.
+
+Considering you have this route definition:
+```yaml
+# config/routes.yaml
+launch:
+    path: /tool/launch
+    controller: App\Controller\LaunchController
+```
+
+You can protect it in your application security configuration by putting it behind the `lti1p3_message` firewall:
+```yaml
+security:
+    firewalls:
+        lti1p3_message:
+            pattern:   ^/tool/launch
+            stateless: true
+            lti1p3_message: true
+```
+
+And finally, from your controller, if the LTI launch was performed with success, you can access the token:
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\LtiLaunchRequestToken;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Security;
+
+class LaunchController
+{
+    /** @var Security */
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
+    public function __invoke(): Response
+    {
+        /** @var LtiLaunchRequestToken $token */
+        $token = $this->security->getToken();
+
+        $message = $token->getLtiMessage();       // to get LTI launch message [LtiMessageInterface]
+        $user = $token->getUser();                // to get LTI launch user identifier
+        $roles = $token->getRoleNames();          // to get LTI launch roles
+        $results = $token->getValidationResult(); // to get LTI launch validation result details
+
+
+        // ... your logic here
+    }
+}
+```
+
 ## Tests
 
 To run provided tests:
