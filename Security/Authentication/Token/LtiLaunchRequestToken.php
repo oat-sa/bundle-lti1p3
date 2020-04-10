@@ -29,16 +29,16 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 class LtiLaunchRequestToken extends AbstractToken
 {
     /** @var string[] */
-    private $roleNames = [];
+    private $roleNames;
 
     /** @var LtiLaunchRequestValidationResult|null */
     private $validationResult;
 
     public function __construct(LtiLaunchRequestValidationResult $validationResult = null)
     {
-        parent::__construct($this->roleNames);
-
         $this->applyValidationResult($validationResult);
+
+        parent::__construct($this->roleNames);
     }
 
     public function getValidationResult(): ?LtiLaunchRequestValidationResult
@@ -78,6 +78,8 @@ class LtiLaunchRequestToken extends AbstractToken
 
             $this->setAuthenticated(!$this->validationResult->hasFailures());
         } else {
+            $this->roleNames = [];
+
             $this->setAuthenticated(false);
         }
     }
