@@ -1,0 +1,3 @@
+test_launch:
+    path: /test/launch
+    controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Launch\TestLaunchAction

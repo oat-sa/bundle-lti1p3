@@ -26,7 +26,8 @@ use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilde
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\RegistrationRepositoryBuilder;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Configuration;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Lti1p3Extension;
-use OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository;
+use OAT\Bundle\Lti1p3Bundle\Repository\NonceRepository;
+use OAT\Bundle\Lti1p3Bundle\Repository\RegistrationRepository;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -42,6 +43,7 @@ class BuilderPass implements CompilerPassInterface
 
         $this
             ->defineKeyChainRepository($container, $configuration)
+            ->defineNonceRepository($container)
             ->defineRegistrationRepository($container, $configuration);
     }
 
@@ -66,14 +68,23 @@ class BuilderPass implements CompilerPassInterface
         return $this;
     }
 
+    private function defineNonceRepository(ContainerBuilder $container): self
+    {
+        $nonceRepositoryDefinition = new Definition(NonceRepository::class);
+        $nonceRepositoryDefinition->setClass(NonceRepository::class);
+
+        $container->setDefinition(NonceRepository::class, $nonceRepositoryDefinition);
+
+        return $this;
+    }
+
     private function defineRegistrationRepository(ContainerBuilder $container, array $configuration): self
     {
         $registrationRepositoryDefinition = new Definition(RegistrationRepository::class);
         $registrationRepositoryDefinition
             ->setClass(RegistrationRepository::class)
             ->setFactory([new Reference(RegistrationRepositoryBuilder::class), 'build'])
-            ->setArguments([$configuration])
-            ->setPublic(true);
+            ->setArguments([$configuration]);
 
         $container->setDefinition(RegistrationRepository::class, $registrationRepositoryDefinition);
 

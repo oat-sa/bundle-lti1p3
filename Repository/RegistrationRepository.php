@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Registration;
+namespace OAT\Bundle\Lti1p3Bundle\Repository;
 
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;

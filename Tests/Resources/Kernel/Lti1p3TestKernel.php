@@ -25,6 +25,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Kernel;
 use OAT\Bundle\Lti1p3Bundle\Lti1p3Bundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
@@ -38,21 +39,30 @@ class Lti1p3TestKernel extends Kernel
     {
         return [
             new FrameworkBundle(),
+            new SecurityBundle(),
             new Lti1p3Bundle()
         ];
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
+        // bundle routes
         $routes->import(__DIR__  . '/../../../Resources/config/routing/jwks.yaml');
         $routes->import(__DIR__  . '/../../../Resources/config/routing/tool.yaml');
+
+        //testing routes
+        $routes->import(__DIR__  . '/config/routes.yaml');
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
+        // bundle config
         $loader->load(__DIR__ . '/../../../Resources/config/services.yaml');
-        $loader->load(__DIR__ . '/config.yaml');
-        $loader->load(__DIR__ . DIRECTORY_SEPARATOR . getenv('LTI_CONFIG_FILE'));
+
+        // testing config
+        $loader->load(__DIR__ . '/config/config.yaml');
+        $loader->load(__DIR__ . '/config/security.yaml');
+        $loader->load(__DIR__ . '/config/' . getenv('LTI_CONFIG_FILE'));
     }
 
     public function getCacheDir()

@@ -20,23 +20,20 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle;
+namespace OAT\Bundle\Lti1p3Bundle\Repository;
 
-use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Compiler\BuilderPass;
-use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\LtiLaunchRequestSecurityFactory;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use OAT\Library\Lti1p3Core\Security\Nonce\NonceInterface;
+use OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface;
 
-class Lti1p3Bundle extends Bundle
+class NonceRepository implements NonceRepositoryInterface
 {
-    public function build(ContainerBuilder $container): void
+    public function find(string $value): ?NonceInterface
     {
-        parent::build($container);
+        return null;
+    }
 
-        // dependencies builder pass
-        $container->addCompilerPass(new BuilderPass());
-
-        // lti launch requests security registration
-        $container->getExtension('security')->addSecurityListenerFactory(new LtiLaunchRequestSecurityFactory());
+    public function save(NonceInterface $nonce): void
+    {
+        return;
     }
 }
