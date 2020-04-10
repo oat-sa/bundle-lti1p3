@@ -63,7 +63,7 @@ class LtiLaunchRequestToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(LtiLaunchRequestValidationResult $validationResult = null): self
+    private function applyValidationResult(LtiLaunchRequestValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 
