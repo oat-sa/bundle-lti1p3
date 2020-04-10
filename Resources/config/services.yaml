@@ -5,6 +5,9 @@ services:
     ########### Vendor services
     CoderCat\JWKToPEM\JWKConverter: ~
 
+    GuzzleHttp\ClientInterface:
+        class: GuzzleHttp\Client
+
     Lcobucci\JWT\Builder: ~
 
     Lcobucci\JWT\Parsing\Encoder: ~
@@ -43,6 +46,15 @@ services:
             - '@Lcobucci\JWT\Signer'
 
     ########### Bundle services
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
+        alias: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
+
+    OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface:
+        alias: OAT\Bundle\Lti1p3Bundle\Repository\NonceRepository
+
+    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
+        alias: OAT\Bundle\Lti1p3Bundle\Repository\RegistrationRepository
+
     OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilder:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory']
 
@@ -56,17 +68,33 @@ services:
     OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface']
 
+    OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface:
+        class: OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcher
+        arguments:
+            - '@GuzzleHttp\ClientInterface'
+            - '@cache.app'
+
     OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
             - '@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder'
 
-    OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface:
-        alias: OAT\Bundle\Lti1p3Bundle\Registration\RegistrationRepository
+    OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface'
+            - '@Lcobucci\JWT\Signer'
 
-    OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
-        alias: OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository
+    OAT\Bundle\Lti1p3Bundle\Security\Firewall\LtiLaunchRequestAuthenticationListener:
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+
+    OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\LtiLaunchRequestAuthenticationProvider:
+        arguments: ['@OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator']
 
     ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
