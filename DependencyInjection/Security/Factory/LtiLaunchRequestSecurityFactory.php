@@ -45,10 +45,10 @@ class LtiLaunchRequestSecurityFactory implements SecurityFactoryInterface
 
     public function create(
         ContainerBuilder $container,
-        string $id,
-        array $config,
-        string $userProvider,
-        ?string $defaultEntryPoint
+        $id,
+        $config,
+        $userProvider,
+        $defaultEntryPoint = null
     ): array {
 
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
