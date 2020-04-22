@@ -43,12 +43,13 @@ class LtiLaunchRequestSecurityFactory implements SecurityFactoryInterface
         return 'lti1p3_message';
     }
 
+    // TODO provide type hints when we update the bundle with SF version >= 4.2
     public function create(
         ContainerBuilder $container,
-        string $id,
-        array $config,
-        string $userProvider,
-        ?string $defaultEntryPoint
+        $id,
+        $config,
+        $userProvider,
+        $defaultEntryPoint = null
     ): array {
 
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
