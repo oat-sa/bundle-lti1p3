@@ -90,18 +90,20 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
 
+        $crawler = $this->client->getCrawler();
+
         $this->assertEquals(
             $this->registration->getTool()->getLaunchUrl(),
-            $this->client->getCrawler()->filterXPath('//body/form')->attr('action')
+            $crawler->filterXPath('//body/form')->attr('action')
         );
 
         $this->assertEquals(
             'state',
-            $this->client->getCrawler()->filterXPath('//body/form/input[@name="state"]')->attr('value')
+            $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value')
         );
 
         $ltiMessage = new LtiMessage((new Parser(new AssociativeDecoder()))->parse(
-            $this->client->getCrawler()->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
+            $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
         ));
 
         $this->assertEquals(LtiMessageInterface::LTI_VERSION, $ltiMessage->getVersion());
@@ -143,18 +145,20 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
 
+        $crawler = $this->client->getCrawler();
+
         $this->assertEquals(
             $this->registration->getTool()->getLaunchUrl(),
-            $this->client->getCrawler()->filterXPath('//body/form')->attr('action')
+            $crawler->filterXPath('//body/form')->attr('action')
         );
 
         $this->assertEquals(
             'state',
-            $this->client->getCrawler()->filterXPath('//body/form/input[@name="state"]')->attr('value')
+            $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value')
         );
 
         $ltiMessage = new LtiMessage((new Parser(new AssociativeDecoder()))->parse(
-            $this->client->getCrawler()->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
+            $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
         ));
 
         $this->assertEquals(LtiMessageInterface::LTI_VERSION, $ltiMessage->getVersion());
