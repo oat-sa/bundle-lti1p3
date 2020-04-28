@@ -112,11 +112,13 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
     public function testValidLoginAuthenticationWithGetMethod(): void
     {
         /** @var OidcLaunchRequest $oidcLaunchRequest */
-        $oidcLaunchRequest = static::$container->get(OidcLaunchRequestBuilder::class)->buildResourceLinkOidcLaunchRequest(
-            new ResourceLink('resourceLinkIdentifier'),
-            $this->registration,
-            'loginHint'
-        );
+        $oidcLaunchRequest = static::$container
+            ->get(OidcLaunchRequestBuilder::class)
+            ->buildResourceLinkOidcLaunchRequest(
+                new ResourceLink('resourceLinkIdentifier'),
+                $this->registration,
+                'loginHint'
+            );
 
         $this->client->request(
             Request::METHOD_GET,
