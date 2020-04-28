@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Launch;
 
 use Carbon\Carbon;
+use DateTime;
 use OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder;
 use OAT\Library\Lti1p3Core\Link\ResourceLink\ResourceLink;
 use OAT\Library\Lti1p3Core\Message\Claim\ContextClaim;
@@ -42,6 +43,15 @@ class LaunchActionTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+    }
+
+    protected function tearDown(): void
+    {
+        if (Carbon::hasTestNow()) {
+            Carbon::setTestNow(new DateTime());
+        }
+
+        parent::tearDown();
     }
 
     public function testItCanHandleAnonymousLtiLaunchRequest(): void

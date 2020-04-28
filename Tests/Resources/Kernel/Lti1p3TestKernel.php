@@ -48,6 +48,7 @@ class Lti1p3TestKernel extends Kernel
     {
         // bundle routes
         $routes->import(__DIR__  . '/../../../Resources/config/routing/jwks.yaml');
+        $routes->import(__DIR__  . '/../../../Resources/config/routing/platform.yaml');
         $routes->import(__DIR__  . '/../../../Resources/config/routing/tool.yaml');
 
         //testing routes

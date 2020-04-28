@@ -80,6 +80,13 @@ services:
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
             - '@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder'
 
+    OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginAuthenticator:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface'
+            - '@OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder'
+            - '@Lcobucci\JWT\Signer'
+
     OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
@@ -115,3 +122,8 @@ services:
             - '@OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator'
         tags: ['controller.service_arguments']
 
+    OAT\Bundle\Lti1p3Bundle\Action\Platform\OidcLoginAuthenticationAction:
+        arguments:
+            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginAuthenticator'
+        tags: ['controller.service_arguments']
