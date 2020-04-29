@@ -151,6 +151,8 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
 
     private function assertLoginAuthenticationResponse(Response $response): void
     {
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+
         $crawler = $this->client->getCrawler();
 
         $this->assertEquals(
