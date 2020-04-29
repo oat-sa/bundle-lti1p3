@@ -9,6 +9,5 @@ services:
         arguments: ['@security.helper']
         tags: ['controller.service_arguments']
 
-
     OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface:
         class: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Security\User\TestUserAuthenticator
