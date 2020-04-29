@@ -87,28 +87,7 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
             ]
         );
 
-        $response = $this->client->getResponse();
-        $this->assertInstanceOf(Response::class, $response);
-
-        $crawler = $this->client->getCrawler();
-
-        $this->assertEquals(
-            $this->registration->getTool()->getLaunchUrl(),
-            $crawler->filterXPath('//body/form')->attr('action')
-        );
-
-        $this->assertEquals(
-            'state',
-            $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value')
-        );
-
-        $ltiMessage = new LtiMessage((new Parser(new AssociativeDecoder()))->parse(
-            $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
-        ));
-
-        $this->assertEquals(LtiMessageInterface::LTI_VERSION, $ltiMessage->getVersion());
-        $this->assertEquals('resourceLinkIdentifier', $ltiMessage->getResourceLink()->getId());
-        $this->assertEquals('loginHint', $ltiMessage->getUserIdentity()->getIdentifier());
+        $this->assertLoginAuthenticationResponse($this->client->getResponse());
     }
 
     public function testValidLoginAuthenticationWithGetMethod(): void
@@ -142,28 +121,7 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
             )
         );
 
-        $response = $this->client->getResponse();
-        $this->assertInstanceOf(Response::class, $response);
-
-        $crawler = $this->client->getCrawler();
-
-        $this->assertEquals(
-            $this->registration->getTool()->getLaunchUrl(),
-            $crawler->filterXPath('//body/form')->attr('action')
-        );
-
-        $this->assertEquals(
-            'state',
-            $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value')
-        );
-
-        $ltiMessage = new LtiMessage((new Parser(new AssociativeDecoder()))->parse(
-            $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
-        ));
-
-        $this->assertEquals(LtiMessageInterface::LTI_VERSION, $ltiMessage->getVersion());
-        $this->assertEquals('resourceLinkIdentifier', $ltiMessage->getResourceLink()->getId());
-        $this->assertEquals('loginHint', $ltiMessage->getUserIdentity()->getIdentifier());
+        $this->assertLoginAuthenticationResponse($this->client->getResponse());
     }
 
     public function testLoginAuthenticationWithInvalidLtiMessageHint(): void
@@ -189,5 +147,30 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
         $this->assertStringContainsString('OIDC login authentication failed', (string)$response->getContent());
+    }
+
+    private function assertLoginAuthenticationResponse(Response $response): void
+    {
+        $this->assertInstanceOf(Response::class, $response);
+
+        $crawler = $this->client->getCrawler();
+
+        $this->assertEquals(
+            $this->registration->getTool()->getLaunchUrl(),
+            $crawler->filterXPath('//body/form')->attr('action')
+        );
+
+        $this->assertEquals(
+            'state',
+            $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value')
+        );
+
+        $ltiMessage = new LtiMessage((new Parser(new AssociativeDecoder()))->parse(
+            $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
+        ));
+
+        $this->assertEquals(LtiMessageInterface::LTI_VERSION, $ltiMessage->getVersion());
+        $this->assertEquals('resourceLinkIdentifier', $ltiMessage->getResourceLink()->getId());
+        $this->assertEquals('loginHint', $ltiMessage->getUserIdentity()->getIdentifier());
     }
 }
