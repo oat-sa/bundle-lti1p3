@@ -44,6 +44,15 @@ class LaunchActionTest extends WebTestCase
         $this->client = static::createClient();
     }
 
+    protected function tearDown(): void
+    {
+        if (Carbon::hasTestNow()) {
+            Carbon::setTestNow();
+        }
+
+        parent::tearDown();
+    }
+
     public function testItCanHandleAnonymousLtiLaunchRequest(): void
     {
         $builder = static::$container->get(LtiLaunchRequestBuilder::class);
