@@ -61,17 +61,7 @@ class OidcLoginInitiationActionTest extends WebTestCase
             ]
         );
 
-        $response = $this->client->getResponse();
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals(Response::HTTP_FOUND, $response->getStatusCode());
-
-        $query = parse_url($this->client->followRedirect()->getUri(), PHP_URL_QUERY);
-        parse_str($query, $queryParameters);
-        $this->assertEquals('target_link_uri', $queryParameters['redirect_uri']);
-        $this->assertEquals('client_id', $queryParameters['client_id']);
-        $this->assertEquals('login_hint', $queryParameters['login_hint']);
-        $this->assertArrayHasKey('nonce', $queryParameters);
-        $this->assertArrayHasKey('state', $queryParameters);
+        $this->assertLoginInitiationResponse($this->client->getResponse());
     }
 
     public function testValidLoginInitiationWithGetMethod(): void
@@ -92,17 +82,7 @@ class OidcLoginInitiationActionTest extends WebTestCase
             )
         );
 
-        $response = $this->client->getResponse();
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals(Response::HTTP_FOUND, $response->getStatusCode());
-
-        $query = parse_url($this->client->followRedirect()->getUri(), PHP_URL_QUERY);
-        parse_str($query, $queryParameters);
-        $this->assertEquals('target_link_uri', $queryParameters['redirect_uri']);
-        $this->assertEquals('client_id', $queryParameters['client_id']);
-        $this->assertEquals('login_hint', $queryParameters['login_hint']);
-        $this->assertArrayHasKey('nonce', $queryParameters);
-        $this->assertArrayHasKey('state', $queryParameters);
+        $this->assertLoginInitiationResponse($this->client->getResponse());
     }
 
     public function testLoginInitiationWithInvalidClientId(): void
@@ -143,5 +123,19 @@ class OidcLoginInitiationActionTest extends WebTestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertEquals('Cannot find deployment for OIDC request', (string)$response->getContent());
+    }
+
+    private function assertLoginInitiationResponse(Response $response): void
+    {
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(Response::HTTP_FOUND, $response->getStatusCode());
+
+        $query = parse_url($this->client->followRedirect()->getUri(), PHP_URL_QUERY);
+        parse_str($query, $queryParameters);
+        $this->assertEquals('target_link_uri', $queryParameters['redirect_uri']);
+        $this->assertEquals('client_id', $queryParameters['client_id']);
+        $this->assertEquals('login_hint', $queryParameters['login_hint']);
+        $this->assertArrayHasKey('nonce', $queryParameters);
+        $this->assertArrayHasKey('state', $queryParameters);
     }
 }
