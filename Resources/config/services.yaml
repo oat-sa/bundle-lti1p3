@@ -71,6 +71,7 @@ services:
     OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface:
         class: OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcher
         arguments:
+            - '@cache.app'
             - '@GuzzleHttp\ClientInterface'
             - '@CoderCat\JWKToPEM\JWKConverter'
 
