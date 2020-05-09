@@ -1,3 +1,7 @@
-test_launch:
-    path: /test/launch
-    controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Launch\TestLaunchAction
+test_message:
+    path: /test/message
+    controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Tool\Message\TestMessageAction
+
+test_service:
+    path: /test/service
+    controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Service\TestServiceAction

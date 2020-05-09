@@ -1,0 +1,4 @@
+lti1p3_service_oauth2_access_token_creation:
+    path: '/auth/{registrationIdentifier}/token'
+    methods: POST
+    controller: OAT\Bundle\Lti1p3Bundle\Action\Platform\Service\OAuth2AccessTokenCreationAction

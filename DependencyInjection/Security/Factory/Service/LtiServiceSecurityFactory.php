@@ -20,18 +20,16 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory;
+namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\LtiLaunchRequestAuthenticationProvider;
-use OAT\Bundle\Lti1p3Bundle\Security\Firewall\LtiLaunchRequestAuthenticationListener;
-use OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider;
+use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service\LtiServiceAuthenticationListener;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
-class LtiLaunchRequestSecurityFactory implements SecurityFactoryInterface
+class LtiServiceSecurityFactory implements SecurityFactoryInterface
 {
     public function getPosition(): string
     {
@@ -40,7 +38,7 @@ class LtiLaunchRequestSecurityFactory implements SecurityFactoryInterface
 
     public function getKey(): string
     {
-        return 'lti1p3_message';
+        return 'lti1p3_service';
     }
 
     // TODO provide type hints when we update the bundle with SF version >= 4.2
@@ -53,12 +51,11 @@ class LtiLaunchRequestSecurityFactory implements SecurityFactoryInterface
     ): array {
 
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
-        $container
-            ->setDefinition($providerId, new ChildDefinition(LtiLaunchRequestAuthenticationProvider::class))
-            ->setArgument(0, new Reference(LtiLaunchRequestValidator::class));
+        $container->setDefinition($providerId, new ChildDefinition(LtiServiceAuthenticationProvider::class));
+
 
         $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
-        $container->setDefinition($listenerId, new ChildDefinition(LtiLaunchRequestAuthenticationListener::class));
+        $container->setDefinition($listenerId, new ChildDefinition(LtiServiceAuthenticationListener::class));
 
         return [$providerId, $listenerId, $defaultEntryPoint];
     }

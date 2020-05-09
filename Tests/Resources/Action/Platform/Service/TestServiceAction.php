@@ -20,13 +20,13 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Launch;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\LtiLaunchRequestToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Security;
 
-class TestLaunchAction
+class TestServiceAction
 {
     /** @var Security */
     private $security;
@@ -38,23 +38,18 @@ class TestLaunchAction
 
     public function __invoke(): JsonResponse
     {
-        /** @var LtiLaunchRequestToken $token */
+        /** @var LtiServiceToken $token */
         $token = $this->security->getToken();
 
         return new JsonResponse([
-            'claims' => [
-                'resourceLinkId' => $token->getLtiMessage()->getResourceLink()->getId(),
-                'contextId' => $token->getLtiMessage()->getContext()->getId(),
-                'userId' => $token->getLtiMessage()->getUserIdentity()
-                    ? $token->getLtiMessage()->getUserIdentity()->getIdentifier()
-                    : null,
-                'roles' => $token->getRoleNames(),
-                'custom' => $token->getLtiMessage()->getClaim('custom')
-            ],
+            'claims' => $token->getAccessToken()->getClaims(),
+            'roles' => $token->getRoleNames(),
             'validations' => [
                 'successes' => $token->getValidationResult()->getSuccesses(),
-                'failures' => $token->getValidationResult()->getFailures(),
+                'error' => $token->getValidationResult()->getError(),
             ],
+            'registration' => $token->getRegistration()->getIdentifier(),
+            'scopes' => $token->getScopes(),
             'credentials' => $token->getCredentials()
         ]);
     }

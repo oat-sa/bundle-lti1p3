@@ -20,42 +20,59 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token;
+namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service;
 
-use OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidationResult;
-use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
+use Lcobucci\JWT\Token;
+use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
+use OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidationResult;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
-class LtiLaunchRequestToken extends AbstractToken
+class LtiServiceToken extends AbstractToken
 {
     /** @var string[] */
     private $roleNames;
 
-    /** @var LtiLaunchRequestValidationResult|null */
+    /** @var AccessTokenRequestValidationResult|null */
     private $validationResult;
 
-    public function __construct(LtiLaunchRequestValidationResult $validationResult = null)
+    public function __construct(AccessTokenRequestValidationResult $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
         parent::__construct($this->roleNames);
     }
 
-    public function getValidationResult(): ?LtiLaunchRequestValidationResult
+    public function getValidationResult(): ?AccessTokenRequestValidationResult
     {
         return $this->validationResult;
     }
 
-    public function getLtiMessage(): ?LtiMessageInterface
+    public function getRegistration(): ?RegistrationInterface
     {
         return $this->validationResult
-            ? $this->validationResult->getLtiMessage()
+            ? $this->validationResult->getRegistration()
             : null;
+    }
+
+    public function getAccessToken(): ?Token
+    {
+        return $this->validationResult
+            ? $this->validationResult->getToken()
+            : null;
+    }
+
+    public function getScopes(): array
+    {
+        return $this->validationResult
+            ? $this->validationResult->getScopes()
+            : [];
     }
 
     public function getCredentials(): string
     {
-        return '';
+        return $this->getAccessToken()
+            ? $this->getAccessToken()->__toString()
+            : '';
     }
 
     public function getRoleNames(): array
@@ -63,20 +80,19 @@ class LtiLaunchRequestToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(LtiLaunchRequestValidationResult $validationResult = null): void
+    private function applyValidationResult(AccessTokenRequestValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 
         if (null !== $this->validationResult) {
-            $userIdentity = $validationResult->getLtiMessage()->getUserIdentity();
 
-            if (null !== $userIdentity) {
-                $this->setUser($userIdentity->getIdentifier());
+            if (null !== $validationResult->getRegistration()) {
+                $this->setUser($validationResult->getRegistration()->getTool()->getName());
             }
 
-            $this->roleNames = $validationResult->getLtiMessage()->getRoles();
+            $this->roleNames = $validationResult->getScopes();
 
-            $this->setAuthenticated(!$this->validationResult->hasFailures());
+            $this->setAuthenticated(!$this->validationResult->hasError());
         } else {
             $this->roleNames = [];
 

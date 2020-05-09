@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Message;
 
 use Lcobucci\JWT\Parser;
 use OAT\Library\Lti1p3Core\Launch\Builder\OidcLaunchRequestBuilder;
