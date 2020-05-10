@@ -199,8 +199,8 @@ class RegistrationRepositoryBuilder
                 $platforms[$registrationData['platform']],
                 $tools[$registrationData['tool']],
                 $registrationData['deployment_ids'] ?? [],
-                $keyChains[$registrationData['platform_key_chain']],
-                $keyChains[$registrationData['tool_key_chain']],
+                $keyChains[$registrationData['platform_key_chain']] ?? null,
+                $keyChains[$registrationData['tool_key_chain']] ?? null,
                 $registrationData['platform_jwks_url'] ?? null,
                 $registrationData['tool_jwks_url'] ?? null
             );
