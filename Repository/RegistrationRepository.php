@@ -43,6 +43,11 @@ class RegistrationRepository implements RegistrationRepositoryInterface
         return $this->registrations[$identifier] ?? null;
     }
 
+    public function findAll(): array
+    {
+        return $this->registrations;
+    }
+
     public function findByClientId(string $clientId): ?RegistrationInterface
     {
         foreach ($this->registrations as $registration) {
