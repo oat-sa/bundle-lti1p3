@@ -27,6 +27,8 @@ use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use OAT\Bundle\Lti1p3Bundle\Tests\Traits\SecurityTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
+use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
+use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
 use OAT\Library\Lti1p3Core\Service\Server\Entity\Scope;
 use OAT\Library\Lti1p3Core\Service\Server\Grant\ClientAssertionCredentialsGrant;
 use OAT\Library\Lti1p3Core\Service\Server\Repository\ScopeRepository;
@@ -45,6 +47,9 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     /** @var RegistrationInterface */
     private $registration;
 
+    /** @var KeyChainInterface */
+    private $keyChain;
+
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -52,6 +57,10 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         $this->registration = static::$container
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
+
+        $this->keyChain = static::$container
+            ->get(KeyChainRepositoryInterface::class)
+            ->find('kid1');
 
         /** @var ScopeRepositoryInterface|ScopeRepository $scopeRepository */
         $scopeRepository = static::$container->get(ScopeRepositoryInterface::class);
@@ -64,7 +73,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            sprintf('/lti1p3/auth/%s/token', $this->registration->getIdentifier()),
+            sprintf('/lti1p3/auth/%s/token', $this->keyChain->getIdentifier()),
             $this->generateCredentials($this->registration, ['scope1', 'scope2'])
         );
 
@@ -84,7 +93,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            sprintf('/lti1p3/auth/%s/token', $this->registration->getIdentifier())
+            sprintf('/lti1p3/auth/%s/token', $this->keyChain->getIdentifier())
         );
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
@@ -94,7 +103,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            sprintf('/lti1p3/auth/%s/token', $this->registration->getIdentifier()),
+            sprintf('/lti1p3/auth/%s/token', $this->keyChain->getIdentifier()),
             [
                 'grant_type' => ClientAssertionCredentialsGrant::GRANT_TYPE,
                 'client_assertion_type' => ClientAssertionCredentialsGrant::CLIENT_ASSERTION_TYPE,

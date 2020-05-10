@@ -50,7 +50,7 @@ class OAuth2AccessTokenCreationAction
         $this->generator = $generator;
     }
 
-    public function __invoke(Request $request, string $registrationIdentifier): Response
+    public function __invoke(Request $request, string $keyChainIdentifier): Response
     {
         $psr7Response = $this->psr7Factory->createResponse(new Response());
 
@@ -58,7 +58,7 @@ class OAuth2AccessTokenCreationAction
             $psr7AuthenticationResponse = $this->generator->generate(
                 $this->psr7Factory->createRequest($request),
                 $psr7Response,
-                $registrationIdentifier
+                $keyChainIdentifier
             );
 
             return $this->httpFoundationFactory->createResponse($psr7AuthenticationResponse);

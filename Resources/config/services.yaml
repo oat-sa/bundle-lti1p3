@@ -129,7 +129,7 @@ services:
 
     OAT\Library\Lti1p3Core\Service\Server\Generator\AccessTokenResponseGenerator:
         arguments:
-            - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Service\Server\Factory\AuthorizationServerFactory'
 
     OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidator:
