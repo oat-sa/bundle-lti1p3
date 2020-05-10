@@ -1,5 +1,5 @@
 lti1p3_jwks:
-    path: '/.well-known/jwks/{keySetName}.json'
+    path: '/lti1p3/.well-known/jwks/{keySetName}.json'
     methods: GET
     controller: OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction
 

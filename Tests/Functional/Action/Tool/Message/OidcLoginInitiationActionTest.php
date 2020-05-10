@@ -51,7 +51,7 @@ class OidcLoginInitiationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/oidc/login-initiation',
+            '/lti1p3/oidc/login-initiation',
             [
                 'iss' => $this->registration->getPlatform()->getAudience(),
                 'login_hint' => 'login_hint',
@@ -69,7 +69,7 @@ class OidcLoginInitiationActionTest extends WebTestCase
         $this->client->request(
             Request::METHOD_GET,
             sprintf(
-                '/oidc/login-initiation?%s',
+                '/lti1p3/oidc/login-initiation?%s',
                 http_build_query(
                     [
                         'iss' => $this->registration->getPlatform()->getAudience(),
@@ -89,7 +89,7 @@ class OidcLoginInitiationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/oidc/login-initiation',
+            '/lti1p3/oidc/login-initiation',
             [
                 'iss' => $this->registration->getPlatform()->getAudience(),
                 'login_hint' => 'login_hint',
@@ -109,7 +109,7 @@ class OidcLoginInitiationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/oidc/login-initiation',
+            '/lti1p3/oidc/login-initiation',
             [
                 'iss' => $this->registration->getPlatform()->getAudience(),
                 'login_hint' => 'login_hint',

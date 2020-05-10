@@ -64,7 +64,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            sprintf('/auth/%s/token', $this->registration->getIdentifier()),
+            sprintf('/lti1p3/auth/%s/token', $this->registration->getIdentifier()),
             $this->generateCredentials($this->registration, ['scope1', 'scope2'])
         );
 
@@ -84,7 +84,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            sprintf('/auth/%s/token', $this->registration->getIdentifier())
+            sprintf('/lti1p3/auth/%s/token', $this->registration->getIdentifier())
         );
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
@@ -94,7 +94,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            sprintf('/auth/%s/token', $this->registration->getIdentifier()),
+            sprintf('/lti1p3/auth/%s/token', $this->registration->getIdentifier()),
             [
                 'grant_type' => ClientAssertionCredentialsGrant::GRANT_TYPE,
                 'client_assertion_type' => ClientAssertionCredentialsGrant::CLIENT_ASSERTION_TYPE,
@@ -110,7 +110,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            sprintf('/auth/%s/token', 'invalid'),
+            sprintf('/lti1p3/auth/%s/token', 'invalid'),
             [
                 'grant_type' => ClientAssertionCredentialsGrant::GRANT_TYPE,
                 'client_assertion_type' => ClientAssertionCredentialsGrant::CLIENT_ASSERTION_TYPE,
