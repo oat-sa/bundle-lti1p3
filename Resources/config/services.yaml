@@ -41,7 +41,7 @@ services:
             - '@League\OAuth2\Server\Repositories\ClientRepositoryInterface'
             - '@League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface'
             - '@League\OAuth2\Server\Repositories\ScopeRepositoryInterface'
-            - 'encryptionKey'
+            - '%env(LTI1P3_SERVICE_ENCRYPTION_KEY)%'
 
     Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
         class: Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory
@@ -157,6 +157,8 @@ services:
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider:
         arguments:
             - '@OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidator'
+
+    OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface: ~
 
     OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder:
         arguments: ['@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder']
