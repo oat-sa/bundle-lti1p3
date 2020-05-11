@@ -11,6 +11,7 @@
     <php>
         <env name="KERNEL_CLASS" value="OAT\Bundle\Lti1p3Bundle\Tests\Resources\Kernel\Lti1p3TestKernel" />
         <env name="LTI_CONFIG_FILE" value="lti1p3.yaml" />
+        <env name="LTI1P3_SERVICE_ENCRYPTION_KEY" value="someSecretTestKey" />
     </php>
 
     <testsuites>
