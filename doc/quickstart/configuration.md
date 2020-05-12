@@ -64,7 +64,9 @@ It contains:
 
 ## Configure a keychain
 
-To add a key chain:
+First you need to [generate a key pair as explained here](https://en.wikibooks.org/wiki/Cryptography/Generate_a_keypair_using_OpenSSL).
+
+Then, add a key chain:
 
 ```yaml
 # config/packages/lti1p3.yaml
