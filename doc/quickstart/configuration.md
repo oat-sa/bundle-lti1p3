@@ -1,16 +1,16 @@
-# Bundle configuration
+# Configuration
 
-> How to provide configuration step by step, to be able to use the library as a tool, or a platform, or both.
+> How to provide configuration to be able to use the library as an LTI tool, or a platform, or both.
 
 ## Table of contents
 
-- [Configuration overview](#configuration-overview)
+- [Overview](#overview)
 - [Configure a keychain](#configure-a-keychain)
 - [Configure a platform](#configure-a-platform)
 - [Configure a tool](#configure-a-tool)
 - [Configure a registration](#configure-a-registration)
 
-## Configuration overview
+## Overview
 
 On installation, thanks to the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), the configuration file will be created in `config/packages/lti1p3.yaml`.
 
@@ -54,7 +54,7 @@ lti1p3:
             tool_jwks_url: ~
 ```
 
-In this setup, the bundle allow your application to **act as a platform and as a tool**.
+In this setup, the bundle allows your application to **act as a platform and as a tool**.
 
 It contains:
 - 2 key chains (`platformKey` and `toolKey`) that can be used for registration, JWKS for example
@@ -78,7 +78,7 @@ lti1p3:
 ```
 **Notes**:
 - the unique identifier `myKey` can be used from the [KeyChainRepositoryInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Security/Key/KeyChainRepositoryInterface.php#L27)
-- the key set name `myKeySetName` can be used to group key chains together, like by example in the [JwksAction](../Action/Jwks/JwksAction.php)
+- the key set name `myKeySetName` can be used to group key chains together, like by example in the [JwksAction](../../Action/Jwks/JwksAction.php)
 
 ## Configure a platform
 
@@ -97,8 +97,8 @@ lti1p3:
 **Notes**:
 - the unique identifier `myPlatform` can be used into registrations creation (ex: `platform: "myPlatform"`)
 - the `audience` will be used in JWT based communications as issuer 
-- the `oidc_authentication_url` is automated by the [OidcLoginAuthenticationAction](../Action/Platform/Message/OidcLoginAuthenticationAction.php)
-- the `oauth2_access_token_url`, automated by the [OAuth2AccessTokenCreationAction](../Action/Platform/Service/OAuth2AccessTokenCreationAction.php), provides the key chain identifier `platformKey` as an uri param to offer an oauth2 server using this key
+- the `oidc_authentication_url` is automated by the [OidcLoginAuthenticationAction](../../Action/Platform/Message/OidcLoginAuthenticationAction.php)
+- the `oauth2_access_token_url`, automated by the [OAuth2AccessTokenCreationAction](../../Action/Platform/Service/OAuth2AccessTokenCreationAction.php), provides the key chain identifier `platformKey` as an uri param to offer an oauth2 server using this key
 
 ## Configure a tool
 
@@ -112,13 +112,13 @@ lti1p3:
             name: "My Tool"
             audience: "http://example.com/tool"
             oidc_login_initiation_url: "http://example.com/lti1p3/oidc/login-initiation"
-            launch_url: ~
+            launch_url: "http://example.com/tool/launch"
             deep_link_launch_url: ~
 ```
 **Notes**:
 - the unique identifier `myPlatform` can be used into registrations creation (ex: `platform: "myPlatform"`)
 - the `audience` will be used in JWT based communications as issuer 
-- the `oidc_login_initiation_url` is handled by the [OidcLoginInitiationAction](../Action/Tool/Message/OidcLoginInitiationAction.php)
+- the `oidc_login_initiation_url` is handled by the [OidcLoginInitiationAction](../../Action/Tool/Message/OidcLoginInitiationAction.php)
 - the `launch_url` is used to configure your default tool launch url
 - the `deep_link_launch_url` is used to configure your default tool deep links url
 
@@ -147,4 +147,4 @@ lti1p3:
 - the client id `myClientId` will be used in JWT based communications as client id
 - the defined `myTool` tool will be registered for the defined `myPlatform` platform
 - the `myPlatformKey` and `myToolKey` key chains will be used to sign respectively from `myPlatform` and `myTool`
-- the JWKS urls are handled by [JwksAction](../Action/Jwks/JwksAction.php)
+- the JWKS urls are handled by [JwksAction](../../Action/Jwks/JwksAction.php)
