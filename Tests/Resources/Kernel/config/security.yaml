@@ -4,9 +4,13 @@ security:
 
     firewalls:
         lti1p3_message:
-            pattern:   ^/test/launch
+            pattern:   ^/test/message
             stateless: true
             lti1p3_message: true
+        lti1p3_service:
+            pattern:   ^/test/service
+            stateless: true
+            lti1p3_service: true
         main:
             anonymous: lazy
             provider: users_in_memory

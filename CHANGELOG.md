@@ -1,7 +1,8 @@
 CHANGELOG
 =========
 
-0.1.0
+1.0.0
 -----
 
-* Provided LTI launch messages handling (optionally with OIDC) as a tool
+* Provided LTI messages handling (optionally with OIDC) as platform and tool
+* Provided LTI services handling as platform and tool

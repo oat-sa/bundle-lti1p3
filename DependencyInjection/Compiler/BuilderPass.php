@@ -26,7 +26,6 @@ use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilde
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\RegistrationRepositoryBuilder;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Configuration;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Lti1p3Extension;
-use OAT\Bundle\Lti1p3Bundle\Repository\NonceRepository;
 use OAT\Bundle\Lti1p3Bundle\Repository\RegistrationRepository;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
 use Symfony\Component\Config\Definition\Processor;
@@ -43,7 +42,6 @@ class BuilderPass implements CompilerPassInterface
 
         $this
             ->defineKeyChainRepository($container, $configuration)
-            ->defineNonceRepository($container)
             ->defineRegistrationRepository($container, $configuration);
     }
 
@@ -64,16 +62,6 @@ class BuilderPass implements CompilerPassInterface
             ->setArguments([$configuration]);
 
         $container->setDefinition(KeyChainRepository::class, $keyChainRepositoryDefinition);
-
-        return $this;
-    }
-
-    private function defineNonceRepository(ContainerBuilder $container): self
-    {
-        $nonceRepositoryDefinition = new Definition(NonceRepository::class);
-        $nonceRepositoryDefinition->setClass(NonceRepository::class);
-
-        $container->setDefinition(NonceRepository::class, $nonceRepositoryDefinition);
 
         return $this;
     }

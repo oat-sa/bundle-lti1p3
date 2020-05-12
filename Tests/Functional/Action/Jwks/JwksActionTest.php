@@ -42,7 +42,7 @@ class JwksActionTest extends WebTestCase
 
     public function testJwksWithValidKeySetName(): void
     {
-        $this->client->request(Request::METHOD_GET, '/.well-known/jwks/platformSet.json');
+        $this->client->request(Request::METHOD_GET, '/lti1p3/.well-known/jwks/platformSet.json');
 
         $response = $this->client->getResponse();
 
@@ -66,7 +66,7 @@ class JwksActionTest extends WebTestCase
 
     public function testJwksWithInvalidKeySetName(): void
     {
-        $this->client->request(Request::METHOD_GET, '/.well-known/jwks/invalid.json');
+        $this->client->request(Request::METHOD_GET, '/lti1p3/.well-known/jwks/invalid.json');
 
         $response = $this->client->getResponse();
 

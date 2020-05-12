@@ -20,13 +20,14 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Launch;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Tool\Message;
 
 use Carbon\Carbon;
 use OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder;
 use OAT\Library\Lti1p3Core\Link\ResourceLink\ResourceLink;
 use OAT\Library\Lti1p3Core\Message\Claim\ContextClaim;
 use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
+use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\User\UserIdentity;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -34,36 +35,32 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class LaunchActionTest extends WebTestCase
+class MessageActionTest extends WebTestCase
 {
     /** @var KernelBrowser */
     private $client;
 
+    /** @var LtiLaunchRequestBuilder */
+    private $builder;
+
+    /** @var RegistrationInterface */
+    private $registration;
+
     protected function setUp(): void
     {
         $this->client = static::createClient();
-    }
+        $this->builder = static::$container->get(LtiLaunchRequestBuilder::class);
 
-    protected function tearDown(): void
-    {
-        if (Carbon::hasTestNow()) {
-            Carbon::setTestNow();
-        }
-
-        parent::tearDown();
-    }
-
-    public function testItCanHandleAnonymousLtiLaunchRequest(): void
-    {
-        $builder = static::$container->get(LtiLaunchRequestBuilder::class);
-
-        $registration = static::$container
+        $this->registration = static::$container
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
+    }
 
-        $launchRequest = $builder->buildResourceLinkLtiLaunchRequest(
+    public function testItCanHandleAnonymousLtiMessageRequest(): void
+    {
+        $launchRequest = $this->builder->buildResourceLinkLtiLaunchRequest(
             new ResourceLink('resourceLinkIdentifier'),
-            $registration,
+            $this->registration,
             null,
             [
                 'roles'
@@ -76,7 +73,7 @@ class LaunchActionTest extends WebTestCase
 
         $this->client->request(
             Request::METHOD_GET,
-            sprintf('/test/launch?%s', http_build_query($launchRequest->getParameters()))
+            sprintf('/test/message?%s', http_build_query($launchRequest->getParameters()))
         );
 
         $response = $this->client->getResponse();
@@ -105,21 +102,16 @@ class LaunchActionTest extends WebTestCase
             $responseData['validations']['successes']
         );
 
-        $this->assertEmpty($responseData['validations']['failures']);
-        $this->assertEmpty($responseData['credentials']);
+        $this->assertEmpty($responseData['validations']['error']);
+        $this->assertEquals($this->registration->getIdentifier(), $responseData['registration']);
+        $this->assertEquals($launchRequest->getLtiMessage(), $responseData['credentials']);
     }
 
-    public function testItCanHandleUserLtiLaunchRequest(): void
+    public function testItCanHandleUserLtiMessageRequest(): void
     {
-        $builder = static::$container->get(LtiLaunchRequestBuilder::class);
-
-        $registration = static::$container
-            ->get(RegistrationRepositoryInterface::class)
-            ->find('testRegistration');
-
-        $launchRequest = $builder->buildUserResourceLinkLtiLaunchRequest(
+        $launchRequest = $this->builder->buildUserResourceLinkLtiLaunchRequest(
             new ResourceLink('resourceLinkIdentifier'),
-            $registration,
+            $this->registration,
             new UserIdentity('userIdentifier'),
             null,
             [
@@ -133,7 +125,7 @@ class LaunchActionTest extends WebTestCase
 
         $this->client->request(
             Request::METHOD_GET,
-            sprintf('/test/launch?%s', http_build_query($launchRequest->getParameters()))
+            sprintf('/test/message?%s', http_build_query($launchRequest->getParameters()))
         );
 
         $response = $this->client->getResponse();
@@ -162,13 +154,14 @@ class LaunchActionTest extends WebTestCase
             $responseData['validations']['successes']
         );
 
-        $this->assertEmpty($responseData['validations']['failures']);
-        $this->assertEmpty($responseData['credentials']);
+        $this->assertEmpty($responseData['validations']['error']);
+        $this->assertEquals($this->registration->getIdentifier(), $responseData['registration']);
+        $this->assertEquals($launchRequest->getLtiMessage(), $responseData['credentials']);
     }
 
     public function testItReturnsUnauthorizedResponseWithoutIdToken(): void
     {
-        $this->client->request(Request::METHOD_GET, '/test/launch');
+        $this->client->request(Request::METHOD_GET, '/test/message');
 
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
@@ -177,46 +170,40 @@ class LaunchActionTest extends WebTestCase
 
     public function testItReturnsUnauthorizedResponseWithEmptyIdToken(): void
     {
-        $this->client->request(Request::METHOD_GET, '/test/launch?id_token=');
+        $this->client->request(Request::METHOD_GET, '/test/message?id_token=');
 
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
         $this->assertStringContainsString(
-            'LTI launch request authentication failed: LTI message validation failed: The JWT string must have two dots',
+            'LTI message request authentication failed: The JWT string must have two dots',
             (string)$response->getContent()
         );
     }
 
     public function testItReturnsUnauthorizedResponseWithExpiredIdToken(): void
     {
-        $now = Carbon::now();
-
-        Carbon::setTestNow($now->subSeconds(LtiMessageInterface::TTL + 1));
+        Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessageInterface::TTL + 1));
 
         $builder = static::$container->get(LtiLaunchRequestBuilder::class);
 
-        $registration = static::$container
-            ->get(RegistrationRepositoryInterface::class)
-            ->find('testRegistration');
-
         $launchRequest = $builder->buildResourceLinkLtiLaunchRequest(
             new ResourceLink('resourceLinkIdentifier'),
-            $registration
+            $this->registration
         );
 
-        Carbon::setTestNow($now);
+        Carbon::setTestNow();
 
         $this->client->request(
             Request::METHOD_GET,
-            sprintf('/test/launch?%s', http_build_query($launchRequest->getParameters()))
+            sprintf('/test/message?%s', http_build_query($launchRequest->getParameters()))
         );
 
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
         $this->assertStringContainsString(
-            'LTI launch request authentication failed: JWT id_token is expired',
+            'LTI message request authentication failed: JWT id_token is expired',
             (string)$response->getContent()
         );
     }
