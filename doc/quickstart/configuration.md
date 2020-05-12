@@ -116,7 +116,7 @@ lti1p3:
             deep_link_launch_url: ~
 ```
 **Notes**:
-- the unique identifier `myPlatform` can be used into registrations creation (ex: `platform: "myPlatform"`)
+- the unique identifier `myTool` can be used into registrations creation (ex: `tool: "myTool"`)
 - the `audience` will be used in JWT based communications as issuer 
 - the `oidc_login_initiation_url` is handled by the [OidcLoginInitiationAction](../../Action/Tool/Message/OidcLoginInitiationAction.php)
 - the `launch_url` is used to configure your default tool launch url
