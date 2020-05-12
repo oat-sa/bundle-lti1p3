@@ -143,7 +143,7 @@ lti1p3:
             tool_jwks_url: "http://example.com/lti1p3/.well-known/jwks/toolSet.json"
 ```
 **Notes**:
-- the unique identifier `myRegistration` can be used from the [RegistrationRepositoryInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Registration/RegistrationRepositoryInterface.php#L27)
+- the unique identifier `myRegistration` allows the registration to be fetched from the [RegistrationRepositoryInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Registration/RegistrationRepositoryInterface.php#L27)
 - the client id `myClientId` will be used in JWT based communications as client id
 - the defined `myTool` tool will be registered for the defined `myPlatform` platform
 - the `myPlatformKey` and `myToolKey` key chains will be used to sign respectively from `myPlatform` and `myTool`
