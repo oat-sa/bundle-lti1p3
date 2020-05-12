@@ -8,7 +8,7 @@ In [LTI services](http://www.imsglobal.org/spec/lti/v1p3/#interacting-with-servi
 
 The service [ServiceClient](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Service/Client/ServiceClient.php) is available form your application container to make authenticated LTI service calls to a platform by following this standard.
 
-To use it, you can inject anywhere you need the the `ServiceClientInterface` and you need to provide on which registered platform you wan to make the call.
+To use it, you can inject anywhere you need the the `ServiceClientInterface` and you need to provide on which registered platform you want to make the call.
 
 For example:
 
