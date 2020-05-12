@@ -52,6 +52,27 @@ class RegistrationRepositoryTest extends KernelTestCase
         $this->assertNull($this->subject->find('invalid'));
     }
 
+    public function testFindAll(): void
+    {
+        $results = $this->subject->findAll();
+
+        $this->assertCount(1, $results);
+
+        foreach ($results as $result) {
+            $this->assertInstanceOf(RegistrationInterface::class, $result);
+        }
+    }
+
+    public function testFindByClientId(): void
+    {
+        $result = $this->subject->findByClientId('client_id');
+
+        $this->assertInstanceOf(RegistrationInterface::class, $result);
+        $this->assertEquals('testRegistration', $result->getIdentifier());
+
+        $this->assertNull($this->subject->findByClientId('invalid'));
+    }
+
     public function testFindByPlatformIssuer(): void
     {
         $result = $this->subject->findByPlatformIssuer('http://platform.com', 'client_id');

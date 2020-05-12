@@ -20,15 +20,15 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall;
+namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\LtiLaunchRequestToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class LtiLaunchRequestAuthenticationListener
+class LtiMessageAuthenticationListener
 {
     /** @var TokenStorageInterface */
     private $storage;
@@ -57,7 +57,7 @@ class LtiLaunchRequestAuthenticationListener
             return;
         }
 
-        $token = new LtiLaunchRequestToken();
+        $token = new LtiMessageToken();
         $token->setAttribute('request', $this->factory->createRequest($request));
 
         $this->storage->setToken($this->manager->authenticate($token));

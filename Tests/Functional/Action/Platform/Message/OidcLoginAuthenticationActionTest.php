@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Message;
 
 use Lcobucci\JWT\Parser;
 use OAT\Library\Lti1p3Core\Launch\Builder\OidcLaunchRequestBuilder;
@@ -71,7 +71,7 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
 
         $this->client->request(
             Request::METHOD_POST,
-            '/oidc/login-authentication',
+            '/lti1p3/oidc/login-authentication',
             [
                 'scope' => 'openid',
                 'response_type' => 'id_token',
@@ -104,7 +104,7 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
         $this->client->request(
             Request::METHOD_GET,
             sprintf(
-                '/oidc/login-authentication?%s',
+                '/lti1p3/oidc/login-authentication?%s',
                 http_build_query([
                     'scope' => 'openid',
                     'response_type' => 'id_token',
@@ -128,7 +128,7 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/oidc/login-authentication',
+            '/lti1p3/oidc/login-authentication',
             [
                 'scope' => 'openid',
                 'response_type' => 'id_token',

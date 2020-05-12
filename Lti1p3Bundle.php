@@ -23,7 +23,8 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle;
 
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Compiler\BuilderPass;
-use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\LtiLaunchRequestSecurityFactory;
+use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Message\LtiMessageSecurityFactory;
+use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Service\LtiServiceSecurityFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -36,7 +37,10 @@ class Lti1p3Bundle extends Bundle
         // dependencies builder pass
         $container->addCompilerPass(new BuilderPass());
 
-        // lti launch requests security registration
-        $container->getExtension('security')->addSecurityListenerFactory(new LtiLaunchRequestSecurityFactory());
+        // lti messages security registration
+        $container->getExtension('security')->addSecurityListenerFactory(new LtiMessageSecurityFactory());
+
+        // lti services security registration
+        $container->getExtension('security')->addSecurityListenerFactory(new LtiServiceSecurityFactory());
     }
 }
