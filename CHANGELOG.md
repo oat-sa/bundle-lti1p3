@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.1.0
+-----
+
+* Updated licence to LGPL
+
 1.0.0
 -----
 
