@@ -183,7 +183,7 @@ class MessageActionTest extends WebTestCase
         );
     }
 
-    public function testItRedirectOnErrorToLaunchPresentationReturnUrlWhenSpecifiedInMessageClaims(): void
+    public function testItRedirectsOnErrorToLaunchPresentationReturnUrlWhenSpecifiedInMessageClaims(): void
     {
         Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessageInterface::TTL + 1));
 
@@ -214,7 +214,7 @@ class MessageActionTest extends WebTestCase
         );
     }
 
-    public function testItRedirectOnErrorToLaunchPresentationReturnUrlWithQueryParamsWhenSpecifiedInMessageClaims(): void
+    public function testItRedirectsOnErrorToLaunchPresentationReturnUrlWithQueryParamsWhenSpecifiedInMessageClaims(): void
     {
         Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessageInterface::TTL + 1));
 
