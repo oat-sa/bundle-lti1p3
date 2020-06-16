@@ -22,13 +22,21 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
+use Lcobucci\JWT\Parser;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
+use OAT\Library\Lti1p3Core\Message\LtiMessage;
+use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\Firewall\AbstractListener;
+use Throwable;
 
-class LtiMessageAuthenticationListener
+class LtiMessageAuthenticationListener extends AbstractListener
 {
     /** @var TokenStorageInterface */
     private $storage;
@@ -39,6 +47,9 @@ class LtiMessageAuthenticationListener
     /** @var HttpMessageFactoryInterface */
     private $factory;
 
+    /** @var Parser */
+    private $parser;
+
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
@@ -47,19 +58,54 @@ class LtiMessageAuthenticationListener
         $this->storage = $tokenStorage;
         $this->manager = $authenticationManager;
         $this->factory = $factory;
+        $this->parser = new Parser(new AssociativeDecoder());
     }
 
-    public function __invoke(RequestEvent $event): void
+    public function supports(Request $request): ?bool
+    {
+        return null !== $request->get('id_token');
+    }
+
+    public function authenticate(RequestEvent $event): void
     {
         $request = $event->getRequest();
-
-        if (null === $request->get('id_token')) {
-            return;
-        }
 
         $token = new LtiMessageToken();
         $token->setAttribute('request', $this->factory->createRequest($request));
 
-        $this->storage->setToken($this->manager->authenticate($token));
+        try {
+            $this->storage->setToken($this->manager->authenticate($token));
+        } catch (Throwable $exception) {
+            $event->setResponse($this->handleErrorDelegation($exception, $request));
+        }
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function handleErrorDelegation(Throwable $exception, Request $request): RedirectResponse
+    {
+        try {
+            $message = new LtiMessage($this->parser->parse($request->get('id_token')));
+        } catch (Throwable $parseException) {
+            throw new AuthenticationException(
+                sprintf('LTI message request authentication failed: %s', $parseException->getMessage()),
+                $parseException->getCode(),
+                $parseException
+            );
+        }
+
+        if (null !== $message->getLaunchPresentation() && null !== $message->getLaunchPresentation()->getReturnUrl()) {
+            $redirectUrl = sprintf(
+                '%s%slti_errormsg=%s',
+                $message->getLaunchPresentation()->getReturnUrl(),
+                strpos($message->getLaunchPresentation()->getReturnUrl(), '?') ? '&' : '?',
+                urlencode($exception->getMessage())
+            );
+
+            return new RedirectResponse($redirectUrl);
+        }
+
+        throw $exception;
     }
 }
