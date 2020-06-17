@@ -26,12 +26,14 @@ use Carbon\Carbon;
 use OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder;
 use OAT\Library\Lti1p3Core\Link\ResourceLink\ResourceLink;
 use OAT\Library\Lti1p3Core\Message\Claim\ContextClaim;
+use OAT\Library\Lti1p3Core\Message\Claim\LaunchPresentationClaim;
 use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\User\UserIdentity;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -178,6 +180,68 @@ class MessageActionTest extends WebTestCase
         $this->assertStringContainsString(
             'LTI message request authentication failed: The JWT string must have two dots',
             (string)$response->getContent()
+        );
+    }
+
+    public function testItRedirectsOnErrorToLaunchPresentationReturnUrlWhenSpecifiedInMessageClaims(): void
+    {
+        Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessageInterface::TTL + 1));
+
+        $builder = static::$container->get(LtiLaunchRequestBuilder::class);
+
+        $launchRequest = $builder->buildResourceLinkLtiLaunchRequest(
+            new ResourceLink('resourceLinkIdentifier'),
+            $this->registration,
+            null,
+            [],
+            [
+                new LaunchPresentationClaim(null, null, null, 'http://platform.com/error')
+            ]
+        );
+
+        Carbon::setTestNow();
+
+        $this->client->request(
+            Request::METHOD_GET,
+            sprintf('/test/message?%s', http_build_query($launchRequest->getParameters()))
+        );
+
+        $response = $this->client->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(
+            'http://platform.com/error?lti_errormsg=LTI+message+request+authentication+failed%3A+JWT+id_token+is+expired',
+            $response->getTargetUrl()
+        );
+    }
+
+    public function testItRedirectsOnErrorToLaunchPresentationReturnUrlWithQueryParamsWhenSpecifiedInMessageClaims(): void
+    {
+        Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessageInterface::TTL + 1));
+
+        $builder = static::$container->get(LtiLaunchRequestBuilder::class);
+
+        $launchRequest = $builder->buildResourceLinkLtiLaunchRequest(
+            new ResourceLink('resourceLinkIdentifier'),
+            $this->registration,
+            null,
+            [],
+            [
+                new LaunchPresentationClaim(null, null, null, 'http://platform.com/error?some=param')
+            ]
+        );
+
+        Carbon::setTestNow();
+
+        $this->client->request(
+            Request::METHOD_GET,
+            sprintf('/test/message?%s', http_build_query($launchRequest->getParameters()))
+        );
+
+        $response = $this->client->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(
+            'http://platform.com/error?some=param&lti_errormsg=LTI+message+request+authentication+failed%3A+JWT+id_token+is+expired',
+            $response->getTargetUrl()
         );
     }
 

@@ -51,7 +51,7 @@ class JwksActionTest extends WebTestCase
 
         $this->assertEquals(
             [
-                'kid1' => [
+                [
                     'alg' => 'RS256',
                     'kty' => 'RSA',
                     'use' => 'sig',
