@@ -24,11 +24,13 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceToken;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Firewall\AbstractListener;
 
-class LtiServiceAuthenticationListener
+class LtiServiceAuthenticationListener extends AbstractListener
 {
     /** @var TokenStorageInterface */
     private $storage;
@@ -49,16 +51,15 @@ class LtiServiceAuthenticationListener
         $this->factory = $factory;
     }
 
-    public function __invoke(RequestEvent $event): void
+    public function supports(Request $request): ?bool
     {
-        $request = $event->getRequest();
+        return $request->headers->has('Authorization');
+    }
 
-        if (!$request->headers->has('Authorization')) {
-            return;
-        }
-
+    public function authenticate(RequestEvent $event): void
+    {
         $token = new LtiServiceToken();
-        $token->setAttribute('request', $this->factory->createRequest($request));
+        $token->setAttribute('request', $this->factory->createRequest($event->getRequest()));
 
         $this->storage->setToken($this->manager->authenticate($token));
     }

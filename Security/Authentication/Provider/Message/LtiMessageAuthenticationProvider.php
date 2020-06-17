@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
+use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -50,13 +51,15 @@ class LtiMessageAuthenticationProvider implements AuthenticationProviderInterfac
             $validationResult = $this->validator->validate($token->getAttribute('request'));
 
             if ($validationResult->hasError()) {
-                throw new AuthenticationException($validationResult->getError());
+                throw new LtiException($validationResult->getError());
             }
 
             return new LtiMessageToken($validationResult);
         } catch (Throwable $exception) {
             throw new AuthenticationException(
-                sprintf('LTI message request authentication failed: %s', $exception->getMessage())
+                sprintf('LTI message request authentication failed: %s', $exception->getMessage()),
+                $exception->getCode(),
+                $exception
             );
         }
     }
