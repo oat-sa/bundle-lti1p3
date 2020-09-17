@@ -70,11 +70,14 @@ services:
         arguments:
             - '@Psr\Cache\CacheItemPoolInterface'
 
-    OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface:
+    OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilder:
         arguments:
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
             - '@Lcobucci\JWT\Builder'
             - '@Lcobucci\JWT\Signer'
+
+    OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface:
+        alias: OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilder
 
     ########### Bundle services
     OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
