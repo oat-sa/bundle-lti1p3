@@ -11,7 +11,7 @@
 
 In the case an LTI launch request was started with the [OIDC flow](https://www.imsglobal.org/spec/security/v1p0/#step-2-authentication-request), the tool will be asked to provide a login initiation endpoint.
 
-The [OidcLoginInitiationAction](../../Action/Tool/Message/OidcLoginInitiationAction.php) is automatically added to your application via the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`.
+The [OidcLoginInitiationAction](../../Action/Tool/Message/OidcInitiationAction.php) is automatically added to your application via the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`.
 
 **Default route**: `[GET,POST] /lti1p3/oidc/login-initiation`
 
@@ -55,7 +55,7 @@ security:
             lti1p3_message: true
 ```
 
-It will automatically handle the provided id token authentication (and state in case of OIDC), and add a [LtiMessageToken](../../Security/Authentication/Token/Message/LtiMessageToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
+It will automatically handle the provided id token authentication (and state in case of OIDC), and add a [LtiMessageToken](../../Security/Authentication/Token/Message/LtiMessageSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
 
 For example:
 

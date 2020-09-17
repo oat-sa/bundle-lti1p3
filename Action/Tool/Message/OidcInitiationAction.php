@@ -20,36 +20,39 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Action\Platform\Message;
+namespace OAT\Bundle\Lti1p3Bundle\Action\Tool\Message;
 
-use OAT\Library\Lti1p3Core\Exception\LtiException;
-use OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginAuthenticator;
+use OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer;
+use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OidcLoginAuthenticationAction
+class OidcInitiationAction
 {
+    /** @var HttpFoundationFactoryInterface */
+    private $httpFoundationFactory;
+
     /** @var HttpMessageFactoryInterface */
-    private $factory;
+    private $psr7Factory;
 
-    /** @var OidcLoginAuthenticator */
-    private $authenticator;
+    /** @var OidcInitiationServer */
+    private $server;
 
-    public function __construct(HttpMessageFactoryInterface $factory, OidcLoginAuthenticator $authenticator)
-    {
-        $this->factory = $factory;
-        $this->authenticator = $authenticator;
+    public function __construct(
+        HttpFoundationFactoryInterface $httpFoundationFactory,
+        HttpMessageFactoryInterface $psr7Factory,
+        OidcInitiationServer $server
+    ) {
+        $this->httpFoundationFactory = $httpFoundationFactory;
+        $this->psr7Factory = $psr7Factory;
+        $this->server = $server;
     }
 
     public function __invoke(Request $request): Response
     {
-        try {
-            $launchRequest = $this->authenticator->authenticate($this->factory->createRequest($request));
-
-            return new Response($launchRequest->toHtmlRedirectForm());
-        } catch (LtiException $exception) {
-            return new Response($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
-        }
+        return $this->httpFoundationFactory->createResponse(
+            $this->server->handle($this->psr7Factory->createRequest($request))
+        );
     }
 }

@@ -8,7 +8,7 @@
         "php": "^7.1.3",
         "ext-json": "*",
         "nyholm/psr7": "^1.2",
-        "oat-sa/lib-lti1p3-core": "^2.0",
+        "oat-sa/lib-lti1p3-core": "dev-feature/deep-link",
         "symfony/framework-bundle": "^4.2 || ^5.0",
         "symfony/security-bundle": "^4.2 || ^5.0",
         "symfony/yaml": "^4.2 || ^5.0",

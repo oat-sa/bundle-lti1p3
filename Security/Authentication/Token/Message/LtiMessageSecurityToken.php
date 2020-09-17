@@ -22,27 +22,27 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
-use OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidationResult;
-use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidationResult;
+use OAT\Library\Lti1p3Core\Message\Token\LtiMessageTokenInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
-class LtiMessageToken extends AbstractToken
+class LtiMessageSecurityToken extends AbstractToken
 {
     /** @var string[] */
     private $roleNames;
 
-    /** @var LtiLaunchRequestValidationResult|null */
+    /** @var LtiResourceLinkLaunchRequestValidationResult|null */
     private $validationResult;
 
-    public function __construct(LtiLaunchRequestValidationResult $validationResult = null)
+    public function __construct(LtiResourceLinkLaunchRequestValidationResult $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
         parent::__construct($this->roleNames);
     }
 
-    public function getValidationResult(): ?LtiLaunchRequestValidationResult
+    public function getValidationResult(): ?LtiResourceLinkLaunchRequestValidationResult
     {
         return $this->validationResult;
     }
@@ -54,17 +54,17 @@ class LtiMessageToken extends AbstractToken
             : null;
     }
 
-    public function getLtiMessage(): ?LtiMessageInterface
+    public function getIdToken(): ?LtiMessageTokenInterface
     {
         return $this->validationResult
-            ? $this->validationResult->getLtiMessage()
+            ? $this->validationResult->getIdToken()
             : null;
     }
 
     public function getCredentials(): string
     {
-        return $this->getLtiMessage()
-            ? $this->getLtiMessage()->getToken()->__toString()
+        return $this->getIdToken()
+            ? $this->getIdToken()->getToken()->__toString()
             : '';
     }
 
@@ -73,18 +73,18 @@ class LtiMessageToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(LtiLaunchRequestValidationResult $validationResult = null): void
+    private function applyValidationResult(LtiResourceLinkLaunchRequestValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 
         if (null !== $this->validationResult) {
-            $userIdentity = $validationResult->getLtiMessage()->getUserIdentity();
+            $userIdentity = $validationResult->getIdToken()->getUserIdentity();
 
             if (null !== $userIdentity) {
                 $this->setUser($userIdentity->getIdentifier());
             }
 
-            $this->roleNames = $validationResult->getLtiMessage()->getRoles();
+            $this->roleNames = $validationResult->getIdToken()->getRoles();
 
             $this->setAuthenticated(!$this->validationResult->hasError());
         } else {

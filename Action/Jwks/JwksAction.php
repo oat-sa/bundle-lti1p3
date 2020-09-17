@@ -23,20 +23,26 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Action\Jwks;
 
 use OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use OAT\Library\Lti1p3Core\Security\Jwks\Server\JwksServer;
+use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class JwksAction
 {
-    /** @var JwksExporter */
-    private $exporter;
+    /** @var HttpFoundationFactoryInterface */
+    private $httpFoundationFactory;
 
-    public function __construct(JwksExporter $exporter)
+    /** @var JwksExporter */
+    private $server;
+
+    public function __construct(HttpFoundationFactoryInterface $httpFoundationFactory, JwksServer $server)
     {
-        $this->exporter = $exporter;
+        $this->httpFoundationFactory = $httpFoundationFactory;
+        $this->server = $server;
     }
 
-    public function __invoke(string $keySetName): JsonResponse
+    public function __invoke(string $keySetName): Response
     {
-        return new JsonResponse($this->exporter->export($keySetName));
+        return $this->httpFoundationFactory->createResponse($this->server->handle($keySetName));
     }
 }

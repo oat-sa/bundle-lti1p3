@@ -1,5 +1,5 @@
 lti1p3_message_oidc_login_initiation:
     path: '/lti1p3/oidc/login-initiation'
     methods: [GET, POST]
-    controller: OAT\Bundle\Lti1p3Bundle\Action\Tool\Message\OidcLoginInitiationAction
+    controller: OAT\Bundle\Lti1p3Bundle\Action\Tool\Message\OidcInitiationAction
 

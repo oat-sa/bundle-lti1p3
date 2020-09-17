@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
-use OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -32,17 +32,17 @@ use Throwable;
 
 class LtiMessageAuthenticationProvider implements AuthenticationProviderInterface
 {
-    /** @var LtiLaunchRequestValidator */
+    /** @var LtiResourceLinkLaunchRequestValidator */
     private $validator;
 
-    public function __construct(LtiLaunchRequestValidator $validator)
+    public function __construct(LtiResourceLinkLaunchRequestValidator $validator)
     {
         $this->validator = $validator;
     }
 
     public function supports(TokenInterface $token): bool
     {
-        return $token instanceof LtiMessageToken;
+        return $token instanceof LtiMessageSecurityToken;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface
@@ -54,7 +54,7 @@ class LtiMessageAuthenticationProvider implements AuthenticationProviderInterfac
                 throw new LtiException($validationResult->getError());
             }
 
-            return new LtiMessageToken($validationResult);
+            return new LtiMessageSecurityToken($validationResult);
         } catch (Throwable $exception) {
             throw new AuthenticationException(
                 sprintf('LTI message request authentication failed: %s', $exception->getMessage()),

@@ -99,7 +99,7 @@ lti1p3:
 **Notes**:
 - the unique identifier `myPlatform` can be used into registrations creation (ex: `platform: "myPlatform"`)
 - the `audience` will be used in JWT based communications as issuer 
-- the `oidc_authentication_url` is automated by the [OidcLoginAuthenticationAction](../../Action/Platform/Message/OidcLoginAuthenticationAction.php)
+- the `oidc_authentication_url` is automated by the [OidcLoginAuthenticationAction](../../Action/Platform/Message/OidcAuthenticationAction.php)
 - the `oauth2_access_token_url`, automated by the [OAuth2AccessTokenCreationAction](../../Action/Platform/Service/OAuth2AccessTokenCreationAction.php), provides the key chain identifier `platformKey` as an uri param to offer an oauth2 server using this key
 
 ## Configure a tool
@@ -120,7 +120,7 @@ lti1p3:
 **Notes**:
 - the unique identifier `myTool` can be used into registrations creation (ex: `tool: "myTool"`)
 - the `audience` will be used in JWT based communications as issuer 
-- the `oidc_login_initiation_url` is handled by the [OidcLoginInitiationAction](../../Action/Tool/Message/OidcLoginInitiationAction.php)
+- the `oidc_login_initiation_url` is handled by the [OidcLoginInitiationAction](../../Action/Tool/Message/OidcInitiationAction.php)
 - the `launch_url` is used to configure your default tool launch url
 - the `deep_link_launch_url` is used to configure your default tool deep links url
 

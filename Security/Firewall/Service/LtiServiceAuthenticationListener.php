@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -58,7 +58,7 @@ class LtiServiceAuthenticationListener extends AbstractListener
 
     public function authenticate(RequestEvent $event): void
     {
-        $token = new LtiServiceToken();
+        $token = new LtiServiceSecurityToken();
         $token->setAttribute('request', $this->factory->createRequest($event->getRequest()));
 
         $this->storage->setToken($this->manager->authenticate($token));

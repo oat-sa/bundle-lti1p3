@@ -105,7 +105,7 @@ security:
             lti1p3_service: true
 ```
 
-It will automatically handle the provided access token authentication, and add a [LtiServiceToken](../../Security/Authentication/Token/Service/LtiServiceToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
+It will automatically handle the provided access token authentication, and add a [LtiServiceToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
 
 For example:
 
@@ -116,7 +116,7 @@ declare(strict_types=1);
 
 namespace App\Action\Platform\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -133,7 +133,7 @@ class LtiServiceAction
 
     public function __invoke(Request $request): Response
     {
-        /** @var LtiServiceToken $token */
+        /** @var LtiServiceSecurityToken $token */
         $token = $this->security->getToken();
 
         // Related registration

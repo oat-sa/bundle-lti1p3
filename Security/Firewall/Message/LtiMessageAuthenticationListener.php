@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
 use Lcobucci\JWT\Parser;
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
-use OAT\Library\Lti1p3Core\Message\LtiMessage;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
+use OAT\Library\Lti1p3Core\Message\Token\LtiMessageToken;
 use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -70,7 +70,7 @@ class LtiMessageAuthenticationListener extends AbstractListener
     {
         $request = $event->getRequest();
 
-        $token = new LtiMessageToken();
+        $token = new LtiMessageSecurityToken();
         $token->setAttribute('request', $this->factory->createRequest($request));
 
         try {
@@ -86,7 +86,7 @@ class LtiMessageAuthenticationListener extends AbstractListener
     private function handleErrorDelegation(Throwable $exception, Request $request): RedirectResponse
     {
         try {
-            $message = new LtiMessage($this->parser->parse($request->get('id_token')));
+            $message = new LtiMessageToken($this->parser->parse($request->get('id_token')));
         } catch (Throwable $parseException) {
             throw new AuthenticationException(
                 sprintf('LTI message request authentication failed: %s', $parseException->getMessage()),

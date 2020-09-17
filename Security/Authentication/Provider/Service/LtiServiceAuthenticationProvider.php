@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
@@ -42,7 +42,7 @@ class LtiServiceAuthenticationProvider implements AuthenticationProviderInterfac
 
     public function supports(TokenInterface $token): bool
     {
-        return $token instanceof LtiServiceToken;
+        return $token instanceof LtiServiceSecurityToken;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface
@@ -54,7 +54,7 @@ class LtiServiceAuthenticationProvider implements AuthenticationProviderInterfac
                 throw new LtiException($validationResult->getError());
             }
 
-            return new LtiServiceToken($validationResult);
+            return new LtiServiceSecurityToken($validationResult);
         } catch (Throwable $exception) {
             throw new AuthenticationException(
                 sprintf('LTI service request authentication failed: %s', $exception->getMessage()),

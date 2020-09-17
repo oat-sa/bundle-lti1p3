@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Security;
 
@@ -38,7 +38,7 @@ class TestServiceAction
 
     public function __invoke(): JsonResponse
     {
-        /** @var LtiServiceToken $token */
+        /** @var LtiServiceSecurityToken $token */
         $token = $this->security->getToken();
 
         return new JsonResponse([

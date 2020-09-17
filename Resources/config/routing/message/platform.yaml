@@ -1,4 +1,4 @@
 lti1p3_message_oidc_login_authentication:
     path: '/lti1p3/oidc/login-authentication'
     methods: [GET, POST]
-    controller: OAT\Bundle\Lti1p3Bundle\Action\Platform\Message\OidcLoginAuthenticationAction
+    controller: OAT\Bundle\Lti1p3Bundle\Action\Platform\Message\OidcAuthenticationAction

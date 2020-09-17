@@ -107,7 +107,7 @@ You can find more details about the `OidcLaunchRequestBuilder` in the [related d
 
 In the case an LTI launch request was started with the [OIDC flow](https://www.imsglobal.org/spec/security/v1p0/#step-2-authentication-request), the platform will be asked to provide (or delegate) authentication for a login hint.
 
-The [OidcLoginAuthenticationAction](../../Action/Platform/Message/OidcLoginAuthenticationAction.php) is automatically added to your application via the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`.
+The [OidcLoginAuthenticationAction](../../Action/Platform/Message/OidcAuthenticationAction.php) is automatically added to your application via the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`.
 
 **Default route**: `[GET,POST] /lti1p3/oidc/login-authentication`
 

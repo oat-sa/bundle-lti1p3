@@ -27,7 +27,7 @@ use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidationResult;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
-class LtiServiceToken extends AbstractToken
+class LtiServiceSecurityToken extends AbstractToken
 {
     /** @var string[] */
     private $roleNames;

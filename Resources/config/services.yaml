@@ -70,7 +70,7 @@ services:
         arguments:
             - '@Psr\Cache\CacheItemPoolInterface'
 
-    OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder:
+    OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface:
         arguments:
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
             - '@Lcobucci\JWT\Builder'
@@ -99,6 +99,9 @@ services:
     OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface']
 
+    OAT\Library\Lti1p3Core\Security\Jwks\Server\JwksServer:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
+
     OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface:
         class: OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcher
         arguments:
@@ -107,20 +110,26 @@ services:
             - '@CoderCat\JWKToPEM\JWKConverter'
             - '@Psr\Log\LoggerInterface'
 
-    OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator:
+    OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
-            - '@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder'
+            - '@OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface'
 
-    OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginAuthenticator:
+    OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator']
+
+    OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface'
-            - '@OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder'
+            - '@OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface'
             - '@Lcobucci\JWT\Signer'
 
-    OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator:
+    OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcAuthenticationServer:
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator']
+
+    OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
@@ -152,7 +161,7 @@ services:
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiMessageAuthenticationProvider:
         arguments:
-            - '@OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator'
+            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidator'
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider:
         arguments:
@@ -160,12 +169,8 @@ services:
 
     OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface: ~
 
-    OAT\Library\Lti1p3Core\Launch\Builder\LtiLaunchRequestBuilder:
-        arguments: ['@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder']
-        public: true
-
-    OAT\Library\Lti1p3Core\Launch\Builder\OidcLaunchRequestBuilder:
-        arguments: ['@OAT\Library\Lti1p3Core\Message\Builder\MessageBuilder']
+    OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder:
+        arguments: ['@OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface']
         public: true
 
     OAT\Library\Lti1p3Core\Service\Client\ServiceClientInterface:
@@ -179,19 +184,23 @@ services:
 
     ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
-        arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
+        arguments:
+            - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwks\Server\JwksServer'
         tags: ['controller.service_arguments']
 
-    OAT\Bundle\Lti1p3Bundle\Action\Tool\Message\OidcLoginInitiationAction:
+    OAT\Bundle\Lti1p3Bundle\Action\Tool\Message\OidcInitiationAction:
         arguments:
+            - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - '@OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginInitiator'
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer'
         tags: ['controller.service_arguments']
 
-    OAT\Bundle\Lti1p3Bundle\Action\Platform\Message\OidcLoginAuthenticationAction:
+    OAT\Bundle\Lti1p3Bundle\Action\Platform\Message\OidcAuthenticationAction:
         arguments:
+            - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - '@OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginAuthenticator'
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcAuthenticationServer'
         tags: ['controller.service_arguments']
 
     OAT\Bundle\Lti1p3Bundle\Action\Platform\Service\OAuth2AccessTokenCreationAction:
