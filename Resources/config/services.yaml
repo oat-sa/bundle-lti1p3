@@ -77,7 +77,7 @@ services:
             - '@Lcobucci\JWT\Signer'
 
     OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface:
-        alias: OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilder
+        class: OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilder
 
     ########### Bundle services
     OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
