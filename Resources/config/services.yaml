@@ -19,6 +19,11 @@ services:
 
     Nyholm\Psr7\Factory\Psr17Factory: ~
 
+    Nyholm\Psr7\Factory\HttplugFactory: ~
+
+    Http\Message\ResponseFactory:
+        alias: Nyholm\Psr7\Factory\HttplugFactory
+
     League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface:
         class: OAT\Library\Lti1p3Core\Service\Server\Repository\AccessTokenRepository
         arguments:
@@ -103,7 +108,10 @@ services:
         arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface']
 
     OAT\Library\Lti1p3Core\Security\Jwks\Server\JwksServer:
-        arguments: ['@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter']
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter'
+            - '@Http\Message\ResponseFactory'
+            - '@Psr\Log\LoggerInterface'
 
     OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface:
         class: OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcher
@@ -120,7 +128,10 @@ services:
             - '@OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface'
 
     OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer:
-        arguments: ['@OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator']
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator'
+            - '@Http\Message\ResponseFactory'
+            - '@Psr\Log\LoggerInterface'
 
     OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator:
         arguments:
@@ -130,7 +141,10 @@ services:
             - '@Lcobucci\JWT\Signer'
 
     OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcAuthenticationServer:
-        arguments: ['@OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator']
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator'
+            - '@Http\Message\ResponseFactory'
+            - '@Psr\Log\LoggerInterface'
 
     OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidator:
         arguments:
