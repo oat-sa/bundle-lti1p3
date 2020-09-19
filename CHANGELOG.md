@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+3.0.0
+-----
+
+* Adapted foundations for dependency update of lib-lti1p3-core to 3.0.0
+
 2.1.0
 -----
 

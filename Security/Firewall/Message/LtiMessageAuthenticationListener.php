@@ -24,7 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
 use Lcobucci\JWT\Parser;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
-use OAT\Library\Lti1p3Core\Message\Token\LtiMessageToken;
+use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
 use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -86,7 +86,7 @@ class LtiMessageAuthenticationListener extends AbstractListener
     private function handleErrorDelegation(Throwable $exception, Request $request): RedirectResponse
     {
         try {
-            $message = new LtiMessageToken($this->parser->parse($request->get('id_token')));
+            $payload = new LtiMessagePayload($this->parser->parse($request->get('id_token')));
         } catch (Throwable $parseException) {
             throw new AuthenticationException(
                 sprintf('LTI message request authentication failed: %s', $parseException->getMessage()),
@@ -95,11 +95,11 @@ class LtiMessageAuthenticationListener extends AbstractListener
             );
         }
 
-        if (null !== $message->getLaunchPresentation() && null !== $message->getLaunchPresentation()->getReturnUrl()) {
+        if (null !== $payload->getLaunchPresentation() && null !== $payload->getLaunchPresentation()->getReturnUrl()) {
             $redirectUrl = sprintf(
                 '%s%slti_errormsg=%s',
-                $message->getLaunchPresentation()->getReturnUrl(),
-                strpos($message->getLaunchPresentation()->getReturnUrl(), '?') ? '&' : '?',
+                $payload->getLaunchPresentation()->getReturnUrl(),
+                strpos($payload->getLaunchPresentation()->getReturnUrl(), '?') ? '&' : '?',
                 urlencode($exception->getMessage())
             );
 

@@ -75,14 +75,14 @@ services:
         arguments:
             - '@Psr\Cache\CacheItemPoolInterface'
 
-    OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilder:
+    OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilder:
         arguments:
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
             - '@Lcobucci\JWT\Builder'
             - '@Lcobucci\JWT\Signer'
 
-    OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface:
-        class: OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilder
+    OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface:
+        class: OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilder
 
     ########### Bundle services
     OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface:
@@ -125,7 +125,7 @@ services:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
-            - '@OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface'
+            - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
 
     OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer:
         arguments:
@@ -137,7 +137,7 @@ services:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface'
-            - '@OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface'
+            - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
             - '@Lcobucci\JWT\Signer'
 
     OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcAuthenticationServer:
@@ -187,7 +187,8 @@ services:
     OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface: ~
 
     OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder:
-        arguments: ['@OAT\Library\Lti1p3Core\Message\Token\Builder\MessageTokenBuilderInterface']
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
         public: true
 
     OAT\Library\Lti1p3Core\Service\Client\ServiceClientInterface:

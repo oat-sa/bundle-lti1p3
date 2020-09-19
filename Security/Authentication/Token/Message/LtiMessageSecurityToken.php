@@ -23,7 +23,8 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidationResult;
-use OAT\Library\Lti1p3Core\Message\Token\LtiMessageTokenInterface;
+use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
+use OAT\Library\Lti1p3Core\Message\Payload\MessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
@@ -54,17 +55,24 @@ class LtiMessageSecurityToken extends AbstractToken
             : null;
     }
 
-    public function getIdToken(): ?LtiMessageTokenInterface
+    public function getPayload(): ?LtiMessagePayloadInterface
     {
         return $this->validationResult
-            ? $this->validationResult->getIdToken()
+            ? $this->validationResult->getPayload()
+            : null;
+    }
+
+    public function getState(): ?MessagePayloadInterface
+    {
+        return $this->validationResult
+            ? $this->validationResult->getState()
             : null;
     }
 
     public function getCredentials(): string
     {
-        return $this->getIdToken()
-            ? $this->getIdToken()->getToken()->__toString()
+        return $this->getPayload()
+            ? $this->getPayload()->getToken()->__toString()
             : '';
     }
 
@@ -78,13 +86,13 @@ class LtiMessageSecurityToken extends AbstractToken
         $this->validationResult = $validationResult;
 
         if (null !== $this->validationResult) {
-            $userIdentity = $validationResult->getIdToken()->getUserIdentity();
+            $userIdentity = $validationResult->getPayload()->getUserIdentity();
 
             if (null !== $userIdentity) {
                 $this->setUser($userIdentity->getIdentifier());
             }
 
-            $this->roleNames = $validationResult->getIdToken()->getRoles();
+            $this->roleNames = $validationResult->getPayload()->getRoles();
 
             $this->setAuthenticated(!$this->validationResult->hasError());
         } else {
