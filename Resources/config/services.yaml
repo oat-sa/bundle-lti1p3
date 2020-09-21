@@ -146,7 +146,7 @@ services:
             - '@Http\Message\ResponseFactory'
             - '@Psr\Log\LoggerInterface'
 
-    OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidator:
+    OAT\Library\Lti1p3Core\Launch\Validator\LaunchRequestValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
@@ -178,7 +178,7 @@ services:
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiMessageAuthenticationProvider:
         arguments:
-            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidator'
+            - '@OAT\Library\Lti1p3Core\Launch\Validator\LaunchRequestValidator'
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider:
         arguments:
@@ -186,7 +186,7 @@ services:
 
     OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface: ~
 
-    OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder:
+    OAT\Library\Lti1p3Core\Launch\Builder\LtiResourceLinkLaunchRequestBuilder:
         arguments:
             - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
         public: true

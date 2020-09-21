@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
-use OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidationResult;
+use OAT\Library\Lti1p3Core\Launch\Validator\LaunchRequestValidationResult;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\MessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
@@ -33,17 +33,17 @@ class LtiMessageSecurityToken extends AbstractToken
     /** @var string[] */
     private $roleNames;
 
-    /** @var LtiResourceLinkLaunchRequestValidationResult|null */
+    /** @var LaunchRequestValidationResult|null */
     private $validationResult;
 
-    public function __construct(LtiResourceLinkLaunchRequestValidationResult $validationResult = null)
+    public function __construct(LaunchRequestValidationResult $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
         parent::__construct($this->roleNames);
     }
 
-    public function getValidationResult(): ?LtiResourceLinkLaunchRequestValidationResult
+    public function getValidationResult(): ?LaunchRequestValidationResult
     {
         return $this->validationResult;
     }
@@ -81,7 +81,7 @@ class LtiMessageSecurityToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(LtiResourceLinkLaunchRequestValidationResult $validationResult = null): void
+    private function applyValidationResult(LaunchRequestValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 

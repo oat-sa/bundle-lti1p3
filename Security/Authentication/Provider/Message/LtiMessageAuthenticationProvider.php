@@ -24,7 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
-use OAT\Library\Lti1p3Core\Message\Launch\Validator\LtiResourceLinkLaunchRequestValidator;
+use OAT\Library\Lti1p3Core\Launch\Validator\LaunchRequestValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -32,10 +32,10 @@ use Throwable;
 
 class LtiMessageAuthenticationProvider implements AuthenticationProviderInterface
 {
-    /** @var LtiResourceLinkLaunchRequestValidator */
+    /** @var LaunchRequestValidator */
     private $validator;
 
-    public function __construct(LtiResourceLinkLaunchRequestValidator $validator)
+    public function __construct(LaunchRequestValidator $validator)
     {
         $this->validator = $validator;
     }
