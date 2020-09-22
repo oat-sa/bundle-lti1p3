@@ -63,7 +63,7 @@ class LtiMessageAuthenticationListener extends AbstractListener
 
     public function supports(Request $request): ?bool
     {
-        return null !== $request->get('id_token');
+        return null !== $request->get('id_token') || null !== $request->get('JWT');
     }
 
     public function authenticate(RequestEvent $event): void
@@ -86,7 +86,9 @@ class LtiMessageAuthenticationListener extends AbstractListener
     private function handleErrorDelegation(Throwable $exception, Request $request): RedirectResponse
     {
         try {
-            $payload = new LtiMessagePayload($this->parser->parse($request->get('id_token')));
+            $payload = new LtiMessagePayload(
+                $this->parser->parse($request->get('id_token') ?? $request->get('JWT'))
+            );
         } catch (Throwable $parseException) {
             throw new AuthenticationException(
                 sprintf('LTI message request authentication failed: %s', $parseException->getMessage()),
