@@ -22,14 +22,14 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiMessageAuthenticationProvider;
-use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiMessageAuthenticationListener;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiToolMessageAuthenticationProvider;
+use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiToolMessageAuthenticationListener;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class LtiMessageSecurityFactory implements SecurityFactoryInterface
+class LtiToolMessageSecurityFactory implements SecurityFactoryInterface
 {
     public function getPosition(): string
     {
@@ -38,7 +38,7 @@ class LtiMessageSecurityFactory implements SecurityFactoryInterface
 
     public function getKey(): string
     {
-        return 'lti1p3_message';
+        return 'lti1p3_message_tool';
     }
 
     // TODO provide type hints when we update the bundle with SF version >= 4.2
@@ -51,10 +51,10 @@ class LtiMessageSecurityFactory implements SecurityFactoryInterface
     ): array {
 
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
-        $container->setDefinition($providerId, new ChildDefinition(LtiMessageAuthenticationProvider::class));
+        $container->setDefinition($providerId, new ChildDefinition(LtiToolMessageAuthenticationProvider::class));
 
         $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
-        $container->setDefinition($listenerId, new ChildDefinition(LtiMessageAuthenticationListener::class));
+        $container->setDefinition($listenerId, new ChildDefinition(LtiToolMessageAuthenticationListener::class));
 
         return [$providerId, $listenerId, $defaultEntryPoint];
     }

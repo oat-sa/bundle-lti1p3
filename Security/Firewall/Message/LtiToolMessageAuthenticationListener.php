@@ -36,7 +36,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\AbstractListener;
 use Throwable;
 
-class LtiMessageAuthenticationListener extends AbstractListener
+class LtiToolMessageAuthenticationListener extends AbstractListener
 {
     /** @var TokenStorageInterface */
     private $storage;
@@ -63,7 +63,7 @@ class LtiMessageAuthenticationListener extends AbstractListener
 
     public function supports(Request $request): ?bool
     {
-        return null !== $request->get('id_token') || null !== $request->get('JWT');
+        return null !== $request->get('id_token');
     }
 
     public function authenticate(RequestEvent $event): void
@@ -87,11 +87,11 @@ class LtiMessageAuthenticationListener extends AbstractListener
     {
         try {
             $payload = new LtiMessagePayload(
-                $this->parser->parse($request->get('id_token') ?? $request->get('JWT'))
+                $this->parser->parse($request->get('id_token'))
             );
         } catch (Throwable $parseException) {
             throw new AuthenticationException(
-                sprintf('LTI message request authentication failed: %s', $parseException->getMessage()),
+                sprintf('LTI tool message request authentication failed: %s', $parseException->getMessage()),
                 $parseException->getCode(),
                 $parseException
             );

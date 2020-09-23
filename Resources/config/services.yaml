@@ -146,7 +146,14 @@ services:
             - '@Http\Message\ResponseFactory'
             - '@Psr\Log\LoggerInterface'
 
-    OAT\Library\Lti1p3Core\Message\Launch\Validator\LaunchRequestValidator:
+    OAT\Library\Lti1p3Core\Message\Launch\Validator\PlatformLaunchValidator:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface'
+            - '@Lcobucci\JWT\Signer'
+
+    OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
@@ -164,7 +171,13 @@ services:
             - '@Psr\Log\LoggerInterface'
             - '@Lcobucci\JWT\Signer'
 
-    OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiMessageAuthenticationListener:
+    OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiPlatformMessageAuthenticationListener:
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+
+    OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiToolMessageAuthenticationListener:
         arguments:
             - '@security.token_storage'
             - '@security.authentication.manager'
@@ -176,9 +189,13 @@ services:
             - '@security.authentication.manager'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
 
-    OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiMessageAuthenticationProvider:
+    OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiPlatformMessageAuthenticationProvider:
         arguments:
-            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\LaunchRequestValidator'
+            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\PlatformLaunchValidator'
+
+    OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiToolMessageAuthenticationProvider:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator'
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider:
         arguments:

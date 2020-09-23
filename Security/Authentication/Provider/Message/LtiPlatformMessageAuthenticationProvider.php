@@ -24,18 +24,18 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
-use OAT\Library\Lti1p3Core\Message\Launch\Validator\LaunchRequestValidator;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\PlatformLaunchValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Throwable;
 
-class LtiMessageAuthenticationProvider implements AuthenticationProviderInterface
+class LtiPlatformMessageAuthenticationProvider implements AuthenticationProviderInterface
 {
-    /** @var LaunchRequestValidator */
+    /** @var PlatformLaunchValidator */
     private $validator;
 
-    public function __construct(LaunchRequestValidator $validator)
+    public function __construct(PlatformLaunchValidator $validator)
     {
         $this->validator = $validator;
     }
@@ -57,7 +57,7 @@ class LtiMessageAuthenticationProvider implements AuthenticationProviderInterfac
             return new LtiMessageSecurityToken($validationResult);
         } catch (Throwable $exception) {
             throw new AuthenticationException(
-                sprintf('LTI message request authentication failed: %s', $exception->getMessage()),
+                sprintf('LTI platform message request authentication failed: %s', $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );
