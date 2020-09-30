@@ -39,13 +39,13 @@ You can find below some tutorials, presented by topics.
 
 ### Messages interactions
 
-- how to [handle a LTI message interactions as a platform](doc/message/platform.md)
-- how to [handle a LTI message interactions as a tool](doc/message/tool.md)
+- how to [handle LTI message interactions as a platform](doc/message/platform.md)
+- how to [handle LTI message interactions as a tool](doc/message/tool.md)
 
 ### Services interactions
 
-- how to [handle a LTI service interactions as a platform](doc/service/platform.md)
-- how to [handle a LTI service interactions as a tool](doc/service/tool.md)
+- how to [handle LTI service interactions as a platform](doc/service/platform.md)
+- how to [handle LTI service interactions as a tool](doc/service/tool.md)
 
 ## Tests
 
