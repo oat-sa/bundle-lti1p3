@@ -4,7 +4,11 @@ CHANGELOG
 3.0.0
 -----
 
-* Adapted foundations for dependency update of lib-lti1p3-core to 3.0.0
+* Added Travis integration
+* Upgraded for oat-sa/lib-lti1p3-core version 3.0.0
+* Reworked platform and tool message security layers
+* Updated php dependency to >= 7.2.0
+* Updated documentation
 
 2.1.0
 -----

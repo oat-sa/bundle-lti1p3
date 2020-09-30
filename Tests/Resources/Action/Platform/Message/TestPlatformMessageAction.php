@@ -20,13 +20,13 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Tool\Message;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiPlatformMessageSecurityToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Security;
 
-class TestMessageAction
+class TestPlatformMessageAction
 {
     /** @var Security */
     private $security;
@@ -38,18 +38,13 @@ class TestMessageAction
 
     public function __invoke(): JsonResponse
     {
-        /** @var LtiMessageToken $token */
+        /** @var LtiPlatformMessageSecurityToken $token */
         $token = $this->security->getToken();
 
         return new JsonResponse([
             'claims' => [
-                'resourceLinkId' => $token->getLtiMessage()->getResourceLink()->getId(),
-                'contextId' => $token->getLtiMessage()->getContext()->getId(),
-                'userId' => $token->getLtiMessage()->getUserIdentity()
-                    ? $token->getLtiMessage()->getUserIdentity()->getIdentifier()
-                    : null,
-                'roles' => $token->getRoleNames(),
-                'custom' => $token->getLtiMessage()->getClaim('custom')
+                'type' => $token->getPayload()->getMessageType(),
+                'custom' => $token->getPayload()->getClaim('custom'),
             ],
             'validations' => [
                 'successes' => $token->getValidationResult()->getSuccesses(),

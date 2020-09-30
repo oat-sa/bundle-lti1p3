@@ -14,7 +14,7 @@ The [OAuth2AccessTokenCreationAction](../../Action/Platform/Service/OAuth2Access
 **Default route**: `[POST] '/lti1p3/auth/{keyChainIdentifier}/token'`
 
 This endpoint:
-- allows tools to get granted to call your platform services endpoints, by following the [client_credentials grant type with assertion](https://www.imsglobal.org/spec/security/v1p0/#using-json-web-tokens-with-oauth-2-0-client-credentials-grant). 
+- allow tools to get granted to call your platform services endpoints, by following the [client_credentials grant type with assertion](https://www.imsglobal.org/spec/security/v1p0/#using-json-web-tokens-with-oauth-2-0-client-credentials-grant). 
 - is working for a defined `keyChainIdentifier` as explained [here](../message/platform.md), so you can expose several of them if your application is acting as several deployed platforms
 
 If you configure a key chain as following:
@@ -38,9 +38,9 @@ lti1p3:
     platforms:
         myPlatform:
             name: "My Platform"
-            audience: "http://example.com/platform"
-            oidc_authentication_url: "http://example.com/lti1p3/oidc/login-authentication"
-            oauth2_access_token_url: "http://example.com/lti1p3/auth/platformKey/token"
+            audience: "http://platform.com"
+            oidc_authentication_url: "http://platform.com/lti1p3/oidc/authentication"
+            oauth2_access_token_url: "http://platform.com/lti1p3/auth/platformKey/token"
 ```
 
 Once set up, tools can request access tokens by following the [client_credentials grant type with assertion](https://www.imsglobal.org/spec/security/v1p0/#using-json-web-tokens-with-oauth-2-0-client-credentials-grant):
@@ -99,13 +99,13 @@ To protect your endpoint, this bundle provides the `lti1p3_service` [security fi
 # config/packages/security.yaml
 security:
     firewalls:
-        lti1p3_service:
+        secured_service_area:
             pattern: ^/platform/service
             stateless: true
             lti1p3_service: true
 ```
 
-It will automatically handle the provided access token authentication, and add a [LtiServiceToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
+It will automatically handle the provided access token authentication, and add a [LtiServiceSecurityToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
 
 For example:
 

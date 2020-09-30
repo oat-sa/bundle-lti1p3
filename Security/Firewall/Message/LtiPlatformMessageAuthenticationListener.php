@@ -22,9 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
-use Lcobucci\JWT\Parser;
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
-use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiPlatformMessageSecurityToken;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -43,9 +41,6 @@ class LtiPlatformMessageAuthenticationListener extends AbstractListener
     /** @var HttpMessageFactoryInterface */
     private $factory;
 
-    /** @var Parser */
-    private $parser;
-
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
@@ -54,7 +49,6 @@ class LtiPlatformMessageAuthenticationListener extends AbstractListener
         $this->storage = $tokenStorage;
         $this->manager = $authenticationManager;
         $this->factory = $factory;
-        $this->parser = new Parser(new AssociativeDecoder());
     }
 
     public function supports(Request $request): ?bool
@@ -66,7 +60,7 @@ class LtiPlatformMessageAuthenticationListener extends AbstractListener
     {
         $request = $event->getRequest();
 
-        $token = new LtiMessageSecurityToken();
+        $token = new LtiPlatformMessageSecurityToken();
         $token->setAttribute('request', $this->factory->createRequest($request));
 
         $this->storage->setToken($this->manager->authenticate($token));

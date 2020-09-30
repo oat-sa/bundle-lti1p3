@@ -20,23 +20,22 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Action\Jwks;
+namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
-use OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResult;
 
-class JwksAction
+class LtiPlatformMessageSecurityToken extends AbstractLtiMessageSecurityToken
 {
-    /** @var JwksExporter */
-    private $exporter;
-
-    public function __construct(JwksExporter $exporter)
+    protected function applyValidationResult(LaunchValidationResult $validationResult = null): void
     {
-        $this->exporter = $exporter;
-    }
+        $this->validationResult = $validationResult;
 
-    public function __invoke(string $keySetName): JsonResponse
-    {
-        return new JsonResponse($this->exporter->export($keySetName));
+        $this->roleNames = [];
+
+        if (null !== $this->validationResult) {
+            $this->setAuthenticated(!$this->validationResult->hasError());
+        } else {
+            $this->setAuthenticated(false);
+        }
     }
 }

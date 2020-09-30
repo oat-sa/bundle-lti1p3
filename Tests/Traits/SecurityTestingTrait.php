@@ -25,7 +25,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Tests\Traits;
 use Carbon\Carbon;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
-use OAT\Library\Lti1p3Core\Message\MessageInterface;
+use OAT\Library\Lti1p3Core\Message\Payload\MessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 
 trait SecurityTestingTrait
@@ -35,13 +35,13 @@ trait SecurityTestingTrait
         $now = Carbon::now();
 
         return (new Builder())
-            ->withHeader(MessageInterface::HEADER_KID, $registration->getToolKeyChain()->getIdentifier())
+            ->withHeader(MessagePayloadInterface::HEADER_KID, $registration->getToolKeyChain()->getIdentifier())
             ->identifiedBy(sprintf('%s-%s', $registration->getIdentifier(), $now->getPreciseTimestamp()))
             ->issuedBy($registration->getTool()->getAudience())
             ->relatedTo($registration->getClientId())
             ->permittedFor($registration->getPlatform()->getOAuth2AccessTokenUrl())
             ->issuedAt($now->getTimestamp())
-            ->expiresAt($now->addSeconds(MessageInterface::TTL)->getTimestamp())
+            ->expiresAt($now->addSeconds(MessagePayloadInterface::TTL)->getTimestamp())
             ->getToken(new Sha256(), $registration->getToolKeyChain()->getPrivateKey())
             ->__toString();
     }

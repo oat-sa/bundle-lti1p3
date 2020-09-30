@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
 use Lcobucci\JWT\Parser;
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
 use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
@@ -32,7 +32,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\AbstractListener;
 use Throwable;
 
@@ -70,7 +69,7 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
     {
         $request = $event->getRequest();
 
-        $token = new LtiMessageSecurityToken();
+        $token = new LtiToolMessageSecurityToken();
         $token->setAttribute('request', $this->factory->createRequest($request));
 
         try {
@@ -85,17 +84,7 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
      */
     private function handleErrorDelegation(Throwable $exception, Request $request): RedirectResponse
     {
-        try {
-            $payload = new LtiMessagePayload(
-                $this->parser->parse($request->get('id_token'))
-            );
-        } catch (Throwable $parseException) {
-            throw new AuthenticationException(
-                sprintf('LTI tool message request authentication failed: %s', $parseException->getMessage()),
-                $parseException->getCode(),
-                $parseException
-            );
-        }
+        $payload = new LtiMessagePayload($this->parser->parse($request->get('id_token')));
 
         if (null !== $payload->getLaunchPresentation() && null !== $payload->getLaunchPresentation()->getReturnUrl()) {
             $redirectUrl = sprintf(

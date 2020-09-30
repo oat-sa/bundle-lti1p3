@@ -20,9 +20,9 @@ lti1p3:
         testTool:
             name: "Test tool"
             audience: "http://tool.com"
-            oidc_login_initiation_url: "http://tool.com/oidc-init"
+            oidc_initiation_url: "http://tool.com/oidc-init"
             launch_url: "http://tool.com/launch"
-            deep_link_launch_url: "http://tool.com/deep-launch"
+            deep_linking_url: "http://tool.com/deep-launch"
     registrations:
         testRegistration:
             client_id: "client_id"

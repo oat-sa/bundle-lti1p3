@@ -5,7 +5,11 @@ services:
     logger:
         class: Psr\Log\NullLogger
 
-    OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Tool\Message\TestMessageAction:
+    OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Message\TestPlatformMessageAction:
+        arguments: ['@security.helper']
+        tags: ['controller.service_arguments']
+
+    OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Tool\Message\TestToolMessageAction:
         arguments: ['@security.helper']
         tags: ['controller.service_arguments']
 

@@ -23,45 +23,10 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResult;
-use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\MessagePayloadInterface;
-use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
-use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
-class LtiMessageSecurityToken extends AbstractToken
+class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
 {
-    /** @var string[] */
-    private $roleNames;
-
-    /** @var LaunchValidationResult|null */
-    private $validationResult;
-
-    public function __construct(LaunchValidationResult $validationResult = null)
-    {
-        $this->applyValidationResult($validationResult);
-
-        parent::__construct($this->roleNames);
-    }
-
-    public function getValidationResult(): ?LaunchValidationResult
-    {
-        return $this->validationResult;
-    }
-
-    public function getRegistration(): ?RegistrationInterface
-    {
-        return $this->validationResult
-            ? $this->validationResult->getRegistration()
-            : null;
-    }
-
-    public function getPayload(): ?LtiMessagePayloadInterface
-    {
-        return $this->validationResult
-            ? $this->validationResult->getPayload()
-            : null;
-    }
-
     public function getState(): ?MessagePayloadInterface
     {
         return $this->validationResult
@@ -69,19 +34,7 @@ class LtiMessageSecurityToken extends AbstractToken
             : null;
     }
 
-    public function getCredentials(): string
-    {
-        return $this->getPayload()
-            ? $this->getPayload()->getToken()->__toString()
-            : '';
-    }
-
-    public function getRoleNames(): array
-    {
-        return $this->roleNames;
-    }
-
-    private function applyValidationResult(LaunchValidationResult $validationResult = null): void
+    protected function applyValidationResult(LaunchValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 

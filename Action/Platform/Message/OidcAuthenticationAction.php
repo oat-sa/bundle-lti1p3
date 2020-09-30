@@ -22,37 +22,35 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Action\Platform\Message;
 
-use OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcAuthenticationServer;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
+use OAT\Library\Lti1p3Core\Exception\LtiExceptionInterface;
+use OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class OidcAuthenticationAction
 {
-    /** @var HttpFoundationFactoryInterface */
-    private $httpFoundationFactory;
-
     /** @var HttpMessageFactoryInterface */
-    private $psr7Factory;
+    private $factory;
 
-    /** @var OidcAuthenticationServer */
-    private $server;
+    /** @var OidcAuthenticator */
+    private $authenticator;
 
-    public function __construct(
-        HttpFoundationFactoryInterface $httpFoundationFactory,
-        HttpMessageFactoryInterface $psr7Factory,
-        OidcAuthenticationServer $server
-    ) {
-        $this->httpFoundationFactory = $httpFoundationFactory;
-        $this->psr7Factory = $psr7Factory;
-        $this->server = $server;
+    public function __construct(HttpMessageFactoryInterface $factory, OidcAuthenticator $authenticator)
+    {
+        $this->factory = $factory;
+        $this->authenticator = $authenticator;
     }
 
     public function __invoke(Request $request): Response
     {
-        return $this->httpFoundationFactory->createResponse(
-            $this->server->handle($this->psr7Factory->createRequest($request))
-        );
+        try {
+            $launchRequest = $this->authenticator->authenticate($this->factory->createRequest($request));
+
+            return new Response($launchRequest->toHtmlRedirectForm());
+
+        } catch (LtiExceptionInterface $exception) {
+            return new Response($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
+        }
     }
 }

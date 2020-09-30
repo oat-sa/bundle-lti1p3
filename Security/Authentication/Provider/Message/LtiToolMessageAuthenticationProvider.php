@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageSecurityToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
@@ -42,19 +42,19 @@ class LtiToolMessageAuthenticationProvider implements AuthenticationProviderInte
 
     public function supports(TokenInterface $token): bool
     {
-        return $token instanceof LtiMessageSecurityToken;
+        return $token instanceof LtiToolMessageSecurityToken;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface
     {
         try {
-            $validationResult = $this->validator->validate($token->getAttribute('request'));
+            $validationResult = $this->validator->validatePlatformOriginatingLaunch($token->getAttribute('request'));
 
             if ($validationResult->hasError()) {
                 throw new LtiException($validationResult->getError());
             }
 
-            return new LtiMessageSecurityToken($validationResult);
+            return new LtiToolMessageSecurityToken($validationResult);
         } catch (Throwable $exception) {
             throw new AuthenticationException(
                 sprintf('LTI tool message request authentication failed: %s', $exception->getMessage()),

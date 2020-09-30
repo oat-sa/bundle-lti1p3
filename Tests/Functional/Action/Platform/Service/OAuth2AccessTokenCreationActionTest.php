@@ -115,7 +115,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testWithInValidRegistration(): void
+    public function testWithInValidKeyChainIdentifier(): void
     {
         $this->client->request(
             Request::METHOD_POST,

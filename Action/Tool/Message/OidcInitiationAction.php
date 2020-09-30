@@ -22,37 +22,36 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Action\Tool\Message;
 
-use OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
+use OAT\Library\Lti1p3Core\Exception\LtiExceptionInterface;
+use OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class OidcInitiationAction
 {
-    /** @var HttpFoundationFactoryInterface */
-    private $httpFoundationFactory;
-
     /** @var HttpMessageFactoryInterface */
-    private $psr7Factory;
+    private $factory;
 
-    /** @var OidcInitiationServer */
-    private $server;
+    /** @var OidcInitiator */
+    private $initiator;
 
-    public function __construct(
-        HttpFoundationFactoryInterface $httpFoundationFactory,
-        HttpMessageFactoryInterface $psr7Factory,
-        OidcInitiationServer $server
-    ) {
-        $this->httpFoundationFactory = $httpFoundationFactory;
-        $this->psr7Factory = $psr7Factory;
-        $this->server = $server;
+    public function __construct(HttpMessageFactoryInterface $factory, OidcInitiator $initiator)
+    {
+        $this->factory = $factory;
+        $this->initiator = $initiator;
     }
 
     public function __invoke(Request $request): Response
     {
-        return $this->httpFoundationFactory->createResponse(
-            $this->server->handle($this->psr7Factory->createRequest($request))
-        );
+        try {
+            $oidcAuthenticationRequest = $this->initiator->initiate($this->factory->createRequest($request));
+
+            return new RedirectResponse($oidcAuthenticationRequest->toUrl());
+
+        } catch (LtiExceptionInterface $exception) {
+            return new Response($exception->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
     }
 }

@@ -203,6 +203,16 @@ services:
 
     OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface: ~
 
+    OAT\Library\Lti1p3Core\Message\Launch\Builder\PlatformOriginatingLaunchBuilder:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
+        public: true
+
+    OAT\Library\Lti1p3Core\Message\Launch\Builder\ToolOriginatingLaunchBuilder:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
+        public: true
+
     OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder:
         arguments:
             - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
@@ -220,22 +230,19 @@ services:
     ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
         arguments:
-            - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
-            - '@OAT\Library\Lti1p3Core\Security\Jwks\Server\JwksServer'
+            - '@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter'
         tags: ['controller.service_arguments']
 
     OAT\Bundle\Lti1p3Bundle\Action\Tool\Message\OidcInitiationAction:
         arguments:
-            - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - '@OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer'
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator'
         tags: ['controller.service_arguments']
 
     OAT\Bundle\Lti1p3Bundle\Action\Platform\Message\OidcAuthenticationAction:
         arguments:
-            - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - '@OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcAuthenticationServer'
+            - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator'
         tags: ['controller.service_arguments']
 
     OAT\Bundle\Lti1p3Bundle\Action\Platform\Service\OAuth2AccessTokenCreationAction:

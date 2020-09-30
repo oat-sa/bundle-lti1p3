@@ -23,20 +23,19 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Message;
 
 use Lcobucci\JWT\Parser;
-use OAT\Library\Lti1p3Core\Launch\Builder\OidcLaunchRequestBuilder;
-use OAT\Library\Lti1p3Core\Launch\Request\OidcLaunchRequest;
-use OAT\Library\Lti1p3Core\Link\ResourceLink\ResourceLink;
-use OAT\Library\Lti1p3Core\Message\LtiMessage;
+use OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder;
 use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
+use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
+use OAT\Library\Lti1p3Core\Resource\LtiResourceLink\LtiResourceLink;
 use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OidcLoginAuthenticationActionTest extends WebTestCase
+class OidcAuthenticationActionTest extends WebTestCase
 {
     /** @var KernelBrowser */
     private $client;
@@ -60,18 +59,18 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
         $this->client->getCrawler()->clear();
     }
 
-    public function testValidLoginAuthenticationWithPostMethod(): void
+    public function testValidOidcAuthenticationWithPostMethod(): void
     {
-        /** @var OidcLaunchRequest $oidcLaunchRequest */
-        $oidcLaunchRequest = static::$container->get(OidcLaunchRequestBuilder::class)->buildResourceLinkOidcLaunchRequest(
-            new ResourceLink('resourceLinkIdentifier'),
+        /** @var LtiMessageInterface $message */
+        $message = static::$container->get(LtiResourceLinkLaunchRequestBuilder::class)->buildLtiResourceLinkLaunchRequest(
+            new LtiResourceLink('resourceLinkIdentifier'),
             $this->registration,
             'loginHint'
         );
 
         $this->client->request(
             Request::METHOD_POST,
-            '/lti1p3/oidc/login-authentication',
+            '/lti1p3/oidc/authentication',
             [
                 'scope' => 'openid',
                 'response_type' => 'id_token',
@@ -82,29 +81,27 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
                 'response_mode' => 'form_post',
                 'nonce' => 'nonce',
                 'prompt' => 'none',
-                'lti_message_hint' => $oidcLaunchRequest->getLtiMessageHint(),
-                'lti_deploymentId' => $oidcLaunchRequest->getLtiDeploymentId(),
+                'lti_message_hint' => $message->getMandatoryParameter('lti_message_hint'),
+                'lti_deploymentId' => $message->getMandatoryParameter('lti_deployment_id'),
             ]
         );
 
         $this->assertLoginAuthenticationResponse($this->client->getResponse());
     }
 
-    public function testValidLoginAuthenticationWithGetMethod(): void
+    public function testValidOidcAuthenticationWithGetMethod(): void
     {
-        /** @var OidcLaunchRequest $oidcLaunchRequest */
-        $oidcLaunchRequest = static::$container
-            ->get(OidcLaunchRequestBuilder::class)
-            ->buildResourceLinkOidcLaunchRequest(
-                new ResourceLink('resourceLinkIdentifier'),
-                $this->registration,
-                'loginHint'
-            );
+        /** @var LtiMessageInterface $message */
+        $message = static::$container->get(LtiResourceLinkLaunchRequestBuilder::class)->buildLtiResourceLinkLaunchRequest(
+            new LtiResourceLink('resourceLinkIdentifier'),
+            $this->registration,
+            'loginHint'
+        );
 
         $this->client->request(
             Request::METHOD_GET,
             sprintf(
-                '/lti1p3/oidc/login-authentication?%s',
+                '/lti1p3/oidc/authentication?%s',
                 http_build_query([
                     'scope' => 'openid',
                     'response_type' => 'id_token',
@@ -115,8 +112,8 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
                     'response_mode' => 'form_post',
                     'nonce' => 'nonce',
                     'prompt' => 'none',
-                    'lti_message_hint' => $oidcLaunchRequest->getLtiMessageHint(),
-                    'lti_deploymentId' => $oidcLaunchRequest->getLtiDeploymentId(),
+                    'lti_message_hint' => $message->getMandatoryParameter('lti_message_hint'),
+                    'lti_deploymentId' => $message->getMandatoryParameter('lti_deployment_id'),
                 ])
             )
         );
@@ -124,11 +121,11 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
         $this->assertLoginAuthenticationResponse($this->client->getResponse());
     }
 
-    public function testLoginAuthenticationWithInvalidLtiMessageHint(): void
+    public function testOidcAuthenticationWithInvalidLtiMessageHint(): void
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/lti1p3/oidc/login-authentication',
+            '/lti1p3/oidc/authentication',
             [
                 'scope' => 'openid',
                 'response_type' => 'id_token',
@@ -146,7 +143,7 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertStringContainsString('OIDC login authentication failed', (string)$response->getContent());
+        $this->assertStringContainsString('OIDC authentication failed', (string)$response->getContent());
     }
 
     private function assertLoginAuthenticationResponse(Response $response): void
@@ -165,12 +162,12 @@ class OidcLoginAuthenticationActionTest extends WebTestCase
             $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value')
         );
 
-        $ltiMessage = new LtiMessage((new Parser(new AssociativeDecoder()))->parse(
+        $payload = new LtiMessagePayload((new Parser(new AssociativeDecoder()))->parse(
             $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
         ));
 
-        $this->assertEquals(LtiMessageInterface::LTI_VERSION, $ltiMessage->getVersion());
-        $this->assertEquals('resourceLinkIdentifier', $ltiMessage->getResourceLink()->getId());
-        $this->assertEquals('loginHint', $ltiMessage->getUserIdentity()->getIdentifier());
+        $this->assertEquals(LtiMessageInterface::LTI_VERSION, $payload->getVersion());
+        $this->assertEquals('resourceLinkIdentifier', $payload->getResourceLink()->getIdentifier());
+        $this->assertEquals('loginHint', $payload->getUserIdentity()->getIdentifier());
     }
 }

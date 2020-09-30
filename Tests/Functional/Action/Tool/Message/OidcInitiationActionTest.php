@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OidcLoginInitiationActionTest extends WebTestCase
+class OidcInitiationActionTest extends WebTestCase
 {
     /** @var KernelBrowser */
     private $client;
@@ -47,11 +47,11 @@ class OidcLoginInitiationActionTest extends WebTestCase
             ->find('testRegistration');
     }
 
-    public function testValidLoginInitiationWithPostMethod(): void
+    public function testValidOidcInitiationWithPostMethod(): void
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/lti1p3/oidc/login-initiation',
+            '/lti1p3/oidc/initiation',
             [
                 'iss' => $this->registration->getPlatform()->getAudience(),
                 'login_hint' => 'login_hint',
@@ -64,12 +64,12 @@ class OidcLoginInitiationActionTest extends WebTestCase
         $this->assertLoginInitiationResponse($this->client->getResponse());
     }
 
-    public function testValidLoginInitiationWithGetMethod(): void
+    public function testValidOidcInitiationWithGetMethod(): void
     {
         $this->client->request(
             Request::METHOD_GET,
             sprintf(
-                '/lti1p3/oidc/login-initiation?%s',
+                '/lti1p3/oidc/initiation?%s',
                 http_build_query(
                     [
                         'iss' => $this->registration->getPlatform()->getAudience(),
@@ -85,11 +85,11 @@ class OidcLoginInitiationActionTest extends WebTestCase
         $this->assertLoginInitiationResponse($this->client->getResponse());
     }
 
-    public function testLoginInitiationWithInvalidClientId(): void
+    public function testOidcInitiationWithInvalidClientId(): void
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/lti1p3/oidc/login-initiation',
+            '/lti1p3/oidc/initiation',
             [
                 'iss' => $this->registration->getPlatform()->getAudience(),
                 'login_hint' => 'login_hint',
@@ -105,11 +105,11 @@ class OidcLoginInitiationActionTest extends WebTestCase
         $this->assertEquals('Cannot find registration for OIDC request', (string)$response->getContent());
     }
 
-    public function testLoginInitiationWithInvalidDeploymentId(): void
+    public function testOidcInitiationWithInvalidDeploymentId(): void
     {
         $this->client->request(
             Request::METHOD_POST,
-            '/lti1p3/oidc/login-initiation',
+            '/lti1p3/oidc/initiation',
             [
                 'iss' => $this->registration->getPlatform()->getAudience(),
                 'login_hint' => 'login_hint',
