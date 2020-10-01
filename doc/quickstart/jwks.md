@@ -4,9 +4,9 @@
 
 ## Configure a JWKS endpoint
 
-A [JWKS endpoint](https://auth0.com/docs/tokens/concepts/jwks) is needed to expose security keys components between platforms and tools.
+A [JWKS endpoint](https://auth0.com/docs/tokens/concepts/jwks) may be used to expose security keys components between platforms and tools.
 
-The bundle provides a ready to use route handled by [JwksAction](../../Action/Jwks/JwksAction.php), automatically added to your application routes via the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`
+The bundle provides a ready to use route handled by [JwksAction](../../Action/Jwks/JwksAction.php), automatically added to your application routes via the associated [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`
 
 **Default route**: `[GET] /lti1p3/.well-known/jwks/{keySetName}.json`
 
@@ -40,14 +40,14 @@ lti1p3:
         localPlatform:
             name: "Local platform"
             audience: "http://localhost/platform"
-            oidc_authentication_url: "http://localhost/lti1p3/oidc/login-authentication"
+            oidc_authentication_url: "http://localhost/lti1p3/oidc/authentication"
             oauth2_access_token_url: "http://localhost/lti1p3/auth/platformKey/token"
         localTool:
             name: "Local tool"
             audience: "http://localhost/tool"
-            oidc_login_initiation_url: "http://localhost/lti1p3/oidc/login-initiation"
+            oidc_initiation_url: "http://localhost/lti1p3/oidc/initiation"
             launch_url: ~
-            deep_link_launch_url: ~
+            deep_linking_url: ~
     ...
     registrations:
         local:

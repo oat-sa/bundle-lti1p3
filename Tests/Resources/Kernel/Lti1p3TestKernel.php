@@ -68,7 +68,7 @@ class Lti1p3TestKernel extends Kernel
         // testing config
         $loader->load(__DIR__ . '/config/config.yaml');
         $loader->load(__DIR__ . '/config/security.yaml');
-        $loader->load(__DIR__ . '/config/' . getenv('LTI_CONFIG_FILE'));
+        $loader->load(__DIR__ . '/config/lti1p3.yaml');
     }
 
     public function getCacheDir()

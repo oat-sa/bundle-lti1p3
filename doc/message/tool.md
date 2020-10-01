@@ -4,18 +4,72 @@
 
 ## Table of contents
 
-- [Handling OIDC login initiation](#handling-oidc-login-initiation)
-- [Protecting tool launch endpoint](#protecting-tool-launch-endpoint)
+- [Generating tool originating LTI messages](#generating-tool-originating-lti-messages)
+- [Validating platform originating LTI messages](#validating-platform-originating-lti-messages)
 
-## Handling OIDC login initiation
+## Generating tool originating LTI messages
 
-In the case an LTI launch request was started with the [OIDC flow](https://www.imsglobal.org/spec/security/v1p0/#step-2-authentication-request), the tool will be asked to provide a login initiation endpoint.
+In this section, you'll see how to generate tool originating LTI messages for platforms, compliant to [IMS Security specifications](https://www.imsglobal.org/spec/security/v1p0/#tool-originating-messages).
 
-The [OidcLoginInitiationAction](../../Action/Tool/Message/OidcLoginInitiationAction.php) is automatically added to your application via the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`.
+You can use the provided [ToolOriginatingLaunchBuilder](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Message/Launch/Builder/ToolOriginatingLaunchBuilder.php) to build easily tool originating LTI messages.
 
-**Default route**: `[GET,POST] /lti1p3/oidc/login-initiation`
+For example:
 
-You then just need to ensure your tool's `oidc_login_initiation_url` is configured accordingly:
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Action\Tool\Message;
+
+use OAT\Library\Lti1p3Core\Message\Launch\Builder\ToolOriginatingLaunchBuilder;
+use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
+use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class MyToolAction
+{
+    /** @var ToolOriginatingLaunchBuilder */
+    private $builder;
+
+    /** @var RegistrationRepositoryInterface */
+    private $repository;
+
+    public function __construct(ToolOriginatingLaunchBuilder $builder, RegistrationRepositoryInterface $repository)
+    {
+        $this->builder = $builder;
+        $this->repository = $repository;
+    }
+
+    public function __invoke(Request $request): Response
+    {
+        $message = $this->builder->buildToolOriginatingLaunch(
+            $this->repository->find('local'),
+            LtiMessageInterface::LTI_MESSAGE_TYPE_RESOURCE_LINK_REQUEST,
+            'http://platform.com/return',
+        );
+
+        return new Response($message->toHtmlRedirectForm()); // has to be used this way due to the expected form POST platform side
+    }
+}
+```
+
+**Note**: you can find more details about the `ToolOriginatingLaunchBuilder` in the [related documentation](https://github.com/oat-sa/lib-lti1p3-core/blob/master/doc/message/tool-originating-messages.md#1---tool-side-launch-generation)
+
+## Validating platform originating LTI messages
+
+In this section, you'll see how to handle platform originating messages, in compliance to [IMS Security and OIDC specifications](https://www.imsglobal.org/spec/security/v1p0/#platform-originating-messages).
+
+### Provide tool OIDC initiation
+
+In the [OIDC flow](https://www.imsglobal.org/spec/security/v1p0/#step-2-authentication-request), the tool will be asked to provide a login initiation endpoint.
+
+The [OidcInitiationAction](../../Action/Tool/Message/OidcInitiationAction.php) is automatically added to your application via the associated [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`.
+
+**Default route**: `[GET,POST] /lti1p3/oidc/initiation`
+
+You then just need to ensure your tool's `oidc_initiation_url` is configured accordingly:
 
 ```yaml
 # config/packages/lti1p3.yaml
@@ -23,39 +77,39 @@ lti1p3:
     tools:
         myTool:
             name: "My Tool"
-            audience: "http://example.com/tool"
-            oidc_login_initiation_url: "http://example.com/lti1p3/oidc/login-initiation"
-            launch_url: "http://example.com/tool/launch"
-            deep_link_launch_url: ~
+            audience: "http://tool.com"
+            oidc_initiation_url: "http://tool.com/lti1p3/oidc/initiation"
+            launch_url: "http://tool.com/launch"
+            deep_linking_url: ~
 ```
 **Notes**:
-- it will generate a `state` as a JWT
-- it expects to validate it on the actual launch endpoint if the LTI launch request used OIDC flow
+- it will generate a `state` as a JWT and a `nonce` that need to be returned by the platform, unaltered, after OIDC authentication
+- it expects to validate them on the final launch endpoint after the OIDC flow
 
-## Protecting tool launch endpoint
+### Protecting tool launch endpoint
 
 Considering you have the following tool launch endpoint:
 
 ```yaml
 #config/routes.yaml
 platform_service:
-    path: /tool/launch
+    path: /launch
     controller: App\Action\Tool\LtiLaunchAction
 ```
 
-To protect your endpoint, this bundle provides the `lti1p3_message` [security firewall](../../Security/Firewall/Message/LtiMessageAuthenticationListener.php) to put in front of your routes:
+To protect your endpoint, this bundle provides the `lti1p3_message_tool` [security firewall](../../Security/Firewall/Message/LtiToolMessageAuthenticationListener.php) to put in front of your routes:
 
 ```yaml
 # config/packages/security.yaml
 security:
     firewalls:
-        lti1p3_message:
-            pattern: ^/tool/launch
+        secured_tool_area:
+            pattern: ^/launch
             stateless: true
-            lti1p3_message: true
+            lti1p3_message_tool: true
 ```
 
-It will automatically handle the provided id token authentication (and state in case of OIDC), and add a [LtiMessageToken](../../Security/Authentication/Token/Message/LtiMessageToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
+It will automatically [handle the provided id token and state validations](https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation), and add a [LtiToolMessageSecurityToken](../../Security/Authentication/Token/Message/LtiToolMessageSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
 
 For example:
 
@@ -66,7 +120,7 @@ declare(strict_types=1);
 
 namespace App\Action\Tool;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -83,14 +137,17 @@ class LtiLaunchAction
 
     public function __invoke(Request $request): Response
     {
-        /** @var LtiMessageToken $token */
+        /** @var LtiToolMessageSecurityToken $token */
         $token = $this->security->getToken();
 
         // Related registration
         $registration = $token->getRegistration();
 
-        // Related LTI message
-        $ltiMessage = $token->getLtiMessage();
+        // Related LTI message payload
+        $payload = $token->getPayload();
+
+        // Related OIDC state
+        $state = $token->getState();
 
         // You can even access validation results
         $validationResults = $token->getValidationResult();

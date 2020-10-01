@@ -22,42 +22,42 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiMessageToken;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
-use OAT\Library\Lti1p3Core\Launch\Validator\LtiLaunchRequestValidator;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Throwable;
 
-class LtiMessageAuthenticationProvider implements AuthenticationProviderInterface
+class LtiToolMessageAuthenticationProvider implements AuthenticationProviderInterface
 {
-    /** @var LtiLaunchRequestValidator */
+    /** @var ToolLaunchValidator */
     private $validator;
 
-    public function __construct(LtiLaunchRequestValidator $validator)
+    public function __construct(ToolLaunchValidator $validator)
     {
         $this->validator = $validator;
     }
 
     public function supports(TokenInterface $token): bool
     {
-        return $token instanceof LtiMessageToken;
+        return $token instanceof LtiToolMessageSecurityToken;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface
     {
         try {
-            $validationResult = $this->validator->validate($token->getAttribute('request'));
+            $validationResult = $this->validator->validatePlatformOriginatingLaunch($token->getAttribute('request'));
 
             if ($validationResult->hasError()) {
                 throw new LtiException($validationResult->getError());
             }
 
-            return new LtiMessageToken($validationResult);
+            return new LtiToolMessageSecurityToken($validationResult);
         } catch (Throwable $exception) {
             throw new AuthenticationException(
-                sprintf('LTI message request authentication failed: %s', $exception->getMessage()),
+                sprintf('LTI tool message request authentication failed: %s', $exception->getMessage()),
                 $exception->getCode(),
                 $exception
             );

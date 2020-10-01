@@ -62,6 +62,7 @@ class OAuth2AccessTokenCreationAction
             );
 
             return $this->httpFoundationFactory->createResponse($psr7AuthenticationResponse);
+
         } catch (OAuthServerException $exception) {
             return $this->httpFoundationFactory->createResponse($exception->generateHttpResponse($psr7Response));
         }
