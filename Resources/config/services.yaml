@@ -127,24 +127,12 @@ services:
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
             - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
 
-    OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcInitiationServer:
-        arguments:
-            - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator'
-            - '@Http\Message\ResponseFactory'
-            - '@Psr\Log\LoggerInterface'
-
     OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface'
             - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
             - '@Lcobucci\JWT\Signer'
-
-    OAT\Library\Lti1p3Core\Security\Oidc\Server\OidcAuthenticationServer:
-        arguments:
-            - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator'
-            - '@Http\Message\ResponseFactory'
-            - '@Psr\Log\LoggerInterface'
 
     OAT\Library\Lti1p3Core\Message\Launch\Validator\PlatformLaunchValidator:
         arguments:
