@@ -79,10 +79,10 @@ Then, add a key chain:
 lti1p3:
     key_chains:
         myKey:
-            key_set_name: "myKeySetName"
-            public_key: "file://path/to/public.key"
-            private_key: "file://path/to/private.key"
-            private_key_passphrase: '...' # if you provided on on keys generation
+            key_set_name: "myKeySetName"               # [required] key set name
+            public_key: "file://path/to/public.key"    # [required] path / content of the public key
+            private_key: "file://path/to/private.key"  # [optional] path / content of the private key
+            private_key_passphrase: '...'              # [optional] private key passphrase
 ```
 **Notes**:
 - the unique identifier `myKey` can be used from the [KeyChainRepositoryInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Security/Key/KeyChainRepositoryInterface.php#L27)
@@ -97,10 +97,10 @@ Platforms (owned or external) can be configured as following:
 lti1p3:
     platforms:
         myPlatform:
-            name: "My Platform"
-            audience: "http://platform.com"
-            oidc_authentication_url: "http://platform.com/lti1p3/oidc/authentication"
-            oauth2_access_token_url: "http://platform.com/lti1p3/auth/platformKey/token"
+            name: "My Platform"                                                           # [required] platform name
+            audience: "http://platform.com"                                               # [required] platform audience
+            oidc_authentication_url: "http://platform.com/lti1p3/oidc/authentication"     # [optional] platform OIDC auth url
+            oauth2_access_token_url: "http://platform.com/lti1p3/auth/platformKey/token"  # [optional] platform access token url
 ```
 **Notes**:
 - the unique identifier `myPlatform` can be used into registrations creation (ex: `platform: "myPlatform"`)
@@ -117,18 +117,18 @@ Tools (owned or external) can be configured as following:
 lti1p3:
     tools:
         myTool:
-            name: "My Tool"
-            audience: "http://tool.com"
-            oidc_initiation_url: "http://tool.com/lti1p3/oidc/initiation"
-            launch_url: "http://tool.com/launch"
-            deep_linking_url: ~
+            name: "My Tool"                                               # [required] tool name
+            audience: "http://tool.com"                                   # [required] tool audience
+            oidc_initiation_url: "http://tool.com/lti1p3/oidc/initiation" # [required] tool OIDC init url
+            launch_url: "http://tool.com/launch"                          # [optional] tool default launch url
+            deep_linking_url: ~                                           # [optional] tool DeepLinking url
 ```
 **Notes**:
 - the unique identifier `myTool` can be used into registrations creation (ex: `tool: "myTool"`)
 - the `audience` will be used in JWT based communications as issuer 
 - the `oidc_initiation_url` is handled by the [OidcInitiationAction](../../Action/Tool/Message/OidcInitiationAction.php)
 - the `launch_url` is used to configure your default tool launch url
-- the `deep_linking_url` is used to configure your default tool deep links url
+- the `deep_linking_url` is used to configure your default tool DeepLinking url (for content selection)
 
 ## Configure a registration
 
@@ -139,16 +139,16 @@ To add a registration:
 lti1p3:
     registrations:
         myRegistration:
-            client_id: "myClientId"
-            platform: "myPlatform"
-            tool: "myTool"
-            deployment_ids:
+            client_id: "myClientId"                                                            # [required] client id
+            platform: "myPlatform"                                                             # [required] platform identifier
+            tool: "myTool"                                                                     # [required] tool identifier
+            deployment_ids:                                                                    # [required] deployment ids
                 - "myDeploymentId1"
                 - "myDeploymentId2"
-            platform_key_chain: "myPlatformKey"
-            tool_key_chain: "myToolKey"
-            platform_jwks_url: "http://platform.com/lti1p3/.well-known/jwks/platformSet.json"
-            tool_jwks_url: "http://tool.com/lti1p3/.well-known/jwks/toolSet.json"
+            platform_key_chain: "myPlatformKey"                                                # [optional] platform key chain identifier
+            tool_key_chain: "myToolKey"                                                        # [optional] tool key chain identifier
+            platform_jwks_url: "http://platform.com/lti1p3/.well-known/jwks/platformSet.json"  # [optional] platform JWKS url
+            tool_jwks_url: "http://tool.com/lti1p3/.well-known/jwks/toolSet.json"              # [optional] tool JWKS url
 ```
 **Notes**:
 - the unique identifier `myRegistration` allows the registration to be fetched from the [RegistrationRepositoryInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Registration/RegistrationRepositoryInterface.php#L27)
