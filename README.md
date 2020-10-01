@@ -24,9 +24,9 @@ $ composer require oat-sa/bundle-lti1p3
 ```
 
 The associated [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3) will generate in your application:
- - `config/routes/lti1p3.yaml`: configurable file to automatically enable required routes (JWKS, OIDC)
- - `config/packages/lti1p3.yaml`: configurable file to offer a default configuration for your keys, tools, platforms and registrations
- - `LTI1P3_SERVICE_ENCRYPTION_KEY`: configurable (.env) variable required to provide encryption for your signatures.
+ - `config/routes/lti1p3.yaml`: configurable bundle routes (JWKS, OIDC)
+ - `config/packages/lti1p3.yaml`: configurable bundle configuration
+ - `LTI1P3_SERVICE_ENCRYPTION_KEY`: configurable (.env) variable (signatures security).
 
 ## Tutorials
 
