@@ -20,29 +20,29 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service;
+namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
-use Lcobucci\JWT\Token;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResult;
+use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
-use OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidationResult;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
-class LtiServiceToken extends AbstractToken
+abstract class AbstractLtiMessageSecurityToken extends AbstractToken
 {
     /** @var string[] */
-    private $roleNames;
+    protected $roleNames;
 
-    /** @var AccessTokenRequestValidationResult|null */
-    private $validationResult;
+    /** @var LaunchValidationResult|null */
+    protected $validationResult;
 
-    public function __construct(AccessTokenRequestValidationResult $validationResult = null)
+    public function __construct(LaunchValidationResult $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
         parent::__construct($this->roleNames);
     }
 
-    public function getValidationResult(): ?AccessTokenRequestValidationResult
+    public function getValidationResult(): ?LaunchValidationResult
     {
         return $this->validationResult;
     }
@@ -54,24 +54,17 @@ class LtiServiceToken extends AbstractToken
             : null;
     }
 
-    public function getAccessToken(): ?Token
+    public function getPayload(): ?LtiMessagePayloadInterface
     {
         return $this->validationResult
-            ? $this->validationResult->getToken()
+            ? $this->validationResult->getPayload()
             : null;
-    }
-
-    public function getScopes(): array
-    {
-        return $this->validationResult
-            ? $this->validationResult->getScopes()
-            : [];
     }
 
     public function getCredentials(): string
     {
-        return $this->getAccessToken()
-            ? $this->getAccessToken()->__toString()
+        return $this->getPayload()
+            ? $this->getPayload()->getToken()->__toString()
             : '';
     }
 
@@ -80,23 +73,5 @@ class LtiServiceToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(AccessTokenRequestValidationResult $validationResult = null): void
-    {
-        $this->validationResult = $validationResult;
-
-        if (null !== $this->validationResult) {
-
-            if (null !== $validationResult->getRegistration()) {
-                $this->setUser($validationResult->getRegistration()->getTool()->getName());
-            }
-
-            $this->roleNames = $validationResult->getScopes();
-
-            $this->setAuthenticated(!$this->validationResult->hasError());
-        } else {
-            $this->roleNames = [];
-
-            $this->setAuthenticated(false);
-        }
-    }
+    abstract protected function applyValidationResult(LaunchValidationResult $validationResult = null): void;
 }

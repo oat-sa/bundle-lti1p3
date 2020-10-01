@@ -22,21 +22,21 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Action\Platform\Message;
 
-use OAT\Library\Lti1p3Core\Exception\LtiException;
-use OAT\Library\Lti1p3Core\Security\Oidc\Endpoint\OidcLoginAuthenticator;
+use OAT\Library\Lti1p3Core\Exception\LtiExceptionInterface;
+use OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OidcLoginAuthenticationAction
+class OidcAuthenticationAction
 {
     /** @var HttpMessageFactoryInterface */
     private $factory;
 
-    /** @var OidcLoginAuthenticator */
+    /** @var OidcAuthenticator */
     private $authenticator;
 
-    public function __construct(HttpMessageFactoryInterface $factory, OidcLoginAuthenticator $authenticator)
+    public function __construct(HttpMessageFactoryInterface $factory, OidcAuthenticator $authenticator)
     {
         $this->factory = $factory;
         $this->authenticator = $authenticator;
@@ -48,7 +48,8 @@ class OidcLoginAuthenticationAction
             $launchRequest = $this->authenticator->authenticate($this->factory->createRequest($request));
 
             return new Response($launchRequest->toHtmlRedirectForm());
-        } catch (LtiException $exception) {
+
+        } catch (LtiExceptionInterface $exception) {
             return new Response($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
         }
     }

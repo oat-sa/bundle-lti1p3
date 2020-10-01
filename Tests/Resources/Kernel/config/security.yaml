@@ -3,11 +3,15 @@ security:
         users_in_memory: { memory: null }
 
     firewalls:
-        lti1p3_message:
-            pattern:   ^/test/message
+        message_platform_secured:
+            pattern:   ^/test/message/platform
             stateless: true
-            lti1p3_message: true
-        lti1p3_service:
+            lti1p3_message_platform: true
+        message_tool_secured:
+            pattern:   ^/test/message/tool
+            stateless: true
+            lti1p3_message_tool: true
+        service_secured:
             pattern:   ^/test/service
             stateless: true
             lti1p3_service: true

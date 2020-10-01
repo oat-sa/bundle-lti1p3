@@ -14,15 +14,15 @@ lti1p3:
         testPlatform:
             name: "Test platform"
             audience: "http://platform.com"
-            oidc_authentication_url: "http://platform.com/oidc-auth"
-            oauth2_access_token_url: "http://platform.com/auth/token"
+            oidc_authentication_url: "http://platform.com/lti1p3/oidc/authentication"
+            oauth2_access_token_url: "http://platform.com/lti1p3/auth/token"
     tools:
         testTool:
             name: "Test tool"
             audience: "http://tool.com"
-            oidc_login_initiation_url: "http://tool.com/oidc-init"
-            launch_url: "http://tool.com/launch"
-            deep_link_launch_url: "http://tool.com/deep-launch"
+            oidc_initiation_url: "http://tool.com/lti1p3/oidc/initiation"
+            launch_url: "http://tool.com/test/message/tool"
+            deep_linking_url: "http://tool.com/deep-launch"
     registrations:
         testRegistration:
             client_id: "client_id"

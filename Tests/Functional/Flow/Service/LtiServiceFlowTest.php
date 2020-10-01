@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Service;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Flow\Service;
 
 use Carbon\Carbon;
 use Lcobucci\JWT\Builder;
@@ -32,7 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ServiceActionTest extends WebTestCase
+class LtiServiceFlowTest extends WebTestCase
 {
     /** @var KernelBrowser */
     private $client;

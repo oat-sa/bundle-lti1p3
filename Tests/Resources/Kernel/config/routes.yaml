@@ -1,6 +1,10 @@
-test_message:
-    path: /test/message
-    controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Tool\Message\TestMessageAction
+test_message_platform:
+    path: /test/message/platform
+    controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Message\TestPlatformMessageAction
+
+test_message_tool:
+    path: /test/message/tool
+    controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Tool\Message\TestToolMessageAction
 
 test_service:
     path: /test/service

@@ -20,17 +20,22 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service;
+namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
+use Lcobucci\JWT\Parser;
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
+use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
+use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Firewall\AbstractListener;
+use Throwable;
 
-class LtiServiceAuthenticationListener extends AbstractListener
+class LtiToolMessageAuthenticationListener extends AbstractListener
 {
     /** @var TokenStorageInterface */
     private $storage;
@@ -41,6 +46,9 @@ class LtiServiceAuthenticationListener extends AbstractListener
     /** @var HttpMessageFactoryInterface */
     private $factory;
 
+    /** @var Parser */
+    private $parser;
+
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
@@ -49,18 +57,46 @@ class LtiServiceAuthenticationListener extends AbstractListener
         $this->storage = $tokenStorage;
         $this->manager = $authenticationManager;
         $this->factory = $factory;
+        $this->parser = new Parser(new AssociativeDecoder());
     }
 
     public function supports(Request $request): ?bool
     {
-        return $request->headers->has('Authorization');
+        return null !== $request->get('id_token');
     }
 
     public function authenticate(RequestEvent $event): void
     {
-        $token = new LtiServiceSecurityToken();
-        $token->setAttribute('request', $this->factory->createRequest($event->getRequest()));
+        $request = $event->getRequest();
 
-        $this->storage->setToken($this->manager->authenticate($token));
+        $token = new LtiToolMessageSecurityToken();
+        $token->setAttribute('request', $this->factory->createRequest($request));
+
+        try {
+            $this->storage->setToken($this->manager->authenticate($token));
+        } catch (Throwable $exception) {
+            $event->setResponse($this->handleErrorDelegation($exception, $request));
+        }
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function handleErrorDelegation(Throwable $exception, Request $request): RedirectResponse
+    {
+        $payload = new LtiMessagePayload($this->parser->parse($request->get('id_token')));
+
+        if (null !== $payload->getLaunchPresentation() && null !== $payload->getLaunchPresentation()->getReturnUrl()) {
+            $redirectUrl = sprintf(
+                '%s%slti_errormsg=%s',
+                $payload->getLaunchPresentation()->getReturnUrl(),
+                strpos($payload->getLaunchPresentation()->getReturnUrl(), '?') ? '&' : '?',
+                urlencode($exception->getMessage())
+            );
+
+            return new RedirectResponse($redirectUrl);
+        }
+
+        throw $exception;
     }
 }

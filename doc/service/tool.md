@@ -56,4 +56,4 @@ class LtiServiceClientAction
     }
 }
 ```
-**Notes**: once the access token is fetched by the `ServiceClient`, it will cache it (into it's configured cache) to avoid asking every time the platform a new token.
+**Notes**: once the access token is fetched by the `ServiceClient`, it will cache it (into it's configured cache, for given TTL) to avoid asking every time the platform a new token.

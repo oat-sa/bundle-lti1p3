@@ -128,9 +128,9 @@ class RegistrationRepositoryBuilder
                 $toolId,
                 $toolData['name'],
                 $toolData['audience'],
-                $toolData['oidc_login_initiation_url'] ?? null,
+                $toolData['oidc_initiation_url'],
                 $toolData['launch_url'] ?? null,
-                $toolData['deep_link_launch_url'] ?? null
+                $toolData['deep_linking_url'] ?? null
             );
 
             $tools[$toolId] = $tool;
