@@ -127,7 +127,7 @@ security:
 **Note**: you can define per firewall the list of allowed scopes, to have better granularity for your endpoints protection.
 
 It will:
-- handle the provided access token validation (signature validity, expiry non reached, matching configured firewall scopes, etc)
+- handle the provided access token validation (signature validity, expiry, matching configured firewall scopes, etc ...)
 - add on success a [LtiServiceSecurityToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context from anywhere.
 
 For example (in one of the endpoints):
