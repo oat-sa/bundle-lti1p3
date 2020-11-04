@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Integration\DependencyInjection\Builder;
 
 use OAT\Bundle\Lti1p3Bundle\Tests\Resources\Kernel\Lti1p3TestKernel;
-
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;

@@ -39,7 +39,7 @@ trait SecurityTestingTrait
             ->identifiedBy(sprintf('%s-%s', $registration->getIdentifier(), $now->getPreciseTimestamp()))
             ->issuedBy($registration->getTool()->getAudience())
             ->relatedTo($registration->getClientId())
-            ->permittedFor($registration->getPlatform()->getOAuth2AccessTokenUrl())
+            ->permittedFor($registration->getPlatform()->getAudience())
             ->issuedAt($now->getTimestamp())
             ->expiresAt($now->addSeconds(MessagePayloadInterface::TTL)->getTimestamp())
             ->getToken(new Sha256(), $registration->getToolKeyChain()->getPrivateKey())

@@ -51,7 +51,7 @@ class LtiServiceFlowTest extends WebTestCase
 
     public function testItCanHandleLtiServiceRequest(): void
     {
-        $credentials = $this->generateCredentials($this->registration, ['scope1', 'scope2']);
+        $credentials = $this->generateCredentials($this->registration);
 
         $this->client->request(
             Request::METHOD_GET,
@@ -67,18 +67,37 @@ class LtiServiceFlowTest extends WebTestCase
         $responseData = json_decode((string)$response->getContent(), true);
         $this->assertEquals($this->registration->getClientId(), $responseData['claims']['aud']);
         $this->assertEquals($this->registration->getIdentifier(), $responseData['registration']);
-        $this->assertEquals(['scope1', 'scope2'], $responseData['roles']);
+        $this->assertEquals(['allowed-scope'], $responseData['roles']);
         $this->assertEquals($credentials, $responseData['credentials']);
         $this->assertEquals(
             [
                 'JWT access token is not expired',
                 'Registration found for client_id: client_id',
                 'Platform key chain found for registration: testRegistration',
-                'JWT access token signature is valid'
+                'JWT access token signature is valid',
+                'JWT access token scopes are valid'
             ],
             $responseData['validations']['successes']
         );
         $this->assertNull($responseData['validations']['error']);
+    }
+
+    public function testItReturnsUnauthorizedResponseWithInvalidScopes(): void
+    {
+        $credentials = $this->generateCredentials($this->registration, ['invalid']);
+
+        $this->client->request(
+            Request::METHOD_GET,
+            '/test/service',
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => sprintf('Bearer %s', $credentials)]
+        );
+
+        $response = $this->client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+        $this->assertStringContainsString('JWT access token scopes are invalid', (string)$response->getContent());
     }
 
     public function testItReturnsUnauthorizedResponseWithoutBearer(): void
@@ -88,6 +107,7 @@ class LtiServiceFlowTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+        $this->assertStringContainsString('A Token was not found in the TokenStorage', (string)$response->getContent());
     }
 
     public function testItReturnsUnauthorizedResponseWithInvalidBearer(): void
@@ -103,9 +123,10 @@ class LtiServiceFlowTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+        $this->assertStringContainsString('The JWT string must have two dots', (string)$response->getContent());
     }
 
-    private function generateCredentials(RegistrationInterface $registration, array $scopes = []): string
+    private function generateCredentials(RegistrationInterface $registration, array $scopes = ['allowed-scope']): string
     {
         $now = Carbon::now();
 

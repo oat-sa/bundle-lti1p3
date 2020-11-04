@@ -35,12 +35,27 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
 
         $this
+            ->addScopesConfiguration($rootNode)
             ->addKeyChainsConfiguration($rootNode)
             ->addPlatformsConfiguration($rootNode)
             ->addToolsConfiguration($rootNode)
             ->addRegistrationsConfiguration($rootNode);
 
         return $treeBuilder;
+    }
+
+    public function addScopesConfiguration(ArrayNodeDefinition $rootNode): self
+    {
+        $rootNode
+            ->fixXmlConfig('scope')
+                ->children()
+                    ->arrayNode('scopes')
+                        ->scalarPrototype()
+                    ->end()
+                ->end()
+            ->end();
+
+        return $this;
     }
 
     public function addKeyChainsConfiguration(ArrayNodeDefinition $rootNode): self

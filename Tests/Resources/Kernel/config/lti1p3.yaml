@@ -1,4 +1,6 @@
 lti1p3:
+    scopes:
+        - 'allowed-scope'
     key_chains:
         kid1:
             key_set_name: "platformSet"
