@@ -97,7 +97,10 @@ class LtiServiceFlowTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertStringContainsString('JWT access token scopes are invalid', (string)$response->getContent());
+        $this->assertStringContainsString(
+            'JWT access token scopes are invalid',
+            (string)$response->getContent()
+        );
     }
 
     public function testItReturnsUnauthorizedResponseWithoutBearer(): void
@@ -107,7 +110,10 @@ class LtiServiceFlowTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertStringContainsString('A Token was not found in the TokenStorage', (string)$response->getContent());
+        $this->assertStringContainsString(
+            'A Token was not found in the TokenStorage',
+            (string)$response->getContent()
+        );
     }
 
     public function testItReturnsUnauthorizedResponseWithInvalidBearer(): void
@@ -126,8 +132,10 @@ class LtiServiceFlowTest extends WebTestCase
         $this->assertStringContainsString('The JWT string must have two dots', (string)$response->getContent());
     }
 
-    private function generateCredentials(RegistrationInterface $registration, array $scopes = ['allowed-scope']): string
-    {
+    private function generateCredentials(
+        RegistrationInterface $registration,
+        array $scopes = ['allowed-scope']
+    ): string {
         $now = Carbon::now();
 
         return (new Builder())
