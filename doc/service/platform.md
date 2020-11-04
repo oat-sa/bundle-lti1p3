@@ -96,13 +96,16 @@ Pragma: no-cache
 
 ## Protecting platform service endpoints
 
-Considering you have the following platform service endpoint:
+For example, considering you have the following platform service endpoints:
 
 ```yaml
 #config/routes.yaml
-platform_service:
-    path: /platform/service
-    controller: App\Action\Platform\Service\LtiServiceAction
+platform_service_ags_lineitem:
+    path: /platform/service/ags/lineitem
+    controller: App\Action\Platform\Service\Ags\LineItemAction
+platform_service_ags_result:
+    path: /platform/service/ags/result
+    controller: App\Action\Platform\Service\Ags\ResultAction
 ```
 
 To protect your endpoint, this bundle provides the `lti1p3_service` [security firewall](../../Security/Firewall/Service/LtiServiceAuthenticationListener.php) to put in front of your routes:
@@ -127,21 +130,21 @@ It will:
 - handle the provided access token validation (signature validity, expiry non reached, matching configured firewall scopes, etc)
 - add on success a [LtiServiceSecurityToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context from anywhere.
 
-For example:
+For example (in one of the endpoints):
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace App\Action\Platform\Service;
+namespace App\Action\Platform\Service\Ags;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
-class LtiServiceAction
+class LineItemAction
 {
     /** @var Security */
     private $security;
@@ -156,14 +159,14 @@ class LtiServiceAction
         /** @var LtiServiceSecurityToken $token */
         $token = $this->security->getToken();
 
-        // Related registration
+        // Related registration (to spare queries)
         $registration = $token->getRegistration();
 
         // Related access token
         $token = $token->getAccessToken();
 
         // Related scopes (if you want to implement some ACL)
-        $scopes = $token->getScopes();
+        $scopes = $token->getScopes(); // ['https://purl.imsglobal.org/spec/lti-ags/scope/lineitem']
 
         // You can even access validation results
         $validationResults = $token->getValidationResult();
