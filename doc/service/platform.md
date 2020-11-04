@@ -128,7 +128,7 @@ security:
 
 It will:
 - handle the provided access token validation (signature validity, expiry, matching configured firewall scopes, etc ...)
-- add on success a [LtiServiceSecurityToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context from anywhere.
+- add on success a [LtiServiceSecurityToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context
 
 For example (in one of the endpoints):
 
