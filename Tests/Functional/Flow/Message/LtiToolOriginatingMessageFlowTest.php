@@ -71,13 +71,22 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
     {
         // Step 1 - Tool message generation
 
+        $dlData = $this
+            ->buildJwt(
+                [],
+                [],
+                $this->registration->getPlatformKeyChain()->getPrivateKey()
+            )
+            ->__toString();
+
         $message = $this->builder->buildToolOriginatingLaunch(
             $this->registration,
             LtiMessageInterface::LTI_MESSAGE_TYPE_DEEP_LINKING_RESPONSE,
             '/test/message/platform',
             null,
             [
-                'custom' => 'value'
+                'custom' => 'value',
+                LtiMessagePayloadInterface::CLAIM_LTI_DEEP_LINKING_DATA => $dlData
             ]
         );
 

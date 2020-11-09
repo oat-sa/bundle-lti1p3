@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle;
 
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Compiler\BuilderPass;
+use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Compiler\ConfigurationPass;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Message\LtiPlatformMessageSecurityFactory;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Message\LtiToolMessageSecurityFactory;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Service\LtiServiceSecurityFactory;
@@ -38,6 +39,9 @@ class Lti1p3Bundle extends Bundle
 
         // Bundle dependencies builder pass
         $container->addCompilerPass(new BuilderPass());
+
+        // Bundle configuration pass
+        $container->addCompilerPass(new ConfigurationPass());
 
         // Bundle security extension configuration
         $this->configureSecurityExtension($container->getExtension('security'));

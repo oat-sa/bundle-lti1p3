@@ -4,10 +4,10 @@
 
 ## Table of contents
 
-- [Configuring OAuth2 server](#configuring-oauth2-server)
+- [Providing platform service access token endpoint](#providing-platform-service-access-token-endpoint)
 - [Protecting platform service endpoints](#protecting-platform-service-endpoints)
 
-## Configuring platform OAuth2 server
+## Providing platform service access token endpoint
 
 The [OAuth2AccessTokenCreationAction](../../Action/Platform/Service/OAuth2AccessTokenCreationAction.php) is automatically added to your application via the related [flex recipe](https://github.com/symfony/recipes-contrib/tree/master/oat-sa/bundle-lti1p3), in file `config/routes/lti1p3.yaml`.
 
@@ -16,8 +16,19 @@ The [OAuth2AccessTokenCreationAction](../../Action/Platform/Service/OAuth2Access
 This endpoint:
 - allow tools to get granted to call your platform services endpoints, by following the [client_credentials grant type with assertion](https://www.imsglobal.org/spec/security/v1p0/#using-json-web-tokens-with-oauth-2-0-client-credentials-grant). 
 - is working for a defined `keyChainIdentifier` as explained [here](../message/platform.md), so you can expose several of them if your application is acting as several deployed platforms
+- is able to grant (give access tokens) for a defined list of allowed scopes 
 
-If you configure a key chain as following:
+You must first configure the list of allowed scopes to grant access tokens:
+
+```yaml
+# config/packages/lti1p3.yaml
+lti1p3:
+    scopes:
+        - 'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem'
+        - 'https://purl.imsglobal.org/spec/lti-ags/scope/result/read'
+```
+
+Then, if you configure a key chain as following:
 
 ```yaml
 # config/packages/lti1p3.yaml
@@ -79,18 +90,22 @@ Pragma: no-cache
 ```
 
 **Notes**:
-- a `HTTP 401` response if the client assertion cannot match a registered tool.
+- a `HTTP 400` response is returned if the requested scopes are not configured, or invalid
+- a `HTTP 401` response is returned if the client assertion cannot match a registered tool
 - to automate (and cache) authentication grants from the tools side, a [ServiceClient](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Service/Client/ServiceClient.php) is ready to use for your LTI service calls as explained [here](tool.md)
 
 ## Protecting platform service endpoints
 
-Considering you have the following platform service endpoint:
+For example, considering you have the following platform service endpoints:
 
 ```yaml
 #config/routes.yaml
-platform_service:
-    path: /platform/service
-    controller: App\Action\Platform\Service\LtiServiceAction
+platform_service_ags_lineitem:
+    path: /platform/service/ags/lineitem
+    controller: App\Action\Platform\Service\Ags\LineItemAction
+platform_service_ags_result:
+    path: /platform/service/ags/result
+    controller: App\Action\Platform\Service\Ags\ResultAction
 ```
 
 To protect your endpoint, this bundle provides the `lti1p3_service` [security firewall](../../Security/Firewall/Service/LtiServiceAuthenticationListener.php) to put in front of your routes:
@@ -99,29 +114,37 @@ To protect your endpoint, this bundle provides the `lti1p3_service` [security fi
 # config/packages/security.yaml
 security:
     firewalls:
-        secured_service_area:
-            pattern: ^/platform/service
+        secured_service_ags_lineitem_area:
+            pattern: ^/platform/service/ags/lineitem
             stateless: true
-            lti1p3_service: true
+            lti1p3_service: { scopes: ['https://purl.imsglobal.org/spec/lti-ags/scope/lineitem'] }
+        secured_service_ags_result_area:
+            pattern: ^/platform/service/ags/result
+            stateless: true
+            lti1p3_service: { scopes: ['https://purl.imsglobal.org/spec/lti-ags/scope/result/read'] }
 ```
 
-It will automatically handle the provided access token authentication, and add a [LtiServiceSecurityToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
+**Note**: you can define per firewall the list of allowed scopes, to have better granularity for your endpoints protection.
 
-For example:
+It will:
+- handle the provided access token validation (signature validity, expiry, matching configured firewall scopes, etc ...)
+- add on success a [LtiServiceSecurityToken](../../Security/Authentication/Token/Service/LtiServiceSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context
+
+For example (in one of the endpoints):
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace App\Action\Platform\Service;
+namespace App\Action\Platform\Service\Ags;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
-class LtiServiceAction
+class LineItemAction
 {
     /** @var Security */
     private $security;
@@ -136,14 +159,14 @@ class LtiServiceAction
         /** @var LtiServiceSecurityToken $token */
         $token = $this->security->getToken();
 
-        // Related registration
+        // Related registration (to spare queries)
         $registration = $token->getRegistration();
 
         // Related access token
         $token = $token->getAccessToken();
 
-        // Related scopes
-        $scopes = $token->getScopes();
+        // Related scopes (if you want to implement some ACL)
+        $scopes = $token->getScopes(); // ['https://purl.imsglobal.org/spec/lti-ags/scope/lineitem']
 
         // You can even access validation results
         $validationResults = $token->getValidationResult();

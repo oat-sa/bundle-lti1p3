@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+3.1.0
+-----
+
+* Added possibility to configure handled scopes for service access token generator
+* Added possibility to configure allowed scopes per service firewall
+* Upgraded for oat-sa/lib-lti1p3-core version 3.2.0
+* Updated documentation
+
 3.0.0
 -----
 

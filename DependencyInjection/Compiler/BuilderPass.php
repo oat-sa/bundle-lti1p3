@@ -24,17 +24,13 @@ namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Compiler;
 
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilder;
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\RegistrationRepositoryBuilder;
-use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Configuration;
-use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Lti1p3Extension;
 use OAT\Bundle\Lti1p3Bundle\Repository\RegistrationRepository;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
-use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class BuilderPass implements CompilerPassInterface
+class BuilderPass extends AbstractPass
 {
     public function process(ContainerBuilder $container): void
     {
@@ -43,14 +39,6 @@ class BuilderPass implements CompilerPassInterface
         $this
             ->defineKeyChainRepository($container, $configuration)
             ->defineRegistrationRepository($container, $configuration);
-    }
-
-    private function processConfiguration(ContainerBuilder $container): array
-    {
-        return (new Processor())->processConfiguration(
-            new Configuration(),
-            $container->getExtensionConfig(Lti1p3Extension::ALIAS)
-        );
     }
 
     private function defineKeyChainRepository(ContainerBuilder $container, array $configuration): self
