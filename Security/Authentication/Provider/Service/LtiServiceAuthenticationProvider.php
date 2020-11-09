@@ -35,9 +35,13 @@ class LtiServiceAuthenticationProvider implements AuthenticationProviderInterfac
     /** @var AccessTokenRequestValidator */
     private $validator;
 
-    public function __construct(AccessTokenRequestValidator $validator)
+    /** string[] */
+    private $scopes;
+
+    public function __construct(AccessTokenRequestValidator $validator, array $scopes = [])
     {
         $this->validator = $validator;
+        $this->scopes = $scopes;
     }
 
     public function supports(TokenInterface $token): bool
@@ -48,7 +52,10 @@ class LtiServiceAuthenticationProvider implements AuthenticationProviderInterfac
     public function authenticate(TokenInterface $token): TokenInterface
     {
         try {
-            $validationResult = $this->validator->validate($token->getAttribute('request'));
+            $validationResult = $this->validator->validate(
+                $token->getAttribute('request'),
+                $this->scopes
+            );
 
             if ($validationResult->hasError()) {
                 throw new LtiException($validationResult->getError());

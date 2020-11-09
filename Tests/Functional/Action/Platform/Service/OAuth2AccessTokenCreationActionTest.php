@@ -23,15 +23,12 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Service;
 
 use Lcobucci\JWT\Parser;
-use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use OAT\Bundle\Lti1p3Bundle\Tests\Traits\SecurityTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
-use OAT\Library\Lti1p3Core\Service\Server\Entity\Scope;
 use OAT\Library\Lti1p3Core\Service\Server\Grant\ClientAssertionCredentialsGrant;
-use OAT\Library\Lti1p3Core\Service\Server\Repository\ScopeRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,12 +58,6 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         $this->keyChain = static::$container
             ->get(KeyChainRepositoryInterface::class)
             ->find('kid1');
-
-        /** @var ScopeRepositoryInterface|ScopeRepository $scopeRepository */
-        $scopeRepository = static::$container->get(ScopeRepositoryInterface::class);
-        $scopeRepository
-            ->addScope(new Scope('scope1'))
-            ->addScope(new Scope('scope2'));
     }
 
     public function testWithValidClientAssertion(): void
@@ -74,7 +65,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         $this->client->request(
             Request::METHOD_POST,
             sprintf('/lti1p3/auth/%s/token', $this->keyChain->getIdentifier()),
-            $this->generateCredentials($this->registration, ['scope1', 'scope2'])
+            $this->generateCredentials($this->registration, ['allowed-scope'])
         );
 
         $response = $this->client->getResponse();
@@ -86,7 +77,20 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         $token = (new Parser())->parse($responseData['access_token']);
 
         $this->assertEquals($this->registration->getClientId(), $token->getClaim('aud'));
-        $this->assertEquals(['scope1', 'scope2'], $token->getClaim('scopes'));
+        $this->assertEquals(['allowed-scope'], $token->getClaim('scopes'));
+    }
+
+    public function testWithInvalidScopes(): void
+    {
+        $this->client->request(
+            Request::METHOD_POST,
+            sprintf('/lti1p3/auth/%s/token', $this->keyChain->getIdentifier()),
+            $this->generateCredentials($this->registration, ['invalid'])
+        );
+
+        $response = $this->client->getResponse();
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testWithoutGrantType(): void

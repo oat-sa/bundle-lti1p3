@@ -41,18 +41,18 @@ class LtiServiceSecurityFactory implements SecurityFactoryInterface
         return 'lti1p3_service';
     }
 
-    // TODO provide type hints when we update the bundle with SF version >= 4.2
     public function create(
         ContainerBuilder $container,
-        $id,
-        $config,
-        $userProvider,
-        $defaultEntryPoint = null
+        string $id,
+        array $config,
+        string $userProvider,
+        ?string $defaultEntryPoint = null
     ): array {
 
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
-        $container->setDefinition($providerId, new ChildDefinition(LtiServiceAuthenticationProvider::class));
-
+        $container
+            ->setDefinition($providerId, new ChildDefinition(LtiServiceAuthenticationProvider::class))
+            ->setArgument(1, $config['scopes'] ?? []);
 
         $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
         $container->setDefinition($listenerId, new ChildDefinition(LtiServiceAuthenticationListener::class));
@@ -62,6 +62,6 @@ class LtiServiceSecurityFactory implements SecurityFactoryInterface
 
     public function addConfiguration(NodeDefinition $node): void
     {
-        return;
+        $node->children()->arrayNode('scopes')->scalarPrototype()->end();
     }
 }

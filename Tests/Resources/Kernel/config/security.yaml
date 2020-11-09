@@ -14,7 +14,7 @@ security:
         service_secured:
             pattern:   ^/test/service
             stateless: true
-            lti1p3_service: true
+            lti1p3_service: { scopes: ['allowed-scope'] }
         main:
             anonymous: lazy
             provider: users_in_memory
