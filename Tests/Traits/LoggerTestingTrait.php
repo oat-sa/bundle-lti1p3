@@ -33,7 +33,7 @@ trait LoggerTestingTrait
      */
     protected function assertHasLogRecords($level): void
     {
-        $this->checkTraitUsage();
+        $this->checkLoggerTestingTraitUsage();
 
         $this->assertTrue(
             static::$container->get(LoggerInterface::class)->hasRecords($level),
@@ -49,7 +49,7 @@ trait LoggerTestingTrait
      */
     protected function assertHasLogRecord($record, $level): void
     {
-        $this->checkTraitUsage();
+        $this->checkLoggerTestingTraitUsage();
 
         $this->assertTrue(
             static::$container->get(LoggerInterface::class)->hasRecord($record, $level),
@@ -66,7 +66,7 @@ trait LoggerTestingTrait
      */
     protected function resetTestLogger(): void
     {
-        $this->checkTraitUsage();
+        $this->checkLoggerTestingTraitUsage();
 
         static::$container->get(LoggerInterface::class)->reset();
     }
@@ -74,7 +74,7 @@ trait LoggerTestingTrait
     /**
      * @throws LogicException
      */
-    private function checkTraitUsage(): void
+    private function checkLoggerTestingTraitUsage(): void
     {
         if (!is_a(static::class, KernelTestCase::class, true)) {
             throw new LogicException(
