@@ -3,7 +3,7 @@ framework:
 
 services:
     logger:
-        class: Psr\Log\NullLogger
+        class: Psr\Log\Test\TestLogger
 
     OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Message\TestPlatformMessageAction:
         arguments: ['@security.helper']
