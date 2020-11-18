@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Message;
 
 use Lcobucci\JWT\Parser;
+use OAT\Bundle\Lti1p3Bundle\Tests\Traits\LoggerTestingTrait;
 use OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder;
 use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
@@ -30,6 +31,7 @@ use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Resource\LtiResourceLink\LtiResourceLink;
 use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
+use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +39,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OidcAuthenticationActionTest extends WebTestCase
 {
+    use LoggerTestingTrait;
+
     /** @var KernelBrowser */
     private $client;
 
@@ -46,6 +50,8 @@ class OidcAuthenticationActionTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+
+        $this->resetTestLogger();
 
         $this->registration = static::$container
             ->get(RegistrationRepositoryInterface::class)
@@ -86,6 +92,8 @@ class OidcAuthenticationActionTest extends WebTestCase
             ]
         );
 
+        $this->assertHasLogRecord('OidcAuthenticationAction: authentication success', LogLevel::INFO);
+
         $this->assertLoginAuthenticationResponse($this->client->getResponse());
     }
 
@@ -118,6 +126,8 @@ class OidcAuthenticationActionTest extends WebTestCase
             )
         );
 
+        $this->assertHasLogRecord('OidcAuthenticationAction: authentication success', LogLevel::INFO);
+
         $this->assertLoginAuthenticationResponse($this->client->getResponse());
     }
 
@@ -144,6 +154,11 @@ class OidcAuthenticationActionTest extends WebTestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
         $this->assertStringContainsString('OIDC authentication failed', (string)$response->getContent());
+
+        $this->assertHasLogRecord(
+            'OidcAuthenticationAction: OIDC authentication failed: The JWT string must have two dots',
+            LogLevel::ERROR
+        );
     }
 
     private function assertLoginAuthenticationResponse(Response $response): void
