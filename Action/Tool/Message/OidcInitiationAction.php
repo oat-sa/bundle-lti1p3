@@ -24,6 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Action\Tool\Message;
 
 use OAT\Library\Lti1p3Core\Exception\LtiExceptionInterface;
 use OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,10 +38,17 @@ class OidcInitiationAction
     /** @var OidcInitiator */
     private $initiator;
 
-    public function __construct(HttpMessageFactoryInterface $factory, OidcInitiator $initiator)
-    {
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(
+        HttpMessageFactoryInterface $factory,
+        OidcInitiator $initiator,
+        LoggerInterface $logger
+    ) {
         $this->factory = $factory;
         $this->initiator = $initiator;
+        $this->logger = $logger;
     }
 
     public function __invoke(Request $request): Response
@@ -48,9 +56,13 @@ class OidcInitiationAction
         try {
             $oidcAuthenticationRequest = $this->initiator->initiate($this->factory->createRequest($request));
 
+            $this->logger->info('OidcInitiationAction: initiation success');
+
             return new RedirectResponse($oidcAuthenticationRequest->toUrl());
 
         } catch (LtiExceptionInterface $exception) {
+            $this->logger->error(sprintf('OidcInitiationAction: %s', $exception->getMessage()));
+
             return new Response($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }

@@ -22,8 +22,11 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Tool\Message;
 
+use OAT\Bundle\Lti1p3Bundle\Tests\Traits\LoggerTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -32,6 +35,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OidcInitiationActionTest extends WebTestCase
 {
+    use LoggerTestingTrait;
+
     /** @var KernelBrowser */
     private $client;
 
@@ -41,6 +46,8 @@ class OidcInitiationActionTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+
+        $this->resetTestLogger();
 
         $this->registration = static::$container
             ->get(RegistrationRepositoryInterface::class)
@@ -60,6 +67,8 @@ class OidcInitiationActionTest extends WebTestCase
                 'lti_deployment_id' => 'deploymentId1',
             ]
         );
+
+        $this->assertHasLogRecord('OidcInitiationAction: initiation success', LogLevel::INFO);
 
         $this->assertLoginInitiationResponse($this->client->getResponse());
     }
@@ -82,6 +91,8 @@ class OidcInitiationActionTest extends WebTestCase
             )
         );
 
+        $this->assertHasLogRecord('OidcInitiationAction: initiation success', LogLevel::INFO);
+
         $this->assertLoginInitiationResponse($this->client->getResponse());
     }
 
@@ -103,6 +114,11 @@ class OidcInitiationActionTest extends WebTestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertEquals('Cannot find registration for OIDC request', (string)$response->getContent());
+
+        $this->assertHasLogRecord(
+            'OidcInitiationAction: Cannot find registration for OIDC request',
+            LogLevel::ERROR
+        );
     }
 
     public function testOidcInitiationWithInvalidDeploymentId(): void
@@ -123,6 +139,11 @@ class OidcInitiationActionTest extends WebTestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertEquals('Cannot find deployment for OIDC request', (string)$response->getContent());
+
+        $this->assertHasLogRecord(
+            'OidcInitiationAction: Cannot find deployment for OIDC request',
+            LogLevel::ERROR
+        );
     }
 
     private function assertLoginInitiationResponse(Response $response): void

@@ -23,12 +23,14 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Service;
 
 use Lcobucci\JWT\Parser;
+use OAT\Bundle\Lti1p3Bundle\Tests\Traits\LoggerTestingTrait;
 use OAT\Bundle\Lti1p3Bundle\Tests\Traits\SecurityTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
 use OAT\Library\Lti1p3Core\Service\Server\Grant\ClientAssertionCredentialsGrant;
+use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OAuth2AccessTokenCreationActionTest extends WebTestCase
 {
+    use LoggerTestingTrait;
     use SecurityTestingTrait;
 
     /** @var KernelBrowser */
@@ -50,6 +53,8 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+
+        $this->resetTestLogger();
 
         $this->registration = static::$container
             ->get(RegistrationRepositoryInterface::class)
@@ -78,6 +83,8 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
 
         $this->assertEquals($this->registration->getClientId(), $token->getClaim('aud'));
         $this->assertEquals(['allowed-scope'], $token->getClaim('scopes'));
+
+        $this->assertHasLogRecord('OAuth2AccessTokenCreationAction: access token generation success', LogLevel::INFO);
     }
 
     public function testWithInvalidScopes(): void
@@ -91,6 +98,11 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         $response = $this->client->getResponse();
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+
+        $this->assertHasLogRecord(
+            'OAuth2AccessTokenCreationAction: The requested scope is invalid, unknown, or malformed',
+            LogLevel::ERROR
+        );
     }
 
     public function testWithoutGrantType(): void
@@ -101,6 +113,11 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         );
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+
+        $this->assertHasLogRecord(
+            'OAuth2AccessTokenCreationAction: The authorization grant type is not supported by the authorization server.',
+            LogLevel::ERROR
+        );
     }
 
     public function testWithInValidClientAssertion(): void
@@ -117,6 +134,11 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         );
 
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $this->client->getResponse()->getStatusCode());
+
+        $this->assertHasLogRecord(
+            'OAuth2AccessTokenCreationAction: The user credentials were incorrect.',
+            LogLevel::ERROR
+        );
     }
 
     public function testWithInValidKeyChainIdentifier(): void
@@ -133,6 +155,11 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
         );
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+
+        $this->assertHasLogRecord(
+            'OAuth2AccessTokenCreationAction: Invalid key chain identifier',
+            LogLevel::ERROR
+        );
     }
 
     private function generateCredentials(RegistrationInterface $registration, array $scopes = []): array

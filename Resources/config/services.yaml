@@ -225,12 +225,14 @@ services:
         arguments:
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator'
+            - '@Psr\Log\LoggerInterface'
         tags: ['controller.service_arguments']
 
     OAT\Bundle\Lti1p3Bundle\Action\Platform\Message\OidcAuthenticationAction:
         arguments:
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator'
+            - '@Psr\Log\LoggerInterface'
         tags: ['controller.service_arguments']
 
     OAT\Bundle\Lti1p3Bundle\Action\Platform\Service\OAuth2AccessTokenCreationAction:
@@ -238,4 +240,5 @@ services:
             - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
             - '@OAT\Library\Lti1p3Core\Service\Server\Generator\AccessTokenResponseGenerator'
+            - '@Psr\Log\LoggerInterface'
         tags: ['controller.service_arguments']

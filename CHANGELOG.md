@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+3.2.0
+-----
+
+* Added automatic logging from platform and tool security endpoints (OIDC, OAuth2)
+
 3.1.0
 -----
 
