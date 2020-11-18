@@ -69,7 +69,6 @@ trait LoggerTestingTrait
         $this->checkTraitUsage();
 
         static::$container->get(LoggerInterface::class)->reset();
-
     }
 
     /**
