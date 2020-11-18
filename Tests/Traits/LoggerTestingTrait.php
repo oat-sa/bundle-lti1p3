@@ -79,7 +79,11 @@ trait LoggerTestingTrait
     {
         if (!is_a(static::class, KernelTestCase::class, true)) {
             throw new LogicException(
-                sprintf('The %s trait must be used in tests extending %s', LoggerTestingTrait::class, KernelTestCase::class)
+                sprintf(
+                    'The %s trait must be used in tests extending %s',
+                    LoggerTestingTrait::class,
+                    KernelTestCase::class
+                )
             );
         }
     }
