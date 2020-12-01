@@ -45,4 +45,18 @@ trait SecurityTestingTrait
             ->getToken(new Sha256(), $registration->getToolKeyChain()->getPrivateKey())
             ->__toString();
     }
+
+    private function createTestClientAccessToken(RegistrationInterface $registration, array $scopes = []): string
+    {
+        $now = Carbon::now();
+
+        return (new Builder())
+            ->permittedFor($audience ?? $registration->getClientId())
+            ->identifiedBy(uniqid())
+            ->issuedAt($now->getTimestamp())
+            ->expiresAt($now->addSeconds(3600)->getTimestamp())
+            ->withClaim('scopes', $scopes)
+            ->getToken(new Sha256(), $registration->getPlatformKeyChain()->getPrivateKey())
+            ->__toString();
+    }
 }

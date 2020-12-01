@@ -22,9 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Flow\Service;
 
-use Carbon\Carbon;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
+use OAT\Bundle\Lti1p3Bundle\Tests\Traits\SecurityTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -34,6 +32,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LtiServiceFlowTest extends WebTestCase
 {
+    use SecurityTestingTrait;
+
     /** @var KernelBrowser */
     private $client;
 
@@ -132,19 +132,8 @@ class LtiServiceFlowTest extends WebTestCase
         $this->assertStringContainsString('The JWT string must have two dots', (string)$response->getContent());
     }
 
-    private function generateCredentials(
-        RegistrationInterface $registration,
-        array $scopes = ['allowed-scope']
-    ): string {
-        $now = Carbon::now();
-
-        return (new Builder())
-            ->permittedFor($audience ?? $registration->getClientId())
-            ->identifiedBy(uniqid())
-            ->issuedAt($now->getTimestamp())
-            ->expiresAt($now->addSeconds(3600)->getTimestamp())
-            ->withClaim('scopes', $scopes)
-            ->getToken(new Sha256(), $registration->getPlatformKeyChain()->getPrivateKey())
-            ->__toString();
+    private function generateCredentials(RegistrationInterface $registration, array $scopes = ['allowed-scope']): string
+    {
+        return $this->createTestClientAccessToken($registration, $scopes);
     }
 }
