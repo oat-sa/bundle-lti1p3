@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+3.3.0
+-----
+
+* Added possibility to generate test access token to ease LTI services testing
+
 3.2.0
 -----
 
