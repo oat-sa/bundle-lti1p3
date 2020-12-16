@@ -1,5 +1,6 @@
 framework:
     test: true
+    secret: a_secret
 
 services:
     logger:

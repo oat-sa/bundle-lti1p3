@@ -10,6 +10,7 @@
         "oat-sa/lib-lti1p3-core": "^3.3",
         "symfony/framework-bundle": "^4.4 || ^5.1",
         "symfony/security-bundle": "^4.4 || ^5.1",
+        "symfony/security-http": "^4.4.1 || ^5.1",
         "symfony/yaml": "^4.4 || ^5.1",
         "symfony/psr-http-message-bridge": "^2.0"
     },
