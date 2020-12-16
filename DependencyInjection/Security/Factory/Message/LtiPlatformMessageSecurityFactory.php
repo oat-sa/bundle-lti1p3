@@ -43,11 +43,11 @@ class LtiPlatformMessageSecurityFactory implements SecurityFactoryInterface
 
     public function create(
         ContainerBuilder $container,
-        string $id,
-        array $config,
-        string $userProvider,
-        ?string $defaultEntryPoint = null
-    ): array {
+        $id,
+        $config,
+        $userProvider,
+        $defaultEntryPoint = null
+    ) {
 
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
         $container->setDefinition($providerId, new ChildDefinition(LtiPlatformMessageAuthenticationProvider::class));
