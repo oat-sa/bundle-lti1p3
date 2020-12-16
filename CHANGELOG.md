@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+3.3.1
+-----
+
+* Fixed security factories for Symfony 4.4 compatibility
+
 3.3.0
 -----
 
