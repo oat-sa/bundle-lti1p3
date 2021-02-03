@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+3.4
+-----
+
+* Added possibility to customise tools launch error handling
+
 3.3.1
 -----
 
