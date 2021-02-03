@@ -22,12 +22,9 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
-use Lcobucci\JWT\Parser;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
-use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
-use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
+use OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -46,18 +43,19 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
     /** @var HttpMessageFactoryInterface */
     private $factory;
 
-    /** @var Parser */
-    private $parser;
+    /** @var LtiToolMessageExceptionHandlerInterface */
+    private $handler;
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
-        HttpMessageFactoryInterface $factory
+        HttpMessageFactoryInterface $factory,
+        LtiToolMessageExceptionHandlerInterface $handler
     ) {
         $this->storage = $tokenStorage;
         $this->manager = $authenticationManager;
         $this->factory = $factory;
-        $this->parser = new Parser(new AssociativeDecoder());
+        $this->handler = $handler;
     }
 
     public function supports(Request $request): ?bool
@@ -75,28 +73,7 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
         try {
             $this->storage->setToken($this->manager->authenticate($token));
         } catch (Throwable $exception) {
-            $event->setResponse($this->handleErrorDelegation($exception, $request));
+            $event->setResponse($this->handler->handle($exception, $request));
         }
-    }
-
-    /**
-     * @throws Throwable
-     */
-    private function handleErrorDelegation(Throwable $exception, Request $request): RedirectResponse
-    {
-        $payload = new LtiMessagePayload($this->parser->parse($request->get('id_token')));
-
-        if (null !== $payload->getLaunchPresentation() && null !== $payload->getLaunchPresentation()->getReturnUrl()) {
-            $redirectUrl = sprintf(
-                '%s%slti_errormsg=%s',
-                $payload->getLaunchPresentation()->getReturnUrl(),
-                strpos($payload->getLaunchPresentation()->getReturnUrl(), '?') ? '&' : '?',
-                urlencode($exception->getMessage())
-            );
-
-            return new RedirectResponse($redirectUrl);
-        }
-
-        throw $exception;
     }
 }

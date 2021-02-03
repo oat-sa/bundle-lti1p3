@@ -159,6 +159,11 @@ services:
             - '@Psr\Log\LoggerInterface'
             - '@Lcobucci\JWT\Signer'
 
+    OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandler: ~
+
+    OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface:
+        alias: OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandler
+
     OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiPlatformMessageAuthenticationListener:
         arguments:
             - '@security.token_storage'
@@ -170,6 +175,7 @@ services:
             - '@security.token_storage'
             - '@security.authentication.manager'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+            - '@OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface'
 
     OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service\LtiServiceAuthenticationListener:
         arguments:

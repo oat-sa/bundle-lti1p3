@@ -158,3 +158,56 @@ class LtiLaunchAction
     }
 }
 ```
+
+### Customize launch error handling
+
+During the tool launch, errors can happen (invalid token, nonce already taken, etc).
+
+By default, via the [LtiToolMessageExceptionHandler](../../Security/Exception/LtiToolMessageExceptionHandler.php), the bundle detects if the launch provides a [launch presentation claim](http://www.imsglobal.org/spec/lti/v1p3/#launch-presentation-claim), and performs automatically the redirection to the `return_url`, if given (by appending the `lti_errormsg` query parameter containing the actual error message). If no `return_url` is given, it'll bubble up the exception.
+
+This default behaviour can be customised if you provide your own [LtiToolMessageExceptionHandlerInterface](../../Security/Exception/LtiToolMessageExceptionHandlerInterface.php) implementation.
+
+For example, if you need to translate:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Security\Exception;
+
+use OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
+
+class MyExceptionHandler implements LtiToolMessageExceptionHandlerInterface
+{
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    public function handle(Throwable $exception, Request $request): Response
+    {
+        $message = $this->translator->trans($exception->getMessage());
+
+        return new RedirectResponse(sprintf('http://platform.com/error?lti_errormsg=%s', $message));
+    }
+}
+```
+
+You then need to activate it in your application services:
+
+```yaml
+# config/services.yaml
+services:
+
+    OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface:
+        class: App\Security\Exception\MyExceptionHandler
+```
