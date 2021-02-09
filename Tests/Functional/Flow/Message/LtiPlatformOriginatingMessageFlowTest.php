@@ -95,7 +95,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
 
         $this->client->request(
             Request::METHOD_GET,
-            sprintf('%s?%s',$oidcInitLocation['path'], http_build_query($message->getParameters()))
+            sprintf('%s?%s',$oidcInitLocation['path'], http_build_query($message->getParameters()->all()))
         );
 
         $oidcInitResponse = $this->client->getResponse();
@@ -154,18 +154,16 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         $this->assertEquals(
             [
                 'successes' => [
-                    'ID token is not expired',
+                    'ID token validation success',
                     'ID token kid header is provided',
                     'ID token version claim is valid',
                     'ID token message_type claim is valid',
                     'ID token roles claim is valid',
                     'ID token user identifier (sub) claim is valid',
-                    'ID token signature validation success',
                     'ID token nonce claim is valid',
                     'ID token deployment_id claim valid for this registration',
                     'ID token message type claim LtiResourceLinkRequest requirements are valid',
-                    'State is not expired',
-                    'State signature validation success',
+                    'State validation success',
                     ],
                 'error' => NULL,
             ],
@@ -211,7 +209,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
 
         $this->client->request(
             Request::METHOD_GET,
-            sprintf('%s?%s',$oidcInitLocation['path'], http_build_query($message->getParameters()))
+            sprintf('%s?%s',$oidcInitLocation['path'], http_build_query($message->getParameters()->all()))
         );
 
         $oidcInitResponse = $this->client->getResponse();
@@ -245,7 +243,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessagePayloadInterface::TTL + 1));
 
         $expiredPayload = $messagePayloadBuilder
-            ->withMessagePayloadClaims(new MessagePayload($this->parseJwt($payload)))
+            ->withClaims($this->parseJwt($payload)->getClaims()->all())
             ->buildMessagePayload($this->registration->getPlatformKeyChain());
 
         Carbon::setTestNow();
@@ -256,7 +254,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
             Request::METHOD_POST,
             $toolLocation['path'],
             [
-                'id_token' => $expiredPayload->getToken()->__toString(),
+                'id_token' => $expiredPayload->getToken()->toString(),
                 'state' => $state,
             ]
         );
@@ -265,7 +263,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $toolResponse->getStatusCode());
         $this->assertStringContainsString(
-            'LTI tool message request authentication failed: ID token is expired',
+            'LTI tool message request authentication failed: ID token validation failure',
             $toolResponse->getContent()
         );
     }
@@ -295,7 +293,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
 
         $this->client->request(
             Request::METHOD_GET,
-            sprintf('%s?%s',$oidcInitLocation['path'], http_build_query($message->getParameters()))
+            sprintf('%s?%s',$oidcInitLocation['path'], http_build_query($message->getParameters()->all()))
         );
 
         $oidcInitResponse = $this->client->getResponse();
@@ -329,7 +327,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessagePayloadInterface::TTL + 1));
 
         $expiredPayload = $messagePayloadBuilder
-            ->withMessagePayloadClaims(new MessagePayload($this->parseJwt($payload)))
+            ->withClaims($this->parseJwt($payload)->getClaims()->all())
             ->buildMessagePayload($this->registration->getPlatformKeyChain());
 
         Carbon::setTestNow();
@@ -340,7 +338,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
             Request::METHOD_POST,
             $toolLocation['path'],
             [
-                'id_token' => $expiredPayload->getToken()->__toString(),
+                'id_token' => $expiredPayload->getToken()->toString(),
                 'state' => $state,
             ]
         );
@@ -349,7 +347,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_FOUND, $toolResponse->getStatusCode());
         $this->assertEquals(
-            'http://redirect.com?lti_errormsg=LTI+tool+message+request+authentication+failed%3A+ID+token+is+expired',
+            'http://redirect.com?lti_errormsg=LTI+tool+message+request+authentication+failed%3A+ID+token+validation+failure',
             $toolResponse->headers->get('location')
         );
     }

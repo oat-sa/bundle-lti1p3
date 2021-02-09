@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Flow\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Tests\Traits\SecurityTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
+use OAT\Library\Lti1p3Core\Tests\Traits\SecurityTestingTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,16 +65,15 @@ class LtiServiceFlowTest extends WebTestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 
         $responseData = json_decode((string)$response->getContent(), true);
-        $this->assertEquals($this->registration->getClientId(), $responseData['claims']['aud']);
+        $this->assertEquals($this->registration->getClientId(), current($responseData['claims']['aud']));
         $this->assertEquals($this->registration->getIdentifier(), $responseData['registration']);
         $this->assertEquals(['allowed-scope'], $responseData['roles']);
         $this->assertEquals($credentials, $responseData['credentials']);
         $this->assertEquals(
             [
-                'JWT access token is not expired',
                 'Registration found for client_id: client_id',
                 'Platform key chain found for registration: testRegistration',
-                'JWT access token signature is valid',
+                'JWT access token is valid',
                 'JWT access token scopes are valid'
             ],
             $responseData['validations']['successes']

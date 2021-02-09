@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service;
 
-use Lcobucci\JWT\Token;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
+use OAT\Library\Lti1p3Core\Security\Jwt\TokenInterface;
 use OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidationResult;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
@@ -54,7 +54,7 @@ class LtiServiceSecurityToken extends AbstractToken
             : null;
     }
 
-    public function getAccessToken(): ?Token
+    public function getAccessToken(): ?TokenInterface
     {
         return $this->validationResult
             ? $this->validationResult->getToken()
@@ -71,7 +71,7 @@ class LtiServiceSecurityToken extends AbstractToken
     public function getCredentials(): string
     {
         return $this->getAccessToken()
-            ? $this->getAccessToken()->__toString()
+            ? $this->getAccessToken()->toString()
             : '';
     }
 

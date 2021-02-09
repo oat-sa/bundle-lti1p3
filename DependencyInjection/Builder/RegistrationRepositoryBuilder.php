@@ -30,13 +30,14 @@ use OAT\Library\Lti1p3Core\Registration\RegistrationFactory;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory;
+use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
 use OAT\Library\Lti1p3Core\Tool\ToolFactory;
 use OAT\Library\Lti1p3Core\Tool\ToolInterface;
 
 class RegistrationRepositoryBuilder
 {
-    /** @var KeyChainFactory */
+    /** @var KeyChainFactoryInterface */
     private $keyChainFactory;
 
     /** @var PlatformFactory */

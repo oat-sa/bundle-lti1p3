@@ -22,35 +22,39 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Repository;
 
+use OAT\Library\Lti1p3Core\Util\Collection\Collection;
+use OAT\Library\Lti1p3Core\Util\Collection\CollectionInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 
 class RegistrationRepository implements RegistrationRepositoryInterface
 {
-    /** @var RegistrationInterface[] */
+    /** @var CollectionInterface|RegistrationInterface[] */
     private $registrations;
 
-    /** @param RegistrationInterface[] $registrations */
     public function __construct(array $registrations = [])
     {
+        $this->registrations = new Collection();
+
         foreach ($registrations as $registration) {
-            $this->registrations[$registration->getIdentifier()] = $registration;
+            /** @param RegistrationInterface $registration */
+            $this->registrations->set($registration->getIdentifier(), $registration);
         }
     }
 
     public function find(string $identifier): ?RegistrationInterface
     {
-        return $this->registrations[$identifier] ?? null;
+        return $this->registrations->get($identifier);
     }
 
     public function findAll(): array
     {
-        return $this->registrations;
+        return $this->registrations->all();
     }
 
     public function findByClientId(string $clientId): ?RegistrationInterface
     {
-        foreach ($this->registrations as $registration) {
+        foreach ($this->registrations->all() as $registration) {
             if ($registration->getClientId() === $clientId) {
                 return $registration;
             }
@@ -61,7 +65,7 @@ class RegistrationRepository implements RegistrationRepositoryInterface
 
     public function findByPlatformIssuer(string $issuer, string $clientId = null): ?RegistrationInterface
     {
-        foreach ($this->registrations as $registration) {
+        foreach ($this->registrations->all() as $registration) {
             if ($registration->getPlatform()->getAudience() === $issuer) {
                 if (null !== $clientId) {
                     if ($registration->getClientId() === $clientId) {
@@ -78,7 +82,7 @@ class RegistrationRepository implements RegistrationRepositoryInterface
 
     public function findByToolIssuer(string $issuer, string $clientId = null): ?RegistrationInterface
     {
-        foreach ($this->registrations as $registration) {
+        foreach ($this->registrations->all() as $registration) {
             if ($registration->getTool()->getAudience() === $issuer) {
                 if (null !== $clientId) {
                     if ($registration->getClientId() === $clientId) {

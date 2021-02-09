@@ -22,16 +22,16 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder;
 
-use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory;
+use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
 
 class KeyChainRepositoryBuilder
 {
-    /** @var KeyChainFactory */
+    /** @var KeyChainFactoryInterface */
     private $factory;
 
-    public function __construct(KeyChainFactory $factory)
+    public function __construct(KeyChainFactoryInterface $factory)
     {
         $this->factory = $factory;
     }

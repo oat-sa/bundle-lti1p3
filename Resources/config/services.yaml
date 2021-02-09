@@ -8,15 +8,6 @@ services:
     GuzzleHttp\ClientInterface:
         class: GuzzleHttp\Client
 
-    Lcobucci\JWT\Builder: ~
-
-    Lcobucci\JWT\Parsing\Encoder: ~
-
-    Lcobucci\JWT\Parser: ~
-
-    Lcobucci\JWT\Signer:
-        class: Lcobucci\JWT\Signer\Rsa\Sha256
-
     Nyholm\Psr7\Factory\Psr17Factory: ~
 
     Nyholm\Psr7\Factory\HttplugFactory: ~
@@ -36,7 +27,8 @@ services:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface'
             - '@Psr\Log\LoggerInterface'
-            - '@Lcobucci\JWT\Signer'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
     League\OAuth2\Server\Repositories\ScopeRepositoryInterface:
         class: OAT\Library\Lti1p3Core\Service\Server\Repository\ScopeRepository
@@ -60,7 +52,29 @@ services:
         class: Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory
 
     ########### Core lib services
-    OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory: ~
+    OAT\Library\Lti1p3Core\Security\Jwt\Signer\SignerFactory: ~
+
+    OAT\Library\Lti1p3Core\Security\Jwt\Converter\KeyConverter: ~
+
+    OAT\Library\Lti1p3Core\Security\Jwt\Configuration\ConfigurationFactory: ~
+
+    OAT\Library\Lti1p3Core\Security\Jwt\Builder\BuilderInterface:
+        class: OAT\Library\Lti1p3Core\Security\Jwt\Builder\Builder
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Configuration\ConfigurationFactory'
+
+    OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface:
+        class: OAT\Library\Lti1p3Core\Security\Jwt\Parser\Parser
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Configuration\ConfigurationFactory'
+
+    OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface:
+        class: OAT\Library\Lti1p3Core\Security\Jwt\Validator\Validator
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Configuration\ConfigurationFactory'
+
+    OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface:
+        class: OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory
 
     OAT\Library\Lti1p3Core\Platform\PlatformFactory: ~
 
@@ -78,8 +92,7 @@ services:
     OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilder:
         arguments:
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceGeneratorInterface'
-            - '@Lcobucci\JWT\Builder'
-            - '@Lcobucci\JWT\Signer'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Builder\BuilderInterface'
 
     OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface:
         class: OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilder
@@ -95,11 +108,11 @@ services:
         alias: OAT\Bundle\Lti1p3Bundle\Repository\RegistrationRepository
 
     OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\KeyChainRepositoryBuilder:
-        arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory']
+        arguments: ['@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface']
 
     OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder\RegistrationRepositoryBuilder:
         arguments:
-            - '@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory'
+            - '@OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface'
             - '@OAT\Library\Lti1p3Core\Platform\PlatformFactory'
             - '@OAT\Library\Lti1p3Core\Tool\ToolFactory'
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationFactory'
@@ -132,21 +145,24 @@ services:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface'
             - '@OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface'
-            - '@Lcobucci\JWT\Signer'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
     OAT\Library\Lti1p3Core\Message\Launch\Validator\PlatformLaunchValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface'
-            - '@Lcobucci\JWT\Signer'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
     OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface'
-            - '@Lcobucci\JWT\Signer'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
     OAT\Library\Lti1p3Core\Service\Server\Generator\AccessTokenResponseGenerator:
         arguments:
@@ -157,9 +173,12 @@ services:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@Psr\Log\LoggerInterface'
-            - '@Lcobucci\JWT\Signer'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
-    OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandler: ~
+    OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandler:
+        arguments:
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
     OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface:
         alias: OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandler
@@ -217,8 +236,7 @@ services:
         arguments:
             - '@Psr\Cache\CacheItemPoolInterface'
             - '@GuzzleHttp\ClientInterface'
-            - '@Lcobucci\JWT\Signer'
-            - '@Lcobucci\JWT\Builder'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Builder\BuilderInterface'
         public: true
 
     ########### Endpoints
