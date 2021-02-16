@@ -47,7 +47,7 @@ class MyToolAction
         $message = $this->builder->buildToolOriginatingLaunch(
             $this->repository->find('local'),
             LtiMessageInterface::LTI_MESSAGE_TYPE_RESOURCE_LINK_REQUEST,
-            'http://platform.com/return',
+            'http://platform.com/return'
         );
 
         return new Response($message->toHtmlRedirectForm()); // has to be used this way due to the expected form POST platform side

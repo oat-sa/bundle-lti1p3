@@ -25,6 +25,7 @@ namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Builder;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepository;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
+use OAT\Library\Lti1p3Core\Security\Key\KeyInterface;
 
 class KeyChainRepositoryBuilder
 {
@@ -47,7 +48,8 @@ class KeyChainRepositoryBuilder
                     $keyData['key_set_name'],
                     $keyData['public_key'],
                     $keyData['private_key'] ?? null,
-                    $keyData['private_key_passphrase'] ?? null
+                    $keyData['private_key_passphrase'] ?? null,
+                    $keyData['algorithm'] ?? KeyInterface::ALG_RS256
                 )
             );
         }

@@ -25,7 +25,6 @@ namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Tool\Message;
 use OAT\Bundle\Lti1p3Bundle\Tests\Traits\LoggerTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

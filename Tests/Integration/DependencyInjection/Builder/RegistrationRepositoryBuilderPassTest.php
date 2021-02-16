@@ -32,6 +32,8 @@ use OAT\Library\Lti1p3Core\Registration\RegistrationFactory;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory;
+use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
+use OAT\Library\Lti1p3Core\Security\Key\KeyInterface;
 use OAT\Library\Lti1p3Core\Tool\ToolFactory;
 use OAT\Library\Lti1p3Core\Tool\ToolInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -60,6 +62,7 @@ class RegistrationRepositoryBuilderPassTest extends KernelTestCase
 
         $this->assertInstanceOf(RegistrationRepository::class, $repository);
 
+        /** @var RegistrationInterface $registration */
         $registration = $repository->find('testRegistration');
 
         $this->assertInstanceOf(RegistrationInterface::class, $registration);
@@ -67,6 +70,9 @@ class RegistrationRepositoryBuilderPassTest extends KernelTestCase
         $this->assertEquals('client_id', $registration->getClientId());
         $this->assertInstanceOf(PlatformInterface::class, $registration->getPlatform());
         $this->assertInstanceOf(ToolInterface::class, $registration->getTool());
+        $this->assertInstanceOf(KeyChainInterface::class, $registration->getToolKeyChain());
+        $this->assertInstanceOf(KeyChainInterface::class, $registration->getPlatformKeyChain());
+        $this->assertEquals(KeyInterface::ALG_RS256, $registration->getPlatformKeyChain()->getPublicKey()->getAlgorithm());
     }
 
     public function testBuildFailsOnInvalidPlatform(): void
@@ -110,10 +116,10 @@ class RegistrationRepositoryBuilderPassTest extends KernelTestCase
         return [
             'key_chains' => [
                 'kid1' => [
-                'key_set_name' => 'platformSet',
-                'public_key' => 'file://%kernel.project_dir%/Tests/Resources/Keys/public.key',
-                'private_key' => 'file://%kernel.project_dir%/Tests/Resources/Keys/private.key',
-                'private_key_passphrase' => null,
+                    'key_set_name' => 'platformSet',
+                    'public_key' => 'file://%kernel.project_dir%/Tests/Resources/Keys/public.key',
+                    'private_key' => 'file://%kernel.project_dir%/Tests/Resources/Keys/private.key',
+                    'private_key_passphrase' => null,
                 ],
                 'kid2' => [
                     'key_set_name' => 'toolSet',

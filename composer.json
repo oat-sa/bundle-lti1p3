@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.2.0",
         "ext-json": "*",
-        "oat-sa/lib-lti1p3-core": "dev-feature/php8",
+        "oat-sa/lib-lti1p3-core": "^4.0",
         "symfony/framework-bundle": "^4.4 || ^5.1",
         "symfony/security-bundle": "^4.4 || ^5.1",
         "symfony/security-http": "^4.4.1 || ^5.1",
