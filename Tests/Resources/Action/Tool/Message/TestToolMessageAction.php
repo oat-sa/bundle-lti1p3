@@ -57,7 +57,7 @@ class TestToolMessageAction
             ],
             'registration' => $token->getRegistration()->getIdentifier(),
             'credentials' => $token->getCredentials(),
-            'state' => $token->getState()->getToken()->__toString()
+            'state' => $token->getState()->getToken()->toString()
         ]);
     }
 }

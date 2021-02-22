@@ -22,14 +22,13 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Service;
 
-use Lcobucci\JWT\Parser;
 use OAT\Bundle\Lti1p3Bundle\Tests\Traits\LoggerTestingTrait;
-use OAT\Bundle\Lti1p3Bundle\Tests\Traits\SecurityTestingTrait;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
 use OAT\Library\Lti1p3Core\Service\Server\Grant\ClientAssertionCredentialsGrant;
+use OAT\Library\Lti1p3Core\Tests\Traits\SecurityTestingTrait;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -79,10 +78,10 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
 
         $responseData = json_decode((string)$response->getContent(), true);
 
-        $token = (new Parser())->parse($responseData['access_token']);
+        $token = $this->parseJwt($responseData['access_token']);
 
-        $this->assertEquals($this->registration->getClientId(), $token->getClaim('aud'));
-        $this->assertEquals(['allowed-scope'], $token->getClaim('scopes'));
+        $this->assertEquals($this->registration->getClientId(), current($token->getClaims()->get('aud')));
+        $this->assertEquals(['allowed-scope'], $token->getClaims()->get('scopes'));
 
         $this->assertHasLogRecord('OAuth2AccessTokenCreationAction: access token generation success', LogLevel::INFO);
     }

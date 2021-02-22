@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Action\Platform\Message;
 
-use Lcobucci\JWT\Parser;
 use OAT\Bundle\Lti1p3Bundle\Tests\Traits\LoggerTestingTrait;
 use OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder;
 use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
@@ -30,7 +29,7 @@ use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Resource\LtiResourceLink\LtiResourceLink;
-use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
+use OAT\Library\Lti1p3Core\Tests\Traits\SecurityTestingTrait;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -40,6 +39,7 @@ use Symfony\Component\HttpFoundation\Response;
 class OidcAuthenticationActionTest extends WebTestCase
 {
     use LoggerTestingTrait;
+    use SecurityTestingTrait;
 
     /** @var KernelBrowser */
     private $client;
@@ -87,8 +87,8 @@ class OidcAuthenticationActionTest extends WebTestCase
                 'response_mode' => 'form_post',
                 'nonce' => 'nonce',
                 'prompt' => 'none',
-                'lti_message_hint' => $message->getMandatoryParameter('lti_message_hint'),
-                'lti_deploymentId' => $message->getMandatoryParameter('lti_deployment_id'),
+                'lti_message_hint' => $message->getParameters()->getMandatory('lti_message_hint'),
+                'lti_deploymentId' => $message->getParameters()->getMandatory('lti_deployment_id'),
             ]
         );
 
@@ -120,8 +120,8 @@ class OidcAuthenticationActionTest extends WebTestCase
                     'response_mode' => 'form_post',
                     'nonce' => 'nonce',
                     'prompt' => 'none',
-                    'lti_message_hint' => $message->getMandatoryParameter('lti_message_hint'),
-                    'lti_deploymentId' => $message->getMandatoryParameter('lti_deployment_id'),
+                    'lti_message_hint' => $message->getParameters()->getMandatory('lti_message_hint'),
+                    'lti_deploymentId' => $message->getParameters()->getMandatory('lti_deployment_id'),
                 ])
             )
         );
@@ -153,10 +153,14 @@ class OidcAuthenticationActionTest extends WebTestCase
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertStringContainsString('OIDC authentication failed', (string)$response->getContent());
+
+        $this->assertStringContainsString(
+            'Cannot parse token: The JWT string must have two dots',
+            (string)$response->getContent()
+        );
 
         $this->assertHasLogRecord(
-            'OidcAuthenticationAction: OIDC authentication failed: The JWT string must have two dots',
+            'OidcAuthenticationAction: Cannot parse token: The JWT string must have two dots',
             LogLevel::ERROR
         );
     }
@@ -177,7 +181,7 @@ class OidcAuthenticationActionTest extends WebTestCase
             $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value')
         );
 
-        $payload = new LtiMessagePayload((new Parser(new AssociativeDecoder()))->parse(
+        $payload = new LtiMessagePayload($this->parseJwt(
             $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value')
         ));
 

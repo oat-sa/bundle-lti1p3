@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+4.0.0
+-----
+
+* Added PHP 8 support (and kept >=7.2)
+* Added possibility to use keys with algorithms RS256/384/512, HS256/384/512 or ES256/384/512
+* Updated oat-sa/lib-lti1p3-core dependency to version 4.0
+* Updated RegistrationRepository to use oat-sa/lib-lti1p3-core collections  
+* Updated documentation
+
 3.4.0
 -----
 
@@ -26,7 +35,7 @@ CHANGELOG
 
 * Added possibility to configure handled scopes for service access token generator
 * Added possibility to configure allowed scopes per service firewall
-* Upgraded for oat-sa/lib-lti1p3-core version 3.2.0
+* Updated oat-sa/lib-lti1p3-core dependency to version 3.2.0
 * Updated documentation
 
 3.0.0
