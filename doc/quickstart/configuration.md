@@ -83,6 +83,7 @@ lti1p3:
             public_key: "file://path/to/public.key"    # [required] path / content of the public key
             private_key: "file://path/to/private.key"  # [optional] path / content of the private key
             private_key_passphrase: '...'              # [optional] private key passphrase
+            algorithm: 'RS256'                         # [optional] keys algorithm (default: RS256)
 ```
 **Notes**:
 - the unique identifier `myKey` can be used from the [KeyChainRepositoryInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Security/Key/KeyChainRepositoryInterface.php#L27)

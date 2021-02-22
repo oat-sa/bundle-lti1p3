@@ -64,7 +64,7 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
     public function getCredentials(): string
     {
         return $this->getPayload()
-            ? $this->getPayload()->getToken()->__toString()
+            ? $this->getPayload()->getToken()->toString()
             : '';
     }
 

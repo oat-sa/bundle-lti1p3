@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Exception;
 
-use Lcobucci\JWT\Parser;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayload;
-use OAT\Library\Lti1p3Core\Security\Jwt\AssociativeDecoder;
+use OAT\Library\Lti1p3Core\Security\Jwt\Parser\Parser;
+use OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,12 +32,12 @@ use Throwable;
 
 class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerInterface
 {
-    /** @var Parser */
+    /** @var ParserInterface */
     private $parser;
 
-    public function __construct()
+    public function __construct(ParserInterface $parser = null)
     {
-        $this->parser = new Parser(new AssociativeDecoder());
+        $this->parser = $parser ?? new Parser();
     }
 
     /**

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection;
 
+use OAT\Library\Lti1p3Core\Security\Key\KeyInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -71,6 +72,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('public_key')->isRequired()->end()
                             ->scalarNode('private_key')->end()
                             ->scalarNode('private_key_passphrase')->end()
+                            ->scalarNode('algorithm')->defaultValue(KeyInterface::ALG_RS256)->end()
                         ->end()
                     ->end()
                 ->end()

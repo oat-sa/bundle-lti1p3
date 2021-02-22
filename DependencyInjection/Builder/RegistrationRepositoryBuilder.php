@@ -29,14 +29,15 @@ use OAT\Library\Lti1p3Core\Platform\PlatformInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationFactory;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
-use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactory;
+use OAT\Library\Lti1p3Core\Security\Key\KeyChainFactoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
+use OAT\Library\Lti1p3Core\Security\Key\KeyInterface;
 use OAT\Library\Lti1p3Core\Tool\ToolFactory;
 use OAT\Library\Lti1p3Core\Tool\ToolInterface;
 
 class RegistrationRepositoryBuilder
 {
-    /** @var KeyChainFactory */
+    /** @var KeyChainFactoryInterface */
     private $keyChainFactory;
 
     /** @var PlatformFactory */
@@ -49,7 +50,7 @@ class RegistrationRepositoryBuilder
     private $registrationFactory;
 
     public function __construct(
-        KeyChainFactory $keyChainFactory,
+        KeyChainFactoryInterface $keyChainFactory,
         PlatformFactory $platformFactory,
         ToolFactory $toolFactory,
         RegistrationFactory $registrationFactory
@@ -85,7 +86,8 @@ class RegistrationRepositoryBuilder
                 $keyData['key_set_name'],
                 $keyData['public_key'],
                 $keyData['private_key'],
-                $keyData['private_key_passphrase']
+                $keyData['private_key_passphrase'],
+                $keyData['algorithm'] ?? KeyInterface::ALG_RS256
             );
 
             $keyChains[$keyId] = $keyChain;

@@ -77,7 +77,7 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
                 [],
                 $this->registration->getPlatformKeyChain()->getPrivateKey()
             )
-            ->__toString();
+            ->toString();
 
         $message = $this->builder->buildToolOriginatingLaunch(
             $this->registration,
@@ -112,11 +112,10 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
         $this->assertEquals(
             [
                 'successes' => [
-                    'JWT is not expired',
+                    'JWT validation success',
                     'JWT kid header is provided',
                     'JWT version claim is valid',
                     'JWT message_type claim is valid',
-                    'JWT signature validation success',
                     'JWT nonce claim is valid',
                     'JWT deployment_id claim valid for this registration',
                     'JWT message type claim LtiDeepLinkingResponse requirements are valid',
@@ -160,7 +159,7 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $platformResponse->getStatusCode());
         $this->assertStringContainsString(
-            'LTI platform message request authentication failed: JWT is expired',
+            'LTI platform message request authentication failed: JWT validation failure',
             $platformResponse->getContent()
         );
     }

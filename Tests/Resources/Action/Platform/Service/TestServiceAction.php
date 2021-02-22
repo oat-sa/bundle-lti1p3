@@ -42,7 +42,7 @@ class TestServiceAction
         $token = $this->security->getToken();
 
         return new JsonResponse([
-            'claims' => $token->getAccessToken()->getClaims(),
+            'claims' => $token->getAccessToken()->getClaims()->all(),
             'roles' => $token->getRoleNames(),
             'validations' => [
                 'successes' => $token->getValidationResult()->getSuccesses(),
