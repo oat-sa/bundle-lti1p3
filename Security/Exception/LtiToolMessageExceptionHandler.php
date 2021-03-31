@@ -35,7 +35,7 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
     /** @var ParserInterface */
     private $parser;
 
-    public function __construct(ParserInterface $parser = null)
+    public function __construct(?ParserInterface $parser = null)
     {
         $this->parser = $parser ?? new Parser();
     }
@@ -47,11 +47,13 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
     {
         $payload = new LtiMessagePayload($this->parser->parse($request->get('id_token')));
 
-        if (null !== $payload->getLaunchPresentation() && null !== $payload->getLaunchPresentation()->getReturnUrl()) {
+        $launchPresentation = $payload->getLaunchPresentation();
+
+        if (null !== $launchPresentation && null !== $launchPresentation->getReturnUrl()) {
             $redirectUrl = sprintf(
                 '%s%slti_errormsg=%s',
-                $payload->getLaunchPresentation()->getReturnUrl(),
-                strpos($payload->getLaunchPresentation()->getReturnUrl(), '?') ? '&' : '?',
+                $launchPresentation->getReturnUrl(),
+                strpos($launchPresentation->getReturnUrl(), '?') ? '&' : '?',
                 urlencode($exception->getMessage())
             );
 

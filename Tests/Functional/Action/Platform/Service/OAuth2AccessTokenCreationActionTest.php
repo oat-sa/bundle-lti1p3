@@ -27,7 +27,7 @@ use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainInterface;
 use OAT\Library\Lti1p3Core\Security\Key\KeyChainRepositoryInterface;
-use OAT\Library\Lti1p3Core\Service\Server\Grant\ClientAssertionCredentialsGrant;
+use OAT\Library\Lti1p3Core\Security\OAuth2\Grant\ClientAssertionCredentialsGrant;
 use OAT\Library\Lti1p3Core\Tests\Traits\SecurityTestingTrait;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;

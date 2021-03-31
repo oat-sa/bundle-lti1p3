@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+5.0.0
+-----
+
+* Added psalm support
+* Updated oat-sa/lib-lti1p3-core dependency to version 5.0
+* Updated documentation
+
 4.0.0
 -----
 

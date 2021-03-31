@@ -92,7 +92,7 @@ Pragma: no-cache
 **Notes**:
 - a `HTTP 400` response is returned if the requested scopes are not configured, or invalid
 - a `HTTP 401` response is returned if the client assertion cannot match a registered tool
-- to automate (and cache) authentication grants from the tools side, a [ServiceClient](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Service/Client/ServiceClient.php) is ready to use for your LTI service calls as explained [here](tool.md)
+- to automate (and cache) authentication grants from the tools side, a [LtiServiceClient](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Service/Client/LtiServiceClient.php) is ready to use for your LTI service calls as explained [here](tool.md)
 
 ## Protecting platform service endpoints
 
