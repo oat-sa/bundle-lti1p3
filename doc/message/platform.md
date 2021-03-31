@@ -164,16 +164,18 @@ For example:
 
 namespace App\Security\User;
 
-use OAT\Library\Lti1p3Core\Security\User\UserAuthenticationResult;
-use OAT\Library\Lti1p3Core\Security\User\UserAuthenticationResultInterface;
+use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
+use OAT\Library\Lti1p3Core\Security\User\Result\UserAuthenticationResult;
+use OAT\Library\Lti1p3Core\Security\User\Result\UserAuthenticationResultInterface;
 use OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface;
 use OAT\Library\Lti1p3Core\User\UserIdentity;
 
 class UserAuthenticator implements UserAuthenticatorInterface
 {
-    public function authenticate(string $loginHint): UserAuthenticationResultInterface
+    public function authenticate(RegistrationInterface $registration, string $loginHint): UserAuthenticationResultInterface
     {
-        // Perform user authentication based on the login hint (ex: owned session, LDAP, external auth service, etc)
+        // Perform user authentication based on the registration and login hint
+        // (ex: owned session, LDAP, external auth service, etc)
         ...       
 
         return new UserAuthenticationResult(

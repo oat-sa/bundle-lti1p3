@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Action\Platform\Service;
 
 use League\OAuth2\Server\Exception\OAuthServerException;
-use OAT\Library\Lti1p3Core\Service\Server\Generator\AccessTokenResponseGenerator;
+use OAT\Library\Lti1p3Core\Security\OAuth2\Generator\AccessTokenResponseGenerator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
