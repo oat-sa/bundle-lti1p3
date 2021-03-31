@@ -24,7 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service;
 
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Security\Jwt\TokenInterface;
-use OAT\Library\Lti1p3Core\Service\Server\Validator\AccessTokenRequestValidationResult;
+use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResult;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class LtiServiceSecurityToken extends AbstractToken
@@ -32,17 +32,17 @@ class LtiServiceSecurityToken extends AbstractToken
     /** @var string[] */
     private $roleNames;
 
-    /** @var AccessTokenRequestValidationResult|null */
+    /** @var RequestAccessTokenValidationResult|null */
     private $validationResult;
 
-    public function __construct(AccessTokenRequestValidationResult $validationResult = null)
+    public function __construct(?RequestAccessTokenValidationResult $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
         parent::__construct($this->roleNames);
     }
 
-    public function getValidationResult(): ?AccessTokenRequestValidationResult
+    public function getValidationResult(): ?RequestAccessTokenValidationResult
     {
         return $this->validationResult;
     }
@@ -70,8 +70,10 @@ class LtiServiceSecurityToken extends AbstractToken
 
     public function getCredentials(): string
     {
-        return $this->getAccessToken()
-            ? $this->getAccessToken()->toString()
+        $accessToken = $this->getAccessToken();
+
+        return $accessToken
+            ? $accessToken->toString()
             : '';
     }
 
@@ -80,17 +82,19 @@ class LtiServiceSecurityToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(AccessTokenRequestValidationResult $validationResult = null): void
+    private function applyValidationResult(?RequestAccessTokenValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 
         if (null !== $this->validationResult) {
 
-            if (null !== $validationResult->getRegistration()) {
-                $this->setUser($validationResult->getRegistration()->getTool()->getName());
+            $registration = $this->validationResult->getRegistration();
+
+            if (null !== $registration) {
+                $this->setUser($registration->getTool()->getName());
             }
 
-            $this->roleNames = $validationResult->getScopes();
+            $this->roleNames = $this->validationResult->getScopes();
 
             $this->setAuthenticated(!$this->validationResult->hasError());
         } else {

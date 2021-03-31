@@ -24,7 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Tests\Integration\DependencyInjection\Compiler
 
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use OAT\Bundle\Lti1p3Bundle\Tests\Resources\Kernel\Lti1p3TestKernel;
-use OAT\Library\Lti1p3Core\Service\Server\Entity\Scope;
+use OAT\Library\Lti1p3Core\Security\OAuth2\Entity\Scope;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /** @see Lti1p3TestKernel */

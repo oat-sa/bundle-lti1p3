@@ -22,14 +22,15 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Security\User;
 
-use OAT\Library\Lti1p3Core\Security\User\UserAuthenticationResult;
-use OAT\Library\Lti1p3Core\Security\User\UserAuthenticationResultInterface;
+use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
+use OAT\Library\Lti1p3Core\Security\User\Result\UserAuthenticationResult;
+use OAT\Library\Lti1p3Core\Security\User\Result\UserAuthenticationResultInterface;
 use OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface;
 use OAT\Library\Lti1p3Core\User\UserIdentity;
 
 class TestUserAuthenticator implements UserAuthenticatorInterface
 {
-    public function authenticate(string $loginHint): UserAuthenticationResultInterface
+    public function authenticate(RegistrationInterface $registration, string $loginHint): UserAuthenticationResultInterface
     {
         return new UserAuthenticationResult(true, new UserIdentity($loginHint));
     }

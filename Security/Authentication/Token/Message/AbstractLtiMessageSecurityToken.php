@@ -35,7 +35,7 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
     /** @var LaunchValidationResult|null */
     protected $validationResult;
 
-    public function __construct(LaunchValidationResult $validationResult = null)
+    public function __construct(?LaunchValidationResult $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
@@ -63,8 +63,10 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
 
     public function getCredentials(): string
     {
-        return $this->getPayload()
-            ? $this->getPayload()->getToken()->toString()
+        $payload = $this->getPayload();
+
+        return $payload
+            ? $payload->getToken()->toString()
             : '';
     }
 
@@ -73,5 +75,5 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
         return $this->roleNames;
     }
 
-    abstract protected function applyValidationResult(LaunchValidationResult $validationResult = null): void;
+    abstract protected function applyValidationResult(?LaunchValidationResult $validationResult = null): void;
 }
