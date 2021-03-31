@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<psalm
+        autoloader="vendor/autoload.php"
+        errorLevel="3"
+        hideExternalErrors="true"
+        useDocblockTypes="false"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="Action"/>
+        <directory name="DependencyInjection"/>
+        <directory name="Repository"/>
+        <directory name="Security"/>
+        <ignoreFiles>
+            <directory name="doc"/>
+            <directory name="Resources"/>
+            <directory name="Tests"/>
+        </ignoreFiles>
+    </projectFiles>
+    <issueHandlers>
+        <ArgumentTypeCoercion>
+            <errorLevel type="suppress">
+                <file name="DependencyInjection/Configuration.php"/>
+            </errorLevel>
+        </ArgumentTypeCoercion>
+        <ParamNameMismatch>
+            <errorLevel type="suppress">
+                <file name="DependencyInjection/Security/Factory/Message/LtiToolMessageSecurityFactory.php"/>
+                <file name="DependencyInjection/Security/Factory/Message/LtiPlatformMessageSecurityFactory.php"/>
+                <file name="DependencyInjection/Security/Factory/Service/LtiServiceSecurityFactory.php"/>
+            </errorLevel>
+        </ParamNameMismatch>
+        <UndefinedMethod>
+            <errorLevel type="suppress">
+                <file name="DependencyInjection/Security/Factory/Service/LtiServiceSecurityFactory.php"/>
+            </errorLevel>
+        </UndefinedMethod>
+    </issueHandlers>
+    <mockClasses>
+        <class name="PHPUnit\Framework\MockObject\MockObject"/>
+    </mockClasses>
+    <plugins>
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+    </plugins>
+</psalm>

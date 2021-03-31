@@ -34,18 +34,22 @@ class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
             : null;
     }
 
-    protected function applyValidationResult(LaunchValidationResult $validationResult = null): void
+    protected function applyValidationResult(?LaunchValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 
         if (null !== $this->validationResult) {
-            $userIdentity = $validationResult->getPayload()->getUserIdentity();
+            $payload = $this->validationResult->getPayload();
 
-            if (null !== $userIdentity) {
-                $this->setUser($userIdentity->getIdentifier());
+            if (null !== $payload) {
+                $userIdentity = $payload->getUserIdentity();
+
+                if (null !== $userIdentity) {
+                    $this->setUser($userIdentity->getIdentifier());
+                }
+
+                $this->roleNames = $payload->getRoles();
             }
-
-            $this->roleNames = $validationResult->getPayload()->getRoles();
 
             $this->setAuthenticated(!$this->validationResult->hasError());
         } else {

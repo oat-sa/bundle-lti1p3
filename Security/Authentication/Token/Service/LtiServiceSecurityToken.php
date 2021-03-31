@@ -35,7 +35,7 @@ class LtiServiceSecurityToken extends AbstractToken
     /** @var RequestAccessTokenValidationResult|null */
     private $validationResult;
 
-    public function __construct(RequestAccessTokenValidationResult $validationResult = null)
+    public function __construct(?RequestAccessTokenValidationResult $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
@@ -70,8 +70,10 @@ class LtiServiceSecurityToken extends AbstractToken
 
     public function getCredentials(): string
     {
-        return $this->getAccessToken()
-            ? $this->getAccessToken()->toString()
+        $accessToken = $this->getAccessToken();
+
+        return $accessToken
+            ? $accessToken->toString()
             : '';
     }
 
@@ -80,17 +82,19 @@ class LtiServiceSecurityToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(RequestAccessTokenValidationResult $validationResult = null): void
+    private function applyValidationResult(?RequestAccessTokenValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 
         if (null !== $this->validationResult) {
 
-            if (null !== $validationResult->getRegistration()) {
-                $this->setUser($validationResult->getRegistration()->getTool()->getName());
+            $registration = $this->validationResult->getRegistration();
+
+            if (null !== $registration) {
+                $this->setUser($registration->getTool()->getName());
             }
 
-            $this->roleNames = $validationResult->getScopes();
+            $this->roleNames = $this->validationResult->getScopes();
 
             $this->setAuthenticated(!$this->validationResult->hasError());
         } else {

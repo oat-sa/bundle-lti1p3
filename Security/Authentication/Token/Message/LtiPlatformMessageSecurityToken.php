@@ -26,7 +26,7 @@ use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResul
 
 class LtiPlatformMessageSecurityToken extends AbstractLtiMessageSecurityToken
 {
-    protected function applyValidationResult(LaunchValidationResult $validationResult = null): void
+    protected function applyValidationResult(?LaunchValidationResult $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 
