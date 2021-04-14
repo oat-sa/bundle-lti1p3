@@ -13,12 +13,12 @@ jobs:
         coverage: ["true"]
         extra-composer-params: [""]
         include:
-        - php: [7.2]
-          coverage: ["true"]
-          extra-composer-params: ["--prefer-lowest --prefer-stable"]
-        - php: [8.0]
-          coverage: ["false"] # PHPUnit 8.5.14 doesn't support code coverage under PHP 8
-          extra-composer-params: [""]
+        - php: 7.2
+          coverage: "true"
+          extra-composer-params: "--prefer-lowest --prefer-stable"
+        - php: 8.0
+          coverage: "false" # PHPUnit 8.5.14 doesn't support code coverage under PHP 8
+          extra-composer-params: ""
 
     steps:
     - name: Checkout
