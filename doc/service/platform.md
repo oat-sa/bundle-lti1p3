@@ -183,7 +183,7 @@ class LineItemAction
 
 We provide a [collection of LTI libraries](https://github.com/oat-sa?q=lti1p3&type=&language=&sort=) to offer LTI capabilities (NRPS, AGS, basic outcomes, etc) to your application.
 
-The bundle offers you a way to easily integrate them when it comes to offer LTI services endpoints:
+The bundle provides a way to easily integrate them when it comes to expose LTI services endpoints:
 - the core [LtiServiceServerRequestHandlerInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Service/Server/Handler/LtiServiceServerRequestHandlerInterface.php) is implemented by those libraries to provide their service endpoints logic
 - the bundle [LtiServiceServerHttpFoundationRequestHandlerInterface](../../Service/Server/Handler/LtiServiceServerHttpFoundationRequestHandlerInterface.php) symfony service automates any `LtiServiceServerRequestHandlerInterface` implementation execution
 - the bundle [LtiServiceServerHttpFoundationRequestHandlerFactoryInterface](../../Service/Server/Factory/LtiServiceServerHttpFoundationRequestHandlerFactoryInterface.php) symfony service can be used to ease the `LtiServiceServerHttpFoundationRequestHandlerInterface` creation (symfony service factory)
