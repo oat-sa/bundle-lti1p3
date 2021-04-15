@@ -64,6 +64,23 @@ trait LoggerTestingTrait
     /**
      * @throws LogicException
      */
+    protected function assertHasLogRecordThatContains($record, $level): void
+    {
+        $this->checkLoggerTestingTraitUsage();
+
+        $this->assertTrue(
+            static::$container->get(LoggerInterface::class)->hasRecordThatContains($record, $level),
+            sprintf(
+                'Failed asserting that logger contains record containing: [%s] %s',
+                $level,
+                is_string($record) ? $record : json_encode($record)
+            )
+        );
+    }
+
+    /**
+     * @throws LogicException
+     */
     protected function resetTestLogger(): void
     {
         $this->checkLoggerTestingTraitUsage();

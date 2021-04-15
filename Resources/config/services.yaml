@@ -142,7 +142,7 @@ services:
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
-    OAT\Library\Lti1p3Core\Message\Launch\Validator\PlatformLaunchValidator:
+    OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
@@ -150,13 +150,19 @@ services:
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
 
-    OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator:
+    OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface:
+        alias: OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidator
+
+    OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidator:
         arguments:
             - '@OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Nonce\NonceRepositoryInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwks\Fetcher\JwksFetcherInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
+
+    OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidatorInterface:
+        alias: OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidator
 
     OAT\Library\Lti1p3Core\Security\OAuth2\Generator\AccessTokenResponseGenerator:
         arguments:
@@ -169,6 +175,9 @@ services:
             - '@Psr\Log\LoggerInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Validator\ValidatorInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Parser\ParserInterface'
+
+    OAT\Library\Lti1p3Core\Security\OAuth2\Validator\RequestAccessTokenValidatorInterface:
+        alias: OAT\Library\Lti1p3Core\Security\OAuth2\Validator\RequestAccessTokenValidator
 
     OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandler:
         arguments:
@@ -198,11 +207,11 @@ services:
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiPlatformMessageAuthenticationProvider:
         arguments:
-            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\PlatformLaunchValidator'
+            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface'
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiToolMessageAuthenticationProvider:
         arguments:
-            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator'
+            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidatorInterface'
 
     OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider:
         arguments:
@@ -232,6 +241,16 @@ services:
             - '@GuzzleHttp\ClientInterface'
             - '@OAT\Library\Lti1p3Core\Security\Jwt\Builder\BuilderInterface'
         public: true
+
+    OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactory:
+        arguments:
+            - '@security.helper'
+            - '@Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface'
+            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+            - '@Psr\Log\LoggerInterface'
+
+    OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactoryInterface:
+        alias: OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactory
 
     ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:

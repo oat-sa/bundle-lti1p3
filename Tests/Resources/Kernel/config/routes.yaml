@@ -9,3 +9,8 @@ test_message_tool:
 test_service:
     path: /test/service
     controller: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Service\TestServiceAction
+
+test_service_with_handler_as_controller_service:
+    path: /test/service-with-handler-as-controller-service
+    controller: app.test_handler_as_controller_service
+

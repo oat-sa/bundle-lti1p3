@@ -6,6 +6,7 @@
 
 - [Providing platform service access token endpoint](#providing-platform-service-access-token-endpoint)
 - [Protecting platform service endpoints](#protecting-platform-service-endpoints)
+- [Providing platform service endpoints using the LTI libraries](#providing-platform-service-endpoints-using-the-lti-libraries)
 
 ## Providing platform service access token endpoint
 
@@ -177,3 +178,118 @@ class LineItemAction
     }
 }
 ```
+
+## Providing platform service endpoints using the LTI libraries
+
+We provide a [collection of LTI libraries](https://github.com/oat-sa?q=lti1p3&type=&language=&sort=) to offer LTI capabilities (NRPS, AGS, basic outcomes, etc) to your application.
+
+The bundle provides a way to easily integrate them when it comes to expose LTI services endpoints:
+- the core [LtiServiceServerRequestHandlerInterface](https://github.com/oat-sa/lib-lti1p3-core/blob/master/src/Service/Server/Handler/LtiServiceServerRequestHandlerInterface.php) is implemented by those libraries to provide their service endpoints logic
+- the bundle [LtiServiceServerHttpFoundationRequestHandlerInterface](../../Service/Server/Handler/LtiServiceServerHttpFoundationRequestHandlerInterface.php) symfony service automates any `LtiServiceServerRequestHandlerInterface` implementation execution
+- the bundle [LtiServiceServerHttpFoundationRequestHandlerFactoryInterface](../../Service/Server/Factory/LtiServiceServerHttpFoundationRequestHandlerFactoryInterface.php) symfony service can be used to ease the `LtiServiceServerHttpFoundationRequestHandlerInterface` creation (symfony service factory)
+
+For example, let's implement step by step the [NRPS library](https://github.com/oat-sa/lib-lti1p3-nrps/blob/master/src/Service/Server/Handler/MembershipServiceServerRequestHandler.php) membership service endpoint into your application:
+
+- install the library
+
+```console
+$ composer require oat-sa/lib-lti1p3-nrps
+```
+
+- allow NRPS scope
+
+```yaml
+# config/packages/lti1p3.yaml
+lti1p3:
+    scopes:
+        - 'https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly'
+```
+
+- provide a required [MembershipServiceServerBuilderInterface](https://github.com/oat-sa/lib-lti1p3-nrps/blob/master/doc/platform.md#usage) implementation
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Nrps;
+
+use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
+use OAT\Library\Lti1p3Nrps\Model\Membership\MembershipInterface;
+use OAT\Library\Lti1p3Nrps\Service\Server\Builder\MembershipServiceServerBuilderInterface;
+
+class MembershipServiceServerBuilder implements MembershipServiceServerBuilderInterface 
+{
+    public function buildContextMembership(
+        RegistrationInterface $registration,
+        ?string $role = null,
+        ?int $limit = null,
+        ?int $offset = null
+    ): MembershipInterface {
+        // Logic for building context membership for a given registration
+    }
+
+    public function buildResourceLinkMembership(
+        RegistrationInterface $registration,
+        string $resourceLinkIdentifier,
+        ?string $role = null,
+        ?int $limit = null,
+        ?int $offset = null
+    ): MembershipInterface {
+        // Logic for building resource link membership for a given registration and resource link identifier
+    }
+};
+```
+
+- register the [NRPS library request handler](https://github.com/oat-sa/lib-lti1p3-nrps/blob/master/src/Service/Server/Handler/MembershipServiceServerRequestHandler.php) using your builder in your application services
+
+```yaml
+# config/services.yaml
+services:
+    OAT\Library\Lti1p3Nrps\Service\Server\Handler\MembershipServiceServerRequestHandler:
+        arguments:
+            - '@App\Nrps\MembershipServiceServerBuilder'
+```
+
+- use the [LtiServiceServerHttpFoundationRequestHandlerFactoryInterface](../../Service/Server/Factory/LtiServiceServerHttpFoundationRequestHandlerFactoryInterface.php) service factory to create a controller service
+
+```yaml
+# config/services.yaml
+services:
+    app.nrps_membership_controller:
+        class: OAT\Bundle\Lti1p3Bundle\Service\Server\Handler\LtiServiceServerHttpFoundationRequestHandler
+        factory: ['@OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactoryInterface', 'create']
+        arguments:
+            - '@OAT\Library\Lti1p3Nrps\Service\Server\Handler\MembershipServiceServerRequestHandler'
+        tags: ['controller.service_arguments']
+```
+
+- bind this controller service to a route in your application
+
+```yaml
+# config/routes.yaml
+nrps_membership:
+    path: /platform/service/nrps
+    controller: app.nrps_membership_controller
+```
+
+- protect this route using the [bundle service firewall](#protecting-platform-service-endpoints)
+
+```yaml
+# config/packages/security.yaml
+security:
+    firewalls:
+        secured_service_nrps_area:
+            pattern: ^/platform/service/nrps
+            stateless: true
+            lti1p3_service: { scopes: ['https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly'] }
+```
+
+- at this point, your application now offers a new endpoint `[GET] /platform/service/nrps`, that automates:
+  - HTTP method validation
+  - NRPS content type validation
+  - access token validation
+  - access token NRPS scope validation
+  - the response of NRPS memberships representations, relying on the provided membership builder implementation
+    
+**Note**: exposing a controller as service is convenient but not mandatory, you can still inject the [LtiServiceServerHttpFoundationRequestHandlerFactoryInterface](../../Service/Server/Factory/LtiServiceServerHttpFoundationRequestHandlerFactoryInterface.php) in a controller constructor to have more control on this process, as done in the bundle [TestServiceAction](../../Tests/Resources/Action/Platform/Service/TestServiceAction.php) for example.

@@ -2,7 +2,7 @@
 
 [![Latest Version](https://img.shields.io/github/tag/oat-sa/bundle-lti1p3.svg?style=flat&label=release)](https://github.com/oat-sa/bundle-lti1p3/tags)
 [![License GPL2](http://img.shields.io/badge/licence-LGPL%202.1-blue.svg)](http://www.gnu.org/licenses/lgpl-2.1.html)
-[![Build Status](https://travis-ci.org/oat-sa/bundle-lti1p3.svg?branch=master)](https://travis-ci.org/oat-sa/bundle-lti1p3)
+[![Build Status](https://github.com/oat-sa/bundle-lti1p3/actions/workflows/build.yaml/badge.svg?branch=master)](https://github.com/oat-sa/bundle-lti1p3/actions)
 [![Coverage Status](https://coveralls.io/repos/github/oat-sa/bundle-lti1p3/badge.svg?branch=master)](https://coveralls.io/github/oat-sa/bundle-lti1p3?branch=master)
 [![Psalm Level Status](https://shepherd.dev/github/oat-sa/bundle-lti1p3/level.svg)](https://shepherd.dev/github/oat-sa/bundle-lti1p3)
 [![Packagist Downloads](http://img.shields.io/packagist/dt/oat-sa/bundle-lti1p3.svg)](https://packagist.org/packages/oat-sa/bundle-lti1p3)
