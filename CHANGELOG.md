@@ -4,7 +4,9 @@ CHANGELOG
 6.0.0
 -----
 
+* Added github actions CI
 * Added LTI service layer automation to ease LTI libraries usage through the bundle
+* Removed jenkins and travis CI
 * Updated oat-sa/lib-lti1p3-core dependency to version 6.0
 * Updated documentation
 
