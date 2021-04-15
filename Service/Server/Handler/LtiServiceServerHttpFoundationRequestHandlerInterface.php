@@ -24,8 +24,12 @@ namespace OAT\Bundle\Lti1p3Bundle\Service\Server\Handler;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 interface LtiServiceServerHttpFoundationRequestHandlerInterface
 {
+    /**
+     * @throws Throwable
+     */
     public function __invoke(Request $request): Response;
 }
