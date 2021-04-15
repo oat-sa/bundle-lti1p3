@@ -24,7 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service;
 
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Security\Jwt\TokenInterface;
-use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResult;
+use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResultInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class LtiServiceSecurityToken extends AbstractToken
@@ -32,17 +32,17 @@ class LtiServiceSecurityToken extends AbstractToken
     /** @var string[] */
     private $roleNames;
 
-    /** @var RequestAccessTokenValidationResult|null */
+    /** @var RequestAccessTokenValidationResultInterface|null */
     private $validationResult;
 
-    public function __construct(?RequestAccessTokenValidationResult $validationResult = null)
+    public function __construct(?RequestAccessTokenValidationResultInterface $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
         parent::__construct($this->roleNames);
     }
 
-    public function getValidationResult(): ?RequestAccessTokenValidationResult
+    public function getValidationResult(): ?RequestAccessTokenValidationResultInterface
     {
         return $this->validationResult;
     }
@@ -82,7 +82,7 @@ class LtiServiceSecurityToken extends AbstractToken
         return $this->roleNames;
     }
 
-    private function applyValidationResult(?RequestAccessTokenValidationResult $validationResult = null): void
+    private function applyValidationResult(?RequestAccessTokenValidationResultInterface $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 

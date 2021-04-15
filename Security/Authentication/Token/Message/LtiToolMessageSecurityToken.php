@@ -15,14 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
-use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResult;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResultInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\MessagePayloadInterface;
 
 class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
@@ -34,7 +34,7 @@ class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
             : null;
     }
 
-    protected function applyValidationResult(?LaunchValidationResult $validationResult = null): void
+    protected function applyValidationResult(?LaunchValidationResultInterface $validationResult = null): void
     {
         $this->validationResult = $validationResult;
 

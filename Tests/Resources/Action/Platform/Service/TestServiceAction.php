@@ -15,42 +15,45 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Service;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Security;
+use OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactoryInterface;
+use OAT\Bundle\Lti1p3Bundle\Tests\Resources\Service\Server\Handler\TestServiceRequestHandler;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class TestServiceAction
 {
-    /** @var Security */
-    private $security;
+    /** @var TestServiceRequestHandler */
+    private $handler;
 
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
+    /** @var LtiServiceServerHttpFoundationRequestHandlerFactoryInterface */
+    private $factory;
+
+    public function __construct(
+        TestServiceRequestHandler $handler,
+        LtiServiceServerHttpFoundationRequestHandlerFactoryInterface $factory
+    ) {
+        $this->handler = $handler;
+        $this->factory = $factory;
     }
 
-    public function __invoke(): JsonResponse
+    public function __invoke(Request $request): Response
     {
-        /** @var LtiServiceSecurityToken $token */
-        $token = $this->security->getToken();
+        $shouldThrowException = $request->get('shouldThrowException');
 
-        return new JsonResponse([
-            'claims' => $token->getAccessToken()->getClaims()->all(),
-            'roles' => $token->getRoleNames(),
-            'validations' => [
-                'successes' => $token->getValidationResult()->getSuccesses(),
-                'error' => $token->getValidationResult()->getError(),
-            ],
-            'registration' => $token->getRegistration()->getIdentifier(),
-            'scopes' => $token->getScopes(),
-            'credentials' => $token->getCredentials()
-        ]);
+        $handler = $this->factory->create(
+            $this->handler,
+            [
+                'shouldThrowException' => $shouldThrowException
+            ]
+        );
+
+        return $handler($request);
     }
 }

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -24,7 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
-use OAT\Library\Lti1p3Core\Message\Launch\Validator\ToolLaunchValidator;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidatorInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -32,10 +32,10 @@ use Throwable;
 
 class LtiToolMessageAuthenticationProvider implements AuthenticationProviderInterface
 {
-    /** @var ToolLaunchValidator */
+    /** @var ToolLaunchValidatorInterface */
     private $validator;
 
-    public function __construct(ToolLaunchValidator $validator)
+    public function __construct(ToolLaunchValidatorInterface $validator)
     {
         $this->validator = $validator;
     }

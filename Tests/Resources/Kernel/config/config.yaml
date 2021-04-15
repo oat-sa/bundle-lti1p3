@@ -6,6 +6,16 @@ services:
     logger:
         class: Psr\Log\Test\TestLogger
 
+    # Services
+    OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface:
+        class: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Security\User\TestUserAuthenticator
+
+    OAT\Bundle\Lti1p3Bundle\Tests\Resources\Service\Server\Handler\TestServiceRequestHandler:
+        arguments:
+            - '@security.helper'
+            - '@Http\Message\ResponseFactory'
+
+    # Endpoints
     OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Message\TestPlatformMessageAction:
         arguments: ['@security.helper']
         tags: ['controller.service_arguments']
@@ -15,8 +25,14 @@ services:
         tags: ['controller.service_arguments']
 
     OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Service\TestServiceAction:
-        arguments: ['@security.helper']
+        arguments:
+            - '@OAT\Bundle\Lti1p3Bundle\Tests\Resources\Service\Server\Handler\TestServiceRequestHandler'
+            - '@OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactoryInterface'
         tags: ['controller.service_arguments']
 
-    OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface:
-        class: OAT\Bundle\Lti1p3Bundle\Tests\Resources\Security\User\TestUserAuthenticator
+    app.test_handler_as_controller_service:
+        class: OAT\Bundle\Lti1p3Bundle\Service\Server\Handler\LtiServiceServerHttpFoundationRequestHandler
+        factory: ['@OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactoryInterface', 'create']
+        arguments:
+            - '@OAT\Bundle\Lti1p3Bundle\Tests\Resources\Service\Server\Handler\TestServiceRequestHandler'
+        tags: ['controller.service_arguments']
