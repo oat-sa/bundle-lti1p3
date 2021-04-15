@@ -15,14 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
-use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResult;
+use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResultInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
@@ -32,17 +32,17 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
     /** @var string[] */
     protected $roleNames;
 
-    /** @var LaunchValidationResult|null */
+    /** @var LaunchValidationResultInterface|null */
     protected $validationResult;
 
-    public function __construct(?LaunchValidationResult $validationResult = null)
+    public function __construct(?LaunchValidationResultInterface $validationResult = null)
     {
         $this->applyValidationResult($validationResult);
 
         parent::__construct($this->roleNames);
     }
 
-    public function getValidationResult(): ?LaunchValidationResult
+    public function getValidationResult(): ?LaunchValidationResultInterface
     {
         return $this->validationResult;
     }
@@ -75,5 +75,5 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
         return $this->roleNames;
     }
 
-    abstract protected function applyValidationResult(?LaunchValidationResult $validationResult = null): void;
+    abstract protected function applyValidationResult(?LaunchValidationResultInterface $validationResult = null): void;
 }
