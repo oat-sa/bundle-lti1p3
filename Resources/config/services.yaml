@@ -252,7 +252,7 @@ services:
     OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactoryInterface:
         alias: OAT\Bundle\Lti1p3Bundle\Service\Server\Factory\LtiServiceServerHttpFoundationRequestHandlerFactory
 
-            ########### Endpoints
+    ########### Endpoints
     OAT\Bundle\Lti1p3Bundle\Action\Jwks\JwksAction:
         arguments:
             - '@OAT\Library\Lti1p3Core\Security\Jwks\Exporter\JwksExporter'

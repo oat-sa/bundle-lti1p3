@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+6.0.0
+-----
+
+* Updated oat-sa/lib-lti1p3-core dependency to version 6.0
+* Added LTI service layer automation to ease LTI libraries usage through the bundle  
+* Updated documentation
+
 5.0.0
 -----
 
