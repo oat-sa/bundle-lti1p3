@@ -86,7 +86,12 @@ class LtiServiceServerHttpFoundationRequestHandler implements LtiServiceServerHt
 
         $allowedContentType = $this->handler->getAllowedContentType();
 
-        if (!empty($allowedContentType) && false === strpos($request->headers->get('Accept', ''), $allowedContentType)) {
+        $contentTypeHeader = 'get' === strtolower($request->getMethod()) ? 'Accept' : 'Content-Type';
+
+        if (
+            !empty($allowedContentType)
+            && false === strpos($request->headers->get($contentTypeHeader, ''), $allowedContentType)
+        ) {
             $message = sprintf('Not acceptable request content type, accepts: %s', $allowedContentType);
             $this->logger->error($message);
 
