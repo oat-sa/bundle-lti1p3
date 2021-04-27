@@ -24,8 +24,10 @@ namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Flow\Message;
 
 use Carbon\Carbon;
 use OAT\Library\Lti1p3Core\Message\Launch\Builder\LtiResourceLinkLaunchRequestBuilder;
+use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Builder\MessagePayloadBuilderInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\ContextClaim;
+use OAT\Library\Lti1p3Core\Message\Payload\Claim\DeepLinkingSettingsClaim;
 use OAT\Library\Lti1p3Core\Message\Payload\Claim\LaunchPresentationClaim;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
@@ -349,5 +351,82 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
             'http://redirect.com?lti_errormsg=LTI+tool+message+request+authentication+failed%3A+ID+token+validation+failure',
             $toolResponse->headers->get('location')
         );
+    }
+
+    public function testItFailsWithInvalidLtiMessageType(): void
+    {
+        // Step 1 - Platform LTI deep linking request
+
+        $deepLinkSettings = new DeepLinkingSettingsClaim(
+            'http://platform.com/deep-linking/return',
+            [
+                'link'
+            ],
+            [
+                'window'
+            ]
+        );
+
+        $message = $this->builder->buildPlatformOriginatingLaunch(
+            $this->registration,
+            LtiMessageInterface::LTI_MESSAGE_TYPE_DEEP_LINKING_REQUEST,
+            $this->registration->getTool()->getLaunchUrl(),
+            'loginHint',
+            null,
+            [],
+            [
+                $deepLinkSettings
+            ]
+        );
+
+        // Step 2 - Tool OIDC initiation
+
+        $oidcInitLocation = parse_url($this->registration->getTool()->getOidcInitiationUrl());
+
+        $this->client->request(
+            Request::METHOD_GET,
+            sprintf('%s?%s',$oidcInitLocation['path'], http_build_query($message->getParameters()->all()))
+        );
+
+        $oidcInitResponse = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_FOUND, $oidcInitResponse->getStatusCode());
+
+        // Step 3 - Platform OIDC authentication
+
+        $oidcAuthLocation = parse_url($oidcInitResponse->headers->get('location'));
+
+        $this->client->request(
+            Request::METHOD_GET,
+            sprintf('%s?%s', $oidcAuthLocation['path'], $oidcAuthLocation['query'])
+        );
+
+        $oidcAuthResponse = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $oidcAuthResponse->getStatusCode());
+
+        $crawler = $this->client->getCrawler();
+
+        $action = $crawler->filterXPath('//body/form')->attr('action');
+        $payload = $crawler->filterXPath('//body/form/input[@name="id_token"]')->attr('value');
+        $state = $crawler->filterXPath('//body/form/input[@name="state"]')->attr('value');
+
+        $this->assertEquals($this->registration->getTool()->getLaunchUrl(), $action);
+
+        // Step 4 - Tool message validation
+
+        $toolLocation = parse_url($action);
+
+        $this->client->request(
+            Request::METHOD_POST,
+            $toolLocation['path'],
+            [
+                'id_token' => $payload,
+                'state' => $state,
+            ]
+        );
+
+        $toolResponse = $this->client->getResponse();
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $toolResponse->getStatusCode());
+        $this->assertStringContainsString('nvalid LTI message type LtiDeepLinkingRequest', $toolResponse->getContent());
     }
 }
