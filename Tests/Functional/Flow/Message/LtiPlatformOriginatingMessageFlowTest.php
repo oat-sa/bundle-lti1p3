@@ -427,6 +427,6 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         $toolResponse = $this->client->getResponse();
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $toolResponse->getStatusCode());
-        $this->assertStringContainsString('nvalid LTI message type LtiDeepLinkingRequest', $toolResponse->getContent());
+        $this->assertStringContainsString('Invalid LTI message type LtiDeepLinkingRequest', $toolResponse->getContent());
     }
 }

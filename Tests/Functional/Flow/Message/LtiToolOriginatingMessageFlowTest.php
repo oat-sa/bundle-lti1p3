@@ -192,9 +192,6 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
         $platformResponse = $this->client->getResponse();
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $platformResponse->getStatusCode());
-        $this->assertStringContainsString(
-            'Invalid LTI message type LtiStartAssessment',
-            $platformResponse->getContent()
-        );
+        $this->assertStringContainsString('Invalid LTI message type LtiStartAssessment', $platformResponse->getContent());
     }
 }
