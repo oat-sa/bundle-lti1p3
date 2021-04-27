@@ -223,7 +223,7 @@ security:
             lti1p3_message_platform: true
 ```
 
-You can optionally restrict allowed message types accepted on this firewall:
+You can optionally restrict allowed message types on this firewall:
 
 ```yaml
 # config/packages/security.yaml
