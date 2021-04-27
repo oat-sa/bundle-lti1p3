@@ -25,6 +25,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Tests\Functional\Flow\Message;
 use Carbon\Carbon;
 use OAT\Library\Lti1p3Core\Message\Launch\Builder\ToolOriginatingLaunchBuilder;
 use OAT\Library\Lti1p3Core\Message\LtiMessageInterface;
+use OAT\Library\Lti1p3Core\Message\Payload\Claim\ResourceLinkClaim;
 use OAT\Library\Lti1p3Core\Message\Payload\LtiMessagePayloadInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Registration\RegistrationRepositoryInterface;
@@ -160,6 +161,39 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $platformResponse->getStatusCode());
         $this->assertStringContainsString(
             'LTI platform message request authentication failed: JWT validation failure',
+            $platformResponse->getContent()
+        );
+    }
+
+    public function testItFailsWithInvalidLtiMessageType(): void
+    {
+        // Step 1 - Tool startAssessment message generation
+
+        $resourceLinkClaim = new ResourceLinkClaim('identifier');
+
+        $securityToken = $this->buildJwt([], [], $this->registration->getPlatformKeyChain()->getPrivateKey());
+
+        $message = $this->builder->buildToolOriginatingLaunch(
+            $this->registration,
+            LtiMessageInterface::LTI_MESSAGE_TYPE_START_ASSESSMENT,
+            '/test/message/platform',
+            null,
+            [
+                $resourceLinkClaim,
+                LtiMessagePayloadInterface::CLAIM_LTI_PROCTORING_SESSION_DATA => $securityToken->toString(),
+                LtiMessagePayloadInterface::CLAIM_LTI_PROCTORING_ATTEMPT_NUMBER => 1,
+            ]
+        );
+
+        // Step 2 - Platform message validation
+
+        $this->client->request(Request::METHOD_GET, $message->toUrl());
+
+        $platformResponse = $this->client->getResponse();
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $platformResponse->getStatusCode());
+        $this->assertStringContainsString(
+            'Invalid LTI message type LtiStartAssessment',
             $platformResponse->getContent()
         );
     }

@@ -109,6 +109,18 @@ security:
             lti1p3_message_tool: true
 ```
 
+You can optionally restrict allowed message types accepted on this firewall:
+
+```yaml
+# config/packages/security.yaml
+security:
+    firewalls:
+        secured_tool_area:
+            pattern: ^/launch
+            stateless: true
+            lti1p3_message_tool: { types: ['LtiResourceLinkRequest'] }
+```
+
 It will automatically [handle the provided id token and state validations](https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation), and add a [LtiToolMessageSecurityToken](../../Security/Authentication/Token/Message/LtiToolMessageSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
 
 For example:
