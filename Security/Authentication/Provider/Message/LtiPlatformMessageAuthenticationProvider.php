@@ -25,7 +25,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiPlatformMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -62,11 +62,11 @@ class LtiPlatformMessageAuthenticationProvider implements AuthenticationProvider
             $messageType = $validationResult->getPayload()->getMessageType();
 
             if (!empty($this->types) && !in_array($messageType, $this->types)) {
-                throw new BadRequestException(sprintf('Invalid LTI message type %s', $messageType));
+                throw new BadRequestHttpException(sprintf('Invalid LTI message type %s', $messageType));
             }
 
             return new LtiPlatformMessageSecurityToken($validationResult);
-        } catch (BadRequestException $exception) {
+        } catch (BadRequestHttpException $exception) {
             throw $exception;
         } catch (Throwable $exception) {
             throw new AuthenticationException(
