@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+6.1.0
+-----
+
+* Added possibility to restrict LTI message types on message firewalls
+* Updated documentation
+
 6.0.0
 -----
 

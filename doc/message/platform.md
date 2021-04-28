@@ -223,6 +223,18 @@ security:
             lti1p3_message_platform: true
 ```
 
+You can optionally restrict allowed message types on this firewall:
+
+```yaml
+# config/packages/security.yaml
+security:
+    firewalls:
+        secured_platform_area:
+            pattern: ^/platform/return
+            stateless: true
+            lti1p3_message_platform: { types: ['LtiDeepLinkingResponse'] }
+```
+
 It will automatically [handle the provided JWT parameter validation](https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation-0), and add a [LtiPlatformMessageSecurityToken](../../Security/Authentication/Token/Message/LtiPlatformMessageSecurityToken.php) in the [security token storage](https://symfony.com/doc/current/security.html), that you can use to retrieve your authentication context.
 
 For example:

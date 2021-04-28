@@ -25,6 +25,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiPlatformMessageSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -35,9 +36,13 @@ class LtiPlatformMessageAuthenticationProvider implements AuthenticationProvider
     /** @var PlatformLaunchValidatorInterface */
     private $validator;
 
-    public function __construct(PlatformLaunchValidatorInterface $validator)
+    /** string[] */
+    private $types;
+
+    public function __construct(PlatformLaunchValidatorInterface $validator, array $types = [])
     {
         $this->validator = $validator;
+        $this->types = $types;
     }
 
     public function supports(TokenInterface $token): bool
@@ -54,7 +59,15 @@ class LtiPlatformMessageAuthenticationProvider implements AuthenticationProvider
                 throw new LtiException($validationResult->getError());
             }
 
+            $messageType = $validationResult->getPayload()->getMessageType();
+
+            if (!empty($this->types) && !in_array($messageType, $this->types)) {
+                throw new BadRequestHttpException(sprintf('Invalid LTI message type %s', $messageType));
+            }
+
             return new LtiPlatformMessageSecurityToken($validationResult);
+        } catch (BadRequestHttpException $exception) {
+            throw $exception;
         } catch (Throwable $exception) {
             throw new AuthenticationException(
                 sprintf('LTI platform message request authentication failed: %s', $exception->getMessage()),

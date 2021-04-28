@@ -50,7 +50,9 @@ class LtiPlatformMessageSecurityFactory implements SecurityFactoryInterface
     ) {
 
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
-        $container->setDefinition($providerId, new ChildDefinition(LtiPlatformMessageAuthenticationProvider::class));
+        $container
+            ->setDefinition($providerId, new ChildDefinition(LtiPlatformMessageAuthenticationProvider::class))
+            ->setArgument(1, $config['types'] ?? []);
 
         $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
         $container->setDefinition($listenerId, new ChildDefinition(LtiPlatformMessageAuthenticationListener::class));
@@ -60,6 +62,6 @@ class LtiPlatformMessageSecurityFactory implements SecurityFactoryInterface
 
     public function addConfiguration(NodeDefinition $node): void
     {
-        return;
+        $node->children()->arrayNode('types')->scalarPrototype()->end();
     }
 }
