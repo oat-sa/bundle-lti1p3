@@ -6,11 +6,11 @@ security:
         message_platform_secured:
             pattern:   ^/test/message/platform
             stateless: true
-            lti1p3_message_platform: true
+            lti1p3_message_platform: { types: ['LtiDeepLinkingResponse'] }
         message_tool_secured:
             pattern:   ^/test/message/tool
             stateless: true
-            lti1p3_message_tool: true
+            lti1p3_message_tool: { types: ['LtiResourceLinkRequest'] }
         service_secured:
             pattern:   ^/test/service
             stateless: true

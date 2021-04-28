@@ -32,8 +32,16 @@
                 <file name="DependencyInjection/Security/Factory/Service/LtiServiceSecurityFactory.php"/>
             </errorLevel>
         </ParamNameMismatch>
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <file name="Security/Authentication/Provider/Message/LtiPlatformMessageAuthenticationProvider.php"/>
+                <file name="Security/Authentication/Provider/Message/LtiToolMessageAuthenticationProvider.php"/>
+            </errorLevel>
+        </PossiblyNullReference>
         <UndefinedMethod>
             <errorLevel type="suppress">
+                <file name="DependencyInjection/Security/Factory/Message/LtiPlatformMessageSecurityFactory.php"/>
+                <file name="DependencyInjection/Security/Factory/Message/LtiToolMessageSecurityFactory.php"/>
                 <file name="DependencyInjection/Security/Factory/Service/LtiServiceSecurityFactory.php"/>
             </errorLevel>
         </UndefinedMethod>
