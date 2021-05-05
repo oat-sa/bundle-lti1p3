@@ -1,17 +1,12 @@
 CHANGELOG
 =========
 
-6.1.0
------
-
-* Added possibility to restrict LTI message types on message firewalls
-* Updated documentation
-
 6.0.0
 -----
 
 * Added github actions CI
 * Added LTI service layer automation to ease LTI libraries usage through the bundle
+* Added possibility to restrict LTI message types on message firewalls
 * Removed jenkins and travis CI
 * Updated oat-sa/lib-lti1p3-core dependency to version 6.0
 * Updated documentation
