@@ -25,6 +25,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
 use OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -46,16 +47,21 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
     /** @var LtiToolMessageExceptionHandlerInterface */
     private $handler;
 
+    /** @var FirewallMap */
+    private $firewallMap;
+
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
         HttpMessageFactoryInterface $factory,
-        LtiToolMessageExceptionHandlerInterface $handler
+        LtiToolMessageExceptionHandlerInterface $handler,
+        FirewallMap $firewallMap
     ) {
         $this->storage = $tokenStorage;
         $this->manager = $authenticationManager;
         $this->factory = $factory;
         $this->handler = $handler;
+        $this->firewallMap = $firewallMap;
     }
 
     public function supports(Request $request): ?bool
@@ -69,6 +75,7 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
 
         $token = new LtiToolMessageSecurityToken();
         $token->setAttribute('request', $this->factory->createRequest($request));
+        $token->setAttribute('firewall_config', $this->firewallMap->getFirewallConfig($request));
 
         try {
             $this->storage->setToken($this->manager->authenticate($token));
