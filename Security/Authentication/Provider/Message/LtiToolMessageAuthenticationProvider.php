@@ -36,18 +36,24 @@ class LtiToolMessageAuthenticationProvider implements AuthenticationProviderInte
     /** @var ToolLaunchValidatorInterface */
     private $validator;
 
+    /** string */
+    private $firewallName;
+
     /** string[] */
     private $types;
 
-    public function __construct(ToolLaunchValidatorInterface $validator, array $types = [])
+    public function __construct(ToolLaunchValidatorInterface $validator, string $firewallName, array $types = [])
     {
         $this->validator = $validator;
+        $this->firewallName = $firewallName;
         $this->types = $types;
     }
 
     public function supports(TokenInterface $token): bool
     {
-        return $token instanceof LtiToolMessageSecurityToken;
+        $firewallName = $token->hasAttribute('firewall_config') ? $token->getAttribute('firewall_config')->getName() : null;
+
+        return $token instanceof LtiToolMessageSecurityToken && $firewallName === $this->firewallName;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface
