@@ -53,13 +53,15 @@ class LtiPlatformMessageSecurityFactory implements SecurityFactoryInterface
     ) {
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
         $providerDefinition = new Definition(LtiPlatformMessageAuthenticationProvider::class);
-        $providerDefinition->setArguments(
-            [
-                new Reference(PlatformLaunchValidatorInterface::class),
-                $id,
-                $config['types'] ?? []
-            ]
-        );
+        $providerDefinition
+            ->setShared(false)
+            ->setArguments(
+                [
+                    new Reference(PlatformLaunchValidatorInterface::class),
+                    $id,
+                    $config['types'] ?? []
+                ]
+            );
         $container->setDefinition($providerId, $providerDefinition);
 
         $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
