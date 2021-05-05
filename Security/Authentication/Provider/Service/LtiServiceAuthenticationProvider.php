@@ -35,18 +35,24 @@ class LtiServiceAuthenticationProvider implements AuthenticationProviderInterfac
     /** @var RequestAccessTokenValidatorInterface */
     private $validator;
 
+    /** string */
+    private $firewallName;
+
     /** string[] */
     private $scopes;
 
-    public function __construct(RequestAccessTokenValidatorInterface $validator, array $scopes = [])
+    public function __construct(RequestAccessTokenValidatorInterface $validator, string $firewallName, array $scopes = [])
     {
         $this->validator = $validator;
+        $this->firewallName = $firewallName;
         $this->scopes = $scopes;
     }
 
     public function supports(TokenInterface $token): bool
     {
-        return $token instanceof LtiServiceSecurityToken;
+        $firewallName = $token->hasAttribute('firewall_config') ? $token->getAttribute('firewall_config')->getName() : null;
+
+        return $token instanceof LtiServiceSecurityToken && $firewallName === $this->firewallName;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface

@@ -191,6 +191,7 @@ services:
             - '@security.token_storage'
             - '@security.authentication.manager'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+            - '@security.firewall.map'
 
     OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiToolMessageAuthenticationListener:
         arguments:
@@ -198,24 +199,14 @@ services:
             - '@security.authentication.manager'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
             - '@OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface'
+            - '@security.firewall.map'
 
     OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service\LtiServiceAuthenticationListener:
         arguments:
             - '@security.token_storage'
             - '@security.authentication.manager'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-
-    OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiPlatformMessageAuthenticationProvider:
-        arguments:
-            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface'
-
-    OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiToolMessageAuthenticationProvider:
-        arguments:
-            - '@OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidatorInterface'
-
-    OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider:
-        arguments:
-            - '@OAT\Library\Lti1p3Core\Security\OAuth2\Validator\RequestAccessTokenValidator'
+            - '@security.firewall.map'
 
     OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface: ~
 

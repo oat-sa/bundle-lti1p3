@@ -24,10 +24,13 @@ namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Service;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Service\LtiServiceAuthenticationProvider;
 use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service\LtiServiceAuthenticationListener;
+use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\RequestAccessTokenValidatorInterface;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class LtiServiceSecurityFactory implements SecurityFactoryInterface
 {
@@ -48,11 +51,18 @@ class LtiServiceSecurityFactory implements SecurityFactoryInterface
         $userProvider,
         $defaultEntryPoint = null
     ) {
-
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
-        $container
-            ->setDefinition($providerId, new ChildDefinition(LtiServiceAuthenticationProvider::class))
-            ->setArgument(1, $config['scopes'] ?? []);
+        $providerDefinition = new Definition(LtiServiceAuthenticationProvider::class);
+        $providerDefinition
+            ->setShared(false)
+            ->setArguments(
+                [
+                    new Reference(RequestAccessTokenValidatorInterface::class),
+                    $id,
+                    $config['scopes'] ?? []
+                ]
+            );
+        $container->setDefinition($providerId, $providerDefinition);
 
         $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
         $container->setDefinition($listenerId, new ChildDefinition(LtiServiceAuthenticationListener::class));

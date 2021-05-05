@@ -24,6 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -41,14 +42,19 @@ class LtiServiceAuthenticationListener extends AbstractListener
     /** @var HttpMessageFactoryInterface */
     private $factory;
 
+    /** @var FirewallMap */
+    private $firewallMap;
+
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
-        HttpMessageFactoryInterface $factory
+        HttpMessageFactoryInterface $factory,
+        FirewallMap $firewallMap
     ) {
         $this->storage = $tokenStorage;
         $this->manager = $authenticationManager;
         $this->factory = $factory;
+        $this->firewallMap = $firewallMap;
     }
 
     public function supports(Request $request): ?bool
@@ -58,8 +64,11 @@ class LtiServiceAuthenticationListener extends AbstractListener
 
     public function authenticate(RequestEvent $event): void
     {
+        $request = $event->getRequest();
+
         $token = new LtiServiceSecurityToken();
-        $token->setAttribute('request', $this->factory->createRequest($event->getRequest()));
+        $token->setAttribute('request', $this->factory->createRequest($request));
+        $token->setAttribute('firewall_config', $this->firewallMap->getFirewallConfig($request));
 
         $this->storage->setToken($this->manager->authenticate($token));
     }
