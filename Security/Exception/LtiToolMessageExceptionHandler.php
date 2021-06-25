@@ -49,12 +49,17 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
 
         $launchPresentation = $payload->getLaunchPresentation();
 
+        $message = urlencode($exception->getMessage());
+
         if (null !== $launchPresentation && null !== $launchPresentation->getReturnUrl()) {
             $redirectUrl = sprintf(
-                '%s%slti_errormsg=%s',
+                '%s%slti_msg=%s&lti_log=%s&lti_errormsg=%s&lti_errorlog=%s',
                 $launchPresentation->getReturnUrl(),
                 strpos($launchPresentation->getReturnUrl(), '?') ? '&' : '?',
-                urlencode($exception->getMessage())
+                $message,
+                $message,
+                $message,
+                $message
             );
 
             return new RedirectResponse($redirectUrl);
