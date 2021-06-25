@@ -113,8 +113,8 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
         $this->assertEquals(
             [
                 'successes' => [
-                    'JWT validation success',
                     'JWT kid header is provided',
+                    'JWT validation success',
                     'JWT version claim is valid',
                     'JWT message_type claim is valid',
                     'JWT nonce claim is valid',

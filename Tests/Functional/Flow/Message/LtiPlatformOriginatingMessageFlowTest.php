@@ -155,8 +155,8 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         $this->assertEquals(
             [
                 'successes' => [
-                    'ID token validation success',
                     'ID token kid header is provided',
+                    'ID token validation success',
                     'ID token version claim is valid',
                     'ID token message_type claim is valid',
                     'ID token roles claim is valid',
