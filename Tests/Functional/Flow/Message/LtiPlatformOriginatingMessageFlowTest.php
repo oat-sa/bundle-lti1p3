@@ -155,8 +155,8 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         $this->assertEquals(
             [
                 'successes' => [
-                    'ID token validation success',
                     'ID token kid header is provided',
+                    'ID token validation success',
                     'ID token version claim is valid',
                     'ID token message_type claim is valid',
                     'ID token roles claim is valid',
@@ -346,9 +346,17 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
 
         $toolResponse = $this->client->getResponse();
 
+        $expectedMessage = urlencode('LTI tool message request authentication failed: ID token validation failure');
+
         $this->assertEquals(Response::HTTP_FOUND, $toolResponse->getStatusCode());
         $this->assertEquals(
-            'http://redirect.com?lti_errormsg=LTI+tool+message+request+authentication+failed%3A+ID+token+validation+failure',
+            sprintf(
+                'http://redirect.com?lti_msg=%s&lti_log=%s&lti_errormsg=%s&lti_errorlog=%s',
+                $expectedMessage,
+                $expectedMessage,
+                $expectedMessage,
+                $expectedMessage
+            ),
             $toolResponse->headers->get('location')
         );
     }
