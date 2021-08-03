@@ -85,8 +85,8 @@ class RegistrationRepositoryBuilder
                 $keyId,
                 $keyData['key_set_name'],
                 $keyData['public_key'],
-                $keyData['private_key'],
-                $keyData['private_key_passphrase'],
+                $keyData['private_key'] ?? null,
+                $keyData['private_key_passphrase'] ?? null,
                 $keyData['algorithm'] ?? KeyInterface::ALG_RS256
             );
 
@@ -148,7 +148,16 @@ class RegistrationRepositoryBuilder
     {
         $registrations = [];
 
-        foreach ($configuration['registrations'] as $registrationId => $registrationData) {
+        $configuredRegistrations = $configuration['registrations'] ?? [];
+
+        uasort($configuredRegistrations, function(array $registration1, array $registration2) {
+            $orderRegistration1 = $registration1['order'] ?? 999999;
+            $orderRegistration2 = $registration2['order'] ?? 999999;
+            return $orderRegistration1 <=> $orderRegistration2;
+        });
+
+        foreach ($configuredRegistrations as $registrationId => $registrationData) {
+
             if (!array_key_exists($registrationData['platform'], $platforms)) {
                 throw new InvalidArgumentException(
                     sprintf(
