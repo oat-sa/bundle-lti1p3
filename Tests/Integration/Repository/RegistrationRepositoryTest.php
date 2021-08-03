@@ -56,7 +56,17 @@ class RegistrationRepositoryTest extends KernelTestCase
     {
         $results = $this->subject->findAll();
 
-        $this->assertCount(1, $results);
+        $this->assertCount(4, $results);
+
+        $this->assertEquals(
+            [
+                0 => 'testRegistration',
+                1 => 'nonDefaultRegistration',
+                2 => 'nonOrderedRegistration',
+                3 => 'otherNonOrderedRegistration',
+            ],
+            array_keys($results)
+        );
 
         foreach ($results as $result) {
             $this->assertInstanceOf(RegistrationInterface::class, $result);

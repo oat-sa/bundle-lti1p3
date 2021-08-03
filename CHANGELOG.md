@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+6.1.0
+-----
+
+* Added possibility to order registrations
+* Added possibility to omit non required fields in yaml bundle configuration  
+* Updated documentation
+
 6.0.0
 -----
 
