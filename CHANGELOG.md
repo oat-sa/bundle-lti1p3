@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+6.2.0
+-----
+
+* Extended psr/cache dependency versions
+
 6.1.0
 -----
 

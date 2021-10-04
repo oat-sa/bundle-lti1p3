@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.2.0",
         "ext-json": "*",
-        "oat-sa/lib-lti1p3-core": "^6.0",
+        "oat-sa/lib-lti1p3-core": "dev-feat/cache",
         "symfony/framework-bundle": "^4.4 || ^5.1",
         "symfony/security-bundle": "^4.4 || ^5.1",
         "symfony/security-http": "^4.4.1 || ^5.1",
