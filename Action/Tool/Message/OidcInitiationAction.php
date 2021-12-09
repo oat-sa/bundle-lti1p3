@@ -62,8 +62,9 @@ class OidcInitiationAction
 
         } catch (LtiExceptionInterface $exception) {
             $this->logger->error(sprintf('OidcInitiationAction: %s', $exception->getMessage()));
+            $contentFromException = htmlspecialchars($exception->getMessage(), ENT_QUOTES);
 
-            return new Response($exception->getMessage(), Response::HTTP_BAD_REQUEST);
+            return new Response($contentFromException, Response::HTTP_BAD_REQUEST);
         }
     }
 }
