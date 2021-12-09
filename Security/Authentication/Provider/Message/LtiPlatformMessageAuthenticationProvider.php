@@ -77,7 +77,7 @@ class LtiPlatformMessageAuthenticationProvider implements AuthenticationProvider
         } catch (Throwable $exception) {
             throw new AuthenticationException(
                 sprintf('LTI platform message request authentication failed: %s', $exception->getMessage()),
-                $exception->getCode(),
+                (int) $exception->getCode(),
                 $exception
             );
         }
