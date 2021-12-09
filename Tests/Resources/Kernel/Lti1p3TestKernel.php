@@ -37,11 +37,15 @@ class Lti1p3TestKernel extends Kernel
 
     public function registerBundles(): iterable
     {
-        return [
+        $bundles = [
             new FrameworkBundle(),
             new SecurityBundle(),
             new Lti1p3Bundle()
         ];
+
+        foreach ($bundles as $class) {
+            yield new $class();
+        }
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes)
