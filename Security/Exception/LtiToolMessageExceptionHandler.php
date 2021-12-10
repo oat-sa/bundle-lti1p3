@@ -45,9 +45,7 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
      */
     public function handle(Throwable $exception, Request $request): Response
     {
-        $idToken = $this->getTokenIdFrom($request);
-        $token = $this->parser->parse($idToken);
-        $payload = new LtiMessagePayload($token);
+        $payload = new LtiMessagePayload($this->parser->parse($this->getTokenIdFrom($request)));
 
         $launchPresentation = $payload->getLaunchPresentation();
 
