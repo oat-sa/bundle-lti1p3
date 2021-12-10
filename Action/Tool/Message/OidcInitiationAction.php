@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Action\Tool\Message;
 
+use OAT\Bundle\Lti1p3Bundle\Response\ExceptionResponse;
 use OAT\Library\Lti1p3Core\Exception\LtiExceptionInterface;
 use OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator;
 use Psr\Log\LoggerInterface;
@@ -62,9 +63,8 @@ class OidcInitiationAction
 
         } catch (LtiExceptionInterface $exception) {
             $this->logger->error(sprintf('OidcInitiationAction: %s', $exception->getMessage()));
-            $contentFromException = htmlspecialchars($exception->getMessage(), ENT_QUOTES);
 
-            return new Response($contentFromException, Response::HTTP_BAD_REQUEST);
+            return new ExceptionResponse($exception, Response::HTTP_BAD_REQUEST);
         }
     }
 }
