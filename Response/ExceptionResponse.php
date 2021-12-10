@@ -27,7 +27,7 @@ use Throwable;
 
 final class ExceptionResponse extends Response
 {
-    public function __construct(Throwable $exception, int $status = 200, array $headers = [])
+    public function __construct(Throwable $exception, int $status = self::HTTP_INTERNAL_SERVER_ERROR, array $headers = [])
     {
         $contentFromException = htmlspecialchars($exception->getMessage(), ENT_QUOTES);
 
