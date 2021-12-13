@@ -20,6 +20,11 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
+        <ReservedWord>
+            <errorLevel type="suppress">
+                <file name="DependencyInjection/Configuration.php"/>
+            </errorLevel>
+        </ReservedWord>
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
                 <file name="DependencyInjection/Configuration.php"/>
