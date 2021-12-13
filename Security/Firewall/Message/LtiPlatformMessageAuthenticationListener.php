@@ -59,7 +59,7 @@ class LtiPlatformMessageAuthenticationListener extends AbstractListener
 
     public function supports(Request $request): ?bool
     {
-        return null !== $request->get('JWT');
+        return null !== $this->getJWTFrom($request);
     }
 
     public function authenticate(RequestEvent $event): void
@@ -71,6 +71,15 @@ class LtiPlatformMessageAuthenticationListener extends AbstractListener
         $token->setAttribute('firewall_config', $this->firewallMap->getFirewallConfig($request));
 
         $this->storage->setToken($this->manager->authenticate($token));
+    }
 
+    private function getJWTFrom(Request $request): ?string
+    {
+        $JWTFromQuery = $request->query->get('JWT');
+        if (null !== $JWTFromQuery) {
+            return $JWTFromQuery;
+        }
+
+        return $request->request->get('JWT');
     }
 }
