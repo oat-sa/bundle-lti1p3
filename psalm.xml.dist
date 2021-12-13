@@ -22,7 +22,7 @@
     <issueHandlers>
         <ReservedWord>
             <errorLevel type="suppress">
-                <file name="DependencyInjection/Configuration.php"/>
+                <file name="DependencyInjection/Lti1p3Extension.php"/>
             </errorLevel>
         </ReservedWord>
         <ArgumentTypeCoercion>
