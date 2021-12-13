@@ -30,6 +30,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class Lti1p3TestKernel extends Kernel
 {
@@ -48,7 +49,10 @@ class Lti1p3TestKernel extends Kernel
         }
     }
 
-    protected function configureRoutes(RoutingConfigurator $routes): void
+    /**
+     * @param RouteCollectionBuilder|RoutingConfigurator $routes
+     */
+    protected function configureRoutes($routes): void
     {
         // bundle jwks route
         $routes->import(__DIR__  . '/../../../Resources/config/routing/jwks.yaml');
