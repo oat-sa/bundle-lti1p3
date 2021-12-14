@@ -8,7 +8,6 @@
         "php": ">=7.2.0",
         "ext-json": "*",
         "oat-sa/lib-lti1p3-core": "^6.0",
-        "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "symfony/framework-bundle": "^4.4 || ^5.1",
         "symfony/security-bundle": "^4.4 || ^5.1",
         "symfony/security-http": "^4.4.1 || ^5.1",
@@ -19,6 +18,7 @@
         "phpunit/phpunit": "8.5.14",
         "php-coveralls/php-coveralls": "^2.4",
         "psalm/plugin-phpunit": "^0.15.1",
+        "psr/log": "^1.0.1",
         "symfony/browser-kit": "^4.4 || ^5.1",
         "vimeo/psalm": "^4.6"
     },
