@@ -45,7 +45,7 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
      */
     public function handle(Throwable $exception, Request $request): Response
     {
-        $payload = new LtiMessagePayload($this->parser->parse($this->getTokenIdFrom($request)));
+        $payload = new LtiMessagePayload($this->parser->parse($this->getIdTokenFromRequest($request)));
 
         $launchPresentation = $payload->getLaunchPresentation();
 
@@ -68,7 +68,7 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
         throw $exception;
     }
 
-    private function getTokenIdFrom(Request $request): string
+    private function getIdTokenFromRequest(Request $request): string
     {
         $idTokenFromQuery = $request->query->get('id_token');
         if (null !== $idTokenFromQuery) {
