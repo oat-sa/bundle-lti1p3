@@ -66,7 +66,7 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
 
     public function supports(Request $request): ?bool
     {
-        return null !== $this->getIdTokenFrom($request);
+        return null !== $this->getIdTokenFromRequest($request);
     }
 
     public function authenticate(RequestEvent $event): void
@@ -84,7 +84,7 @@ class LtiToolMessageAuthenticationListener extends AbstractListener
         }
     }
 
-    private function getIdTokenFrom(Request $request): ?string
+    private function getIdTokenFromRequest(Request $request): ?string
     {
         $idTokenFromQuery = $request->query->get('id_token');
         if (null !== $idTokenFromQuery) {
