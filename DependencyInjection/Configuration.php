@@ -33,7 +33,6 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder(Lti1p3Extension::ALIAS);
 
-        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->getRootNode();
 
         $this
@@ -50,89 +49,105 @@ class Configuration implements ConfigurationInterface
     {
         $rootNode
             ->fixXmlConfig('scope')
-            ->children()
-            ->arrayNode('scopes')
-            ->scalarPrototype();
+                ->children()
+                    ->arrayNode('scopes')
+                        ->scalarPrototype()
+                    ->end()
+                ->end()
+            ->end();
 
         return $this;
     }
 
     public function addKeyChainsConfiguration(ArrayNodeDefinition $rootNode): self
     {
-        $keyChainsIdentifier = $rootNode
+        $rootNode
             ->fixXmlConfig('key_chain')
-            ->children()
-            ->arrayNode('key_chains')
-            ->useAttributeAsKey('identifier')
-            ->arrayPrototype()
-            ->children();
-
-        $keyChainsIdentifier->scalarNode('key_set_name')->isRequired();
-        $keyChainsIdentifier->scalarNode('public_key')->isRequired();
-        $keyChainsIdentifier->scalarNode('private_key')->defaultNull();
-        $keyChainsIdentifier->scalarNode('private_key_passphrase')->defaultNull();
-        $keyChainsIdentifier->scalarNode('algorithm')->defaultValue(KeyInterface::ALG_RS256);
+                ->children()
+                    ->arrayNode('key_chains')
+                        ->useAttributeAsKey('identifier')
+                        ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('key_set_name')->isRequired()->end()
+                            ->scalarNode('public_key')->isRequired()->end()
+                            ->scalarNode('private_key')->defaultNull()->end()
+                            ->scalarNode('private_key_passphrase')->defaultNull()->end()
+                            ->scalarNode('algorithm')->defaultValue(KeyInterface::ALG_RS256)->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $this;
     }
 
     public function addPlatformsConfiguration(ArrayNodeDefinition $rootNode): self
     {
-        $platformsIdentifier = $rootNode
+        $rootNode
             ->fixXmlConfig('platform')
-            ->children()
-            ->arrayNode('platforms')
-            ->useAttributeAsKey('identifier')
-            ->arrayPrototype()
-            ->children();
-
-        $platformsIdentifier->scalarNode('name')->isRequired();
-        $platformsIdentifier->scalarNode('audience')->isRequired();
-        $platformsIdentifier->scalarNode('oidc_authentication_url')->defaultNull();
-        $platformsIdentifier->scalarNode('oauth2_access_token_url')->defaultNull();
+                ->children()
+                ->arrayNode('platforms')
+                    ->useAttributeAsKey('identifier')
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('name')->isRequired()->end()
+                            ->scalarNode('audience')->isRequired()->end()
+                            ->scalarNode('oidc_authentication_url')->defaultNull()->end()
+                            ->scalarNode('oauth2_access_token_url')->defaultNull()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $this;
     }
 
     public function addToolsConfiguration(ArrayNodeDefinition $rootNode): self
     {
-        $toolsIdentifier = $rootNode
+        $rootNode
             ->fixXmlConfig('tool')
-            ->children()
-            ->arrayNode('tools')
-            ->useAttributeAsKey('identifier')
-            ->arrayPrototype()
-            ->children();
-
-        $toolsIdentifier->scalarNode('name')->isRequired();
-        $toolsIdentifier->scalarNode('audience')->isRequired();
-        $toolsIdentifier->scalarNode('oidc_initiation_url')->isRequired();
-        $toolsIdentifier->scalarNode('launch_url')->defaultNull();
-        $toolsIdentifier->scalarNode('deep_linking_url')->defaultNull();
+                ->children()
+                    ->arrayNode('tools')
+                    ->useAttributeAsKey('identifier')
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('name')->isRequired()->end()
+                            ->scalarNode('audience')->isRequired()->end()
+                            ->scalarNode('oidc_initiation_url')->isRequired()->end()
+                            ->scalarNode('launch_url')->defaultNull()->end()
+                            ->scalarNode('deep_linking_url')->defaultNull()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $this;
     }
 
     public function addRegistrationsConfiguration(ArrayNodeDefinition $rootNode): self
     {
-        $registrationsIdentifier = $rootNode
+        $rootNode
             ->fixXmlConfig('registration')
-            ->children()
-            ->arrayNode('registrations')
-            ->useAttributeAsKey('identifier')
-            ->arrayPrototype()
-            ->children();
-
-        $registrationsIdentifier->scalarNode('client_id')->isRequired();
-        $registrationsIdentifier->scalarNode('platform')->isRequired();
-        $registrationsIdentifier->scalarNode('tool')->isRequired();
-        $registrationsIdentifier->arrayNode('deployment_ids')->scalarPrototype();
-        $registrationsIdentifier->scalarNode('platform_key_chain')->defaultNull();
-        $registrationsIdentifier->scalarNode('tool_key_chain')->defaultNull();
-        $registrationsIdentifier->scalarNode('platform_jwks_url')->defaultNull();
-        $registrationsIdentifier->scalarNode('tool_jwks_url')->defaultNull();
-        $registrationsIdentifier->integerNode('order')->defaultNull();
+                ->children()
+                    ->arrayNode('registrations')
+                    ->useAttributeAsKey('identifier')
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('client_id')->isRequired()->end()
+                            ->scalarNode('platform')->isRequired()->end()
+                            ->scalarNode('tool')->isRequired()->end()
+                            ->arrayNode('deployment_ids')->scalarPrototype()->end()->end()
+                            ->scalarNode('platform_key_chain')->defaultNull()->end()
+                            ->scalarNode('tool_key_chain')->defaultNull()->end()
+                            ->scalarNode('platform_jwks_url')->defaultNull()->end()
+                            ->scalarNode('tool_jwks_url')->defaultNull()->end()
+                            ->integerNode('order')->defaultNull()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $this;
     }
 }
+
