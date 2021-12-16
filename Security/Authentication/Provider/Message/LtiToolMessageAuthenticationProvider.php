@@ -77,7 +77,7 @@ class LtiToolMessageAuthenticationProvider implements AuthenticationProviderInte
         } catch (Throwable $exception) {
             throw new AuthenticationException(
                 sprintf('LTI tool message request authentication failed: %s', $exception->getMessage()),
-                $exception->getCode(),
+                (int) $exception->getCode(),
                 $exception
             );
         }

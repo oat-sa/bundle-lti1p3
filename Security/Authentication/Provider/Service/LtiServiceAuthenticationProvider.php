@@ -71,7 +71,7 @@ class LtiServiceAuthenticationProvider implements AuthenticationProviderInterfac
         } catch (Throwable $exception) {
             throw new AuthenticationException(
                 sprintf('LTI service request authentication failed: %s', $exception->getMessage()),
-                $exception->getCode(),
+                (int) $exception->getCode(),
                 $exception
             );
         }

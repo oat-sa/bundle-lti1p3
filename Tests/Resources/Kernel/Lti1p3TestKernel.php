@@ -29,22 +29,30 @@ use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class Lti1p3TestKernel extends Kernel
 {
     use MicroKernelTrait;
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
-        return [
-            new FrameworkBundle(),
-            new SecurityBundle(),
-            new Lti1p3Bundle()
+        $bundles = [
+            FrameworkBundle::class,
+            SecurityBundle::class,
+            Lti1p3Bundle::class
         ];
+
+        foreach ($bundles as $class) {
+            yield new $class();
+        }
     }
 
-    protected function configureRoutes(RouteCollectionBuilder $routes)
+    /**
+     * @param RouteCollectionBuilder|RoutingConfigurator $routes
+     */
+    protected function configureRoutes($routes): void
     {
         // bundle jwks route
         $routes->import(__DIR__  . '/../../../Resources/config/routing/jwks.yaml');
@@ -60,7 +68,7 @@ class Lti1p3TestKernel extends Kernel
         $routes->import(__DIR__  . '/config/routes.yaml');
     }
 
-    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
         // bundle config
         $loader->load(__DIR__ . '/../../../Resources/config/services.yaml');
@@ -71,12 +79,12 @@ class Lti1p3TestKernel extends Kernel
         $loader->load(__DIR__ . '/config/lti1p3.yaml');
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->environment . '/cache/' . spl_object_hash($this);
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->environment . '/logs/' . spl_object_hash($this);
     }
