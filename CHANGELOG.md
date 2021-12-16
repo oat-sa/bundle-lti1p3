@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+6.1.1
+-----
+
+* Fix XSS Attack on the Response
+* Fix some psalm problems
+
 6.1.0
 -----
 
