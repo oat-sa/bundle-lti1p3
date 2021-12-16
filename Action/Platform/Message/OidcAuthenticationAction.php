@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Action\Platform\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Response\ExceptionResponse;
+use Throwable;
 use OAT\Library\Lti1p3Core\Exception\LtiExceptionInterface;
 use OAT\Library\Lti1p3Core\Security\Oidc\OidcAuthenticator;
 use Psr\Log\LoggerInterface;
@@ -63,7 +63,15 @@ class OidcAuthenticationAction
         } catch (LtiExceptionInterface $exception) {
             $this->logger->error(sprintf('OidcAuthenticationAction: %s', $exception->getMessage()));
 
-            return new ExceptionResponse($exception, Response::HTTP_UNAUTHORIZED);
+            return new Response(
+                $this->convertThrowableMessageToHtml($exception),
+                Response::HTTP_UNAUTHORIZED
+            );
         }
+    }
+
+    private function convertThrowableMessageToHtml(Throwable $throwable): string
+    {
+        return htmlspecialchars($throwable->getMessage(), ENT_QUOTES);
     }
 }

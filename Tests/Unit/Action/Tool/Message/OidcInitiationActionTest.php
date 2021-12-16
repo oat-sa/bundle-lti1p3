@@ -20,20 +20,70 @@
 
 declare(strict_types=1);
 
-namespace OAT\Bundle\Lti1p3Bundle\Tests\Unit\Response;
+namespace OAT\Bundle\Lti1p3Bundle\Tests\Unit\Action\Tool\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Response\ExceptionResponse;
+use OAT\Bundle\Lti1p3Bundle\Action\Tool\Message\OidcInitiationAction;
+use OAT\Library\Lti1p3Core\Exception\LtiException;
+use OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator;
 use PHPUnit\Framework\TestCase;
-use Exception;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 
-final class ExceptionResponseTest extends TestCase
+final class OidcInitiationActionTest extends TestCase
 {
+    /**
+     * @var HttpMessageFactoryInterface
+     */
+    private $factory;
+
+    /**
+     * @var OidcInitiator
+     */
+    private $initiator;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var OidcInitiationAction
+     */
+    private $oidcInitiationAction;
+
+    protected function setUp(): void
+    {
+        $this->factory = $this->createMock(HttpMessageFactoryInterface::class);
+        $this->initiator = $this->createMock(OidcInitiator::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->request = $this->createMock(Request::class);
+
+        $this->oidcInitiationAction = new OidcInitiationAction(
+            $this->factory,
+            $this->initiator,
+            $this->logger
+        );
+    }
+
     /**
      * @dataProvider providerXssAttack
      */
-    public function testXssAttackWhenCreateResponse(string $expected, string $message): void
+    public function testXssAttackWhenExceptionThrown(string $expected, string $message): void
     {
-        $response = new ExceptionResponse(new Exception($message));
+        $this->factory->method('createRequest')->willReturn(
+            $this->createMock(ServerRequestInterface::class)
+        );
+
+        $this->initiator->method('initiate')->willThrowException(new LtiException($message));
+
+        $response = $this->oidcInitiationAction->__invoke($this->request);
 
         self::assertSame($expected, $response->getContent());
     }
