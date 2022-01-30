@@ -33,6 +33,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Firewall\AbstractListener;
 use Throwable;
 
+/**
+ * @deprecated since 6.1.1, AuthenticatorManagerListener is used automatically instead by the new authenticator system,
+ * internal logic moved to LtiToolMessageAuthenticator.
+ */
 class LtiToolMessageAuthenticationListener extends AbstractListener
 {
     /** @var TokenStorageInterface */

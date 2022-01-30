@@ -1,4 +1,5 @@
 security:
+    enable_authenticator_manager: true
     providers:
         users_in_memory: { memory: null }
 
@@ -16,7 +17,7 @@ security:
             stateless: true
             lti1p3_service: { scopes: ['allowed-scope'] }
         main:
-            anonymous: lazy
+            lazy: true
             provider: users_in_memory
 
     access_control:

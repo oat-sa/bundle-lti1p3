@@ -220,12 +220,12 @@ class LtiServiceFlowTest extends WebTestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
         $this->assertStringContainsString(
-            'A Token was not found in the TokenStorage',
+            'Missing Authorization header',
             (string)$response->getContent()
         );
 
         $this->assertHasLogRecordThatContains(
-            'A Token was not found in the TokenStorage',
+            'Missing Authorization header',
             LogLevel::ERROR
         );
     }

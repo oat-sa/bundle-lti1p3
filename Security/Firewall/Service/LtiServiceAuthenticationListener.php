@@ -31,6 +31,10 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterfac
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Firewall\AbstractListener;
 
+/**
+ * @deprecated since 6.1.1, AuthenticatorManagerListener is used automatically instead by the new authenticator system,
+ * internal logic moved to LtiServiceMessageAuthenticator.
+ */
 class LtiServiceAuthenticationListener extends AbstractListener
 {
     /** @var TokenStorageInterface */

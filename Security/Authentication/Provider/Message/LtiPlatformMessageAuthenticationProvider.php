@@ -31,6 +31,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Throwable;
 
+/**
+ * @deprecated since 6.1.1, use LtiPlatformMessageAuthenticator instead
+ */
 class LtiPlatformMessageAuthenticationProvider implements AuthenticationProviderInterface
 {
     /** @var PlatformLaunchValidatorInterface */
