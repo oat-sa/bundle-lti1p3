@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+6.1.2
+-----
+
+* Introduce a direct dependency on symfony/security-core
+
 6.1.1
 -----
 
