@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Service\Server\Handler;
 
 use Exception;
-use Http\Message\ResponseFactory;
+use Nyholm\Psr7\Response;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResultInterface;
 use OAT\Library\Lti1p3Core\Service\Server\Handler\LtiServiceServerRequestHandlerInterface;
@@ -37,13 +37,9 @@ class TestServiceRequestHandler implements LtiServiceServerRequestHandlerInterfa
     /** @var Security */
     private $security;
 
-    /** @var ResponseFactory */
-    private $factory;
-
-    public function __construct(Security $security, ResponseFactory $factory)
+    public function __construct(Security $security)
     {
         $this->security = $security;
-        $this->factory = $factory;
     }
 
     public function getServiceName(): string
@@ -110,6 +106,6 @@ class TestServiceRequestHandler implements LtiServiceServerRequestHandlerInterfa
             'Content-Length' => strlen($body),
         ];
 
-        return $this->factory->createResponse(200, null, $headers, $body);
+        return new Response(200, $headers, $body);
     }
 }
