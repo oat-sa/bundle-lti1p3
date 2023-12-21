@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/8.5/phpunit.xsd"
-         backupGlobals="false"
-         colors="true"
-         bootstrap="vendor/autoload.php"
-         failOnRisky="true"
-         failOnWarning="true"
->
-    <php>
-        <env name="KERNEL_CLASS" value="OAT\Bundle\Lti1p3Bundle\Tests\Resources\Kernel\Lti1p3TestKernel" />
-        <env name="LTI1P3_SERVICE_ENCRYPTION_KEY" value="someSecretTestKey" />
-    </php>
-
-    <testsuites>
-        <testsuite name="Lti1p3Bundle Functional Test Suite">
-            <directory>./Tests/Functional/</directory>
-        </testsuite>
-        <testsuite name="Lti1p3Bundle Integration Test Suite">
-            <directory>./Tests/Integration/</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" backupGlobals="false" colors="true" bootstrap="vendor/autoload.php" failOnRisky="true" failOnWarning="true">
+  <coverage>
+    <include>
+      <directory>./</directory>
+    </include>
+    <exclude>
+      <directory>./Tests</directory>
+      <directory>./vendor</directory>
+    </exclude>
+  </coverage>
+  <php>
+    <env name="KERNEL_CLASS" value="OAT\Bundle\Lti1p3Bundle\Tests\Resources\Kernel\Lti1p3TestKernel"/>
+    <env name="LTI1P3_SERVICE_ENCRYPTION_KEY" value="someSecretTestKey"/>
+  </php>
+  <testsuites>
+    <testsuite name="Lti1p3Bundle Functional Test Suite">
+      <directory>./Tests/Functional/</directory>
+    </testsuite>
+    <testsuite name="Lti1p3Bundle Integration Test Suite">
+      <directory>./Tests/Integration/</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>
