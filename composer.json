@@ -7,8 +7,9 @@
     "require": {
         "php": ">=8.0.0",
         "ext-json": "*",
-        "oat-sa/lib-lti1p3-core": "dev-feature/TR-5944/upgrade-dependencies as 7.0.0",
+        "league/oauth2-server": "^8.5",
         "nyholm/psr7": "^1.8",
+        "oat-sa/lib-lti1p3-core": "dev-feature/TR-5944/upgrade-dependencies as 7.0.0",
         "psr/log": "^1 || ^2 || ^3",
         "symfony/framework-bundle": "^5.4",
         "symfony/psr-http-message-bridge": "^2.0",
@@ -19,6 +20,8 @@
     },
     "require-dev": {
         "colinodell/psr-testlogger": "^1.2",
+        "guzzlehttp/guzzle": "^7.8",
+        "nesbot/carbon": "^2.72",
         "php-coveralls/php-coveralls": "^2.4",
         "phpunit/phpunit": "~9",
         "psalm/plugin-phpunit": "^0.15.1",
