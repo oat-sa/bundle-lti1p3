@@ -10,11 +10,6 @@ services:
 
     Nyholm\Psr7\Factory\Psr17Factory: ~
 
-    Nyholm\Psr7\Factory\HttplugFactory: ~
-
-    Http\Message\ResponseFactory:
-        alias: Nyholm\Psr7\Factory\HttplugFactory
-
     League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface:
         class: OAT\Library\Lti1p3Core\Security\OAuth2\Repository\AccessTokenRepository
         arguments:
