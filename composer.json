@@ -9,7 +9,7 @@
         "ext-json": "*",
         "league/oauth2-server": "^8.5",
         "nyholm/psr7": "^1.8",
-        "oat-sa/lib-lti1p3-core": "dev-feature/TR-5944/upgrade-dependencies as 7.0.0",
+        "oat-sa/lib-lti1p3-core": "^7.0",
         "psr/log": "^1 || ^2 || ^3",
         "symfony/framework-bundle": "^5.4",
         "symfony/psr-http-message-bridge": "^2.0",
