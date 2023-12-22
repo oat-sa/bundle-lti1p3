@@ -13,7 +13,6 @@ services:
     OAT\Bundle\Lti1p3Bundle\Tests\Resources\Service\Server\Handler\TestServiceRequestHandler:
         arguments:
             - '@security.helper'
-            - '@Http\Message\ResponseFactory'
 
     # Endpoints
     OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Message\TestPlatformMessageAction:
