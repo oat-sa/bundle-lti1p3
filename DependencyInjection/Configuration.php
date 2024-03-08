@@ -47,6 +47,7 @@ class Configuration implements ConfigurationInterface
 
     public function addScopesConfiguration(ArrayNodeDefinition $rootNode): self
     {
+        /** @psalm-suppress UndefinedInterfaceMethod */
         $rootNode
             ->fixXmlConfig('scope')
                 ->children()
@@ -61,6 +62,7 @@ class Configuration implements ConfigurationInterface
 
     public function addKeyChainsConfiguration(ArrayNodeDefinition $rootNode): self
     {
+        /** @psalm-suppress UndefinedInterfaceMethod */
         $rootNode
             ->fixXmlConfig('key_chain')
                 ->children()
@@ -83,6 +85,7 @@ class Configuration implements ConfigurationInterface
 
     public function addPlatformsConfiguration(ArrayNodeDefinition $rootNode): self
     {
+        /** @psalm-suppress UndefinedInterfaceMethod */
         $rootNode
             ->fixXmlConfig('platform')
                 ->children()
@@ -104,6 +107,7 @@ class Configuration implements ConfigurationInterface
 
     public function addToolsConfiguration(ArrayNodeDefinition $rootNode): self
     {
+        /** @psalm-suppress UndefinedInterfaceMethod */
         $rootNode
             ->fixXmlConfig('tool')
                 ->children()
@@ -126,6 +130,7 @@ class Configuration implements ConfigurationInterface
 
     public function addRegistrationsConfiguration(ArrayNodeDefinition $rootNode): self
     {
+        /** @psalm-suppress UndefinedInterfaceMethod */
         $rootNode
             ->fixXmlConfig('registration')
                 ->children()

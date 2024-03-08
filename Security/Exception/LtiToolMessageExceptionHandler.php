@@ -52,6 +52,7 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
         $message = urlencode($exception->getMessage());
 
         if (null !== $launchPresentation && null !== $launchPresentation->getReturnUrl()) {
+            /** @psalm-suppress PossiblyNullArgument - getReturnUrl cannot be null here */
             $redirectUrl = sprintf(
                 '%s%slti_msg=%s&lti_log=%s&lti_errormsg=%s&lti_errorlog=%s',
                 $launchPresentation->getReturnUrl(),
