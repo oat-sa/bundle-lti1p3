@@ -13,10 +13,10 @@
         "psr/log": "^1 || ^2 || ^3",
         "symfony/framework-bundle": "^5.4",
         "symfony/psr-http-message-bridge": "^2.0",
-        "symfony/security-bundle": "^5.4",
-        "symfony/security-core": "^5.4",
-        "symfony/security-http": "^5.4",
-        "symfony/yaml": "^5.4"
+        "symfony/security-bundle": "^5.4 || ^6.0",
+        "symfony/security-core": "^5.4 || ^6.0",
+        "symfony/security-http": "^5.4 || ^6.0",
+        "symfony/yaml": "^5.4 || ^6.0"
     },
     "require-dev": {
         "colinodell/psr-testlogger": "^1.2",
@@ -25,7 +25,7 @@
         "php-coveralls/php-coveralls": "^2.4",
         "phpunit/phpunit": "~9",
         "psalm/plugin-phpunit": "^0.15.1",
-        "symfony/browser-kit": "^5.4",
+        "symfony/browser-kit": "^5.4 || ^6.0",
         "vimeo/psalm": "^4.6"
     },
     "autoload": {
