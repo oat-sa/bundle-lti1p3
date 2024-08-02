@@ -35,7 +35,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class LtiServiceSecurityFactory implements AuthenticatorFactoryInterface
 {
-    public function getPriority(): string
+    public function getPriority(): int
     {
         return RemoteUserFactory::PRIORITY;
     }
