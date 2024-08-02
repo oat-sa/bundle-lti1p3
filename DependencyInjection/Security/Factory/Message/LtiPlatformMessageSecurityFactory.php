@@ -33,7 +33,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-
 class LtiPlatformMessageSecurityFactory implements AuthenticatorFactoryInterface
 {
     public function getPriority(): int
@@ -45,31 +44,36 @@ class LtiPlatformMessageSecurityFactory implements AuthenticatorFactoryInterface
     {
         return 'lti1p3_message_platform';
     }
-
-    public function create(
+    /**
+     * Creates the authenticator service(s) for the provided configuration.
+     *
+     * @param array<string, mixed> $config
+     *
+     * @return string|string[] The authenticator service ID(s) to be used by the firewall
+     */
+    public function createAuthenticator(
         ContainerBuilder $container,
-        $id,
-        $config,
-        $userProvider,
-        $defaultEntryPoint = null
+        string $firewallName,
+        array $config,
+        string $userProviderId
     ) {
-        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
+        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $firewallName);
         $providerDefinition = new Definition(LtiPlatformMessageAuthenticationProvider::class);
         $providerDefinition
             ->setShared(false)
             ->setArguments(
                 [
                     new Reference(PlatformLaunchValidatorInterface::class),
-                    $id,
+                    $firewallName,
                     $config['types'] ?? []
                 ]
             );
         $container->setDefinition($providerId, $providerDefinition);
 
-        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
+        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $firewallName);
         $container->setDefinition($listenerId, new ChildDefinition(LtiPlatformMessageAuthenticationListener::class));
 
-        return [$providerId, $listenerId, $defaultEntryPoint];
+        return [$providerId, $listenerId];
     }
 
     public function addConfiguration(NodeDefinition $node): void

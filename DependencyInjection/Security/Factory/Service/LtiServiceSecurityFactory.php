@@ -45,30 +45,29 @@ class LtiServiceSecurityFactory implements AuthenticatorFactoryInterface
         return 'lti1p3_service';
     }
 
-    public function create(
+    public function createAuthenticator(
         ContainerBuilder $container,
-        $id,
-        $config,
-        $userProvider,
-        $defaultEntryPoint = null
+        string $firewallName,
+        array $config,
+        string $userProviderId
     ) {
-        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
+        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $firewallName);
         $providerDefinition = new Definition(LtiServiceAuthenticationProvider::class);
         $providerDefinition
             ->setShared(false)
             ->setArguments(
                 [
                     new Reference(RequestAccessTokenValidatorInterface::class),
-                    $id,
+                    $firewallName,
                     $config['scopes'] ?? []
                 ]
             );
         $container->setDefinition($providerId, $providerDefinition);
 
-        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
+        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $firewallName);
         $container->setDefinition($listenerId, new ChildDefinition(LtiServiceAuthenticationListener::class));
 
-        return [$providerId, $listenerId, $defaultEntryPoint];
+        return [$providerId, $listenerId];
     }
 
     public function addConfiguration(NodeDefinition $node): void

@@ -45,30 +45,29 @@ class LtiToolMessageSecurityFactory implements AuthenticatorFactoryInterface
         return 'lti1p3_message_tool';
     }
 
-    public function create(
+    public function createAuthenticator(
         ContainerBuilder $container,
-        $id,
-        $config,
-        $userProvider,
-        $defaultEntryPoint = null
+        string $firewallName,
+        array $config,
+        string $userProviderId
     ) {
-        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
+        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $firewallName);
         $providerDefinition = new Definition(LtiToolMessageAuthenticationProvider::class);
         $providerDefinition
             ->setShared(false)
             ->setArguments(
                 [
                     new Reference(ToolLaunchValidatorInterface::class),
-                    $id,
+                    $firewallName,
                     $config['types'] ?? []
                 ]
             );
         $container->setDefinition($providerId, $providerDefinition);
 
-        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
+        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $firewallName);
         $container->setDefinition($listenerId, new ChildDefinition(LtiToolMessageAuthenticationListener::class));
 
-        return [$providerId, $listenerId, $defaultEntryPoint];
+        return [$providerId, $listenerId];
     }
 
     public function addConfiguration(NodeDefinition $node): void
