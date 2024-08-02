@@ -29,7 +29,7 @@ use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Message\LtiTool
 use OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Service\LtiServiceSecurityFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AuthenticatorFactoryInterfac;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AuthenticatorFactoryInterface;
 
 class Lti1p3Bundle extends Bundle
 {
@@ -47,7 +47,7 @@ class Lti1p3Bundle extends Bundle
         $this->configureSecurityExtension($container->getExtension('security'));
     }
 
-    private function configureSecurityExtension(AuthenticatorFactoryInterfac $securityExtension): void
+    private function configureSecurityExtension(AuthenticatorFactoryInterface $securityExtension): void
     {
         // LTI platform messages security registration
         $securityExtension->addSecurityListenerFactory(new LtiPlatformMessageSecurityFactory());
