@@ -50,12 +50,12 @@ class Lti1p3Bundle extends Bundle
     private function configureSecurityExtension(AuthenticatorFactoryInterface $securityExtension): void
     {
         // LTI platform messages security registration
-        $securityExtension->addSecurityListenerFactory(new LtiPlatformMessageSecurityFactory());
+        $securityExtension->addAuthenticatorFactory(new LtiPlatformMessageSecurityFactory());
 
         // LTI tool messages security registration
-        $securityExtension->addSecurityListenerFactory(new LtiToolMessageSecurityFactory());
+        $securityExtension->addAuthenticatorFactory(new LtiToolMessageSecurityFactory());
 
         // LTI services security registration
-        $securityExtension->addSecurityListenerFactory(new LtiServiceSecurityFactory());
+        $securityExtension->addAuthenticatorFactory(new LtiServiceSecurityFactory());
     }
 }
