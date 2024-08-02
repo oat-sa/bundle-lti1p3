@@ -56,7 +56,7 @@ class LtiPlatformMessageSecurityFactory implements AuthenticatorFactoryInterface
         string $firewallName,
         array $config,
         string $userProviderId
-    ) {
+    ): array|string {
         $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $firewallName);
         $providerDefinition = new Definition(LtiPlatformMessageAuthenticationProvider::class);
         $providerDefinition
