@@ -26,6 +26,7 @@ use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiPlatform
 use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiPlatformMessageAuthenticationListener;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AuthenticatorFactoryInterface;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\RemoteUserFactory;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,9 +36,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class LtiPlatformMessageSecurityFactory implements AuthenticatorFactoryInterface
 {
-    public function getPosition(): string
+    public function getPriority(): string
     {
-        return 'pre_auth';
+        return RemoteUserFactory::PRIORITY;
     }
 
     public function getKey(): string
