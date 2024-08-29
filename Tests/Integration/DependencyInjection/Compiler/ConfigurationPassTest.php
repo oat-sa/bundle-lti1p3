@@ -39,7 +39,7 @@ class ConfigurationPassTest extends KernelTestCase
 
         static::bootKernel();
 
-        $this->repository = static::$container->get(ScopeRepositoryInterface::class);
+        $this->repository = static::getContainer()->get(ScopeRepositoryInterface::class);
     }
 
     public function testConfiguredScopesAreAvailableInScopeRepositoryInstance(): void

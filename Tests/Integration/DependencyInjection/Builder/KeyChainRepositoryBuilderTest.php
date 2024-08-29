@@ -40,7 +40,7 @@ class KeyChainRepositoryBuilderTest extends KernelTestCase
 
         static::bootKernel();
 
-        $this->repository = static::$container->get(KeyChainRepositoryInterface::class);
+        $this->repository = static::getContainer()->get(KeyChainRepositoryInterface::class);
     }
 
     public function testBuildRepositoryClass(): void

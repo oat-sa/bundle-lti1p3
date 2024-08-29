@@ -26,6 +26,8 @@ use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Security\Jwt\TokenInterface;
 use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResultInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+use Symfony\Component\Security\Core\User\InMemoryUser;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class LtiServiceSecurityToken extends AbstractToken
 {
@@ -90,17 +92,18 @@ class LtiServiceSecurityToken extends AbstractToken
 
             $registration = $this->validationResult->getRegistration();
 
-            if (null !== $registration) {
-                $this->setUser($registration->getTool()->getName());
+            if (!$this->validationResult->hasError()) {
+                if (null !== $registration) {
+                    $user = new InMemoryUser($registration->getTool()->getName(), null);
+                } else {
+                    $user = new InMemoryUser('lti tool', null);
+                }
+                $this->setUser($user);
             }
 
             $this->roleNames = $this->validationResult->getScopes();
-
-            $this->setAuthenticated(!$this->validationResult->hasError());
         } else {
             $this->roleNames = [];
-
-            $this->setAuthenticated(false);
         }
     }
 }

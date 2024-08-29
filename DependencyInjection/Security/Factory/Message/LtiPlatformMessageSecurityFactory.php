@@ -24,7 +24,11 @@ namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Message;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiPlatformMessageAuthenticationProvider;
 use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiPlatformMessageAuthenticationListener;
+use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiPlatformMessageAuthenticator;
+use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiToolMessageAuthenticator;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface;
+use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\RequestAccessTokenValidatorInterface;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AuthenticatorFactoryInterface;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\RemoteUserFactory;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -57,23 +61,22 @@ class LtiPlatformMessageSecurityFactory implements AuthenticatorFactoryInterface
         array $config,
         string $userProviderId
     ): array|string {
-        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $firewallName);
-        $providerDefinition = new Definition(LtiPlatformMessageAuthenticationProvider::class);
-        $providerDefinition
+        $authenticatorId = sprintf('security.authenticator.%s.%s', $this->getKey(), $firewallName);
+        $authenticatorDefinition = new Definition(LtiPlatformMessageAuthenticator::class);
+        $authenticatorDefinition
             ->setShared(false)
             ->setArguments(
                 [
+                    new Reference('security.firewall.map'),
+                    new Reference(HttpMessageFactoryInterface::class),
                     new Reference(PlatformLaunchValidatorInterface::class),
                     $firewallName,
                     $config['types'] ?? []
                 ]
             );
-        $container->setDefinition($providerId, $providerDefinition);
+        $container->setDefinition($authenticatorId, $authenticatorDefinition);
 
-        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $firewallName);
-        $container->setDefinition($listenerId, new ChildDefinition(LtiPlatformMessageAuthenticationListener::class));
-
-        return [$providerId, $listenerId];
+        return $authenticatorId;
     }
 
     public function addConfiguration(NodeDefinition $node): void

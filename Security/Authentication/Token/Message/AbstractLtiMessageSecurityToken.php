@@ -49,16 +49,12 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
 
     public function getRegistration(): ?RegistrationInterface
     {
-        return $this->validationResult
-            ? $this->validationResult->getRegistration()
-            : null;
+        return $this->validationResult?->getRegistration();
     }
 
     public function getPayload(): ?LtiMessagePayloadInterface
     {
-        return $this->validationResult
-            ? $this->validationResult->getPayload()
-            : null;
+        return $this->validationResult?->getPayload();
     }
 
     public function getCredentials(): string

@@ -47,7 +47,7 @@ class LtiServiceFlowTest extends WebTestCase
     {
         $this->client = static::createClient();
 
-        $this->registration = static::$container
+        $this->registration = static::getContainer()
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
     }
@@ -214,7 +214,7 @@ class LtiServiceFlowTest extends WebTestCase
 
     public function testItReturnsUnauthorizedResponseWithoutBearer(): void
     {
-        $this->client->request(Request::METHOD_GET, '/test/service');
+        $this->client->request(Request::METHOD_GET, '/test/service', [], [], ['HTTP_ACCEPT' => 'application/json']);
 
         $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);

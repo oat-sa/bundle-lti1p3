@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResultInterface;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 
 class LtiPlatformMessageSecurityToken extends AbstractLtiMessageSecurityToken
 {
@@ -33,9 +34,8 @@ class LtiPlatformMessageSecurityToken extends AbstractLtiMessageSecurityToken
         $this->roleNames = [];
 
         if (null !== $this->validationResult) {
-            $this->setAuthenticated(!$this->validationResult->hasError());
-        } else {
-            $this->setAuthenticated(false);
+            $user = new InMemoryUser('lti platform', null);
+            $this->setUser($user);
         }
     }
 }

@@ -36,7 +36,7 @@ trait LoggerTestingTrait
         $this->checkLoggerTestingTraitUsage();
 
         $this->assertTrue(
-            static::$container->get(LoggerInterface::class)->hasRecords($level),
+            static::getContainer()->get(LoggerInterface::class)->hasRecords($level),
             sprintf(
                 'Failed asserting that logger contains records for level %s',
                 $level
@@ -52,7 +52,7 @@ trait LoggerTestingTrait
         $this->checkLoggerTestingTraitUsage();
 
         $this->assertTrue(
-            static::$container->get(LoggerInterface::class)->hasRecord($record, $level),
+            static::getContainer()->get(LoggerInterface::class)->hasRecord($record, $level),
             sprintf(
                 'Failed asserting that logger contains record: [%s] %s',
                 $level,
@@ -69,7 +69,7 @@ trait LoggerTestingTrait
         $this->checkLoggerTestingTraitUsage();
 
         $this->assertTrue(
-            static::$container->get(LoggerInterface::class)->hasRecordThatContains($record, $level),
+            static::getContainer()->get(LoggerInterface::class)->hasRecordThatContains($record, $level),
             sprintf(
                 'Failed asserting that logger contains record containing: [%s] %s',
                 $level,
@@ -85,7 +85,7 @@ trait LoggerTestingTrait
     {
         $this->checkLoggerTestingTraitUsage();
 
-        static::$container->get(LoggerInterface::class)->reset();
+        static::getContainer()->get(LoggerInterface::class)->reset();
     }
 
     /**

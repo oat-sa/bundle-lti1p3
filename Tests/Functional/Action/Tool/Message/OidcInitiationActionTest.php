@@ -48,7 +48,7 @@ class OidcInitiationActionTest extends WebTestCase
 
         $this->resetTestLogger();
 
-        $this->registration = static::$container
+        $this->registration = static::getContainer()
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
     }

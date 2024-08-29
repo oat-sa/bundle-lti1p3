@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Symfony\Component\Security\Core\Security;
 use Throwable;
 
@@ -101,6 +102,10 @@ class LtiServiceServerHttpFoundationRequestHandler implements LtiServiceServerHt
         try {
             /** @var LtiServiceSecurityToken $token */
             $token = $this->security->getToken();
+
+            if ($token === null) {
+                throw new AuthenticationCredentialsNotFoundException('A Token was not found in the TokenStorage.');
+            }
 
             $handlerResponse = $this->handler->handleValidatedServiceRequest(
                 $token->getValidationResult(),

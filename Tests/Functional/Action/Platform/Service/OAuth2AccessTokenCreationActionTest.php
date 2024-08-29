@@ -55,11 +55,11 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
 
         $this->resetTestLogger();
 
-        $this->registration = static::$container
+        $this->registration = static::getContainer()
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
 
-        $this->keyChain = static::$container
+        $this->keyChain = static::getContainer()
             ->get(KeyChainRepositoryInterface::class)
             ->find('kid1');
     }
