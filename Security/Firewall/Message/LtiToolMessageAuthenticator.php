@@ -147,10 +147,5 @@ class LtiToolMessageAuthenticator extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         return $this->handler->handle($exception, $request);
-//        return new JsonResponse([
-//            'error' => [
-//                'message' => strtr($exception->getMessage(), $exception->getMessageData()),
-//            ],
-//        ], Response::HTTP_UNAUTHORIZED);
     }
 }
