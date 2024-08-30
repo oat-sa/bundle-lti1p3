@@ -37,7 +37,7 @@ class User implements UserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) ($this->userIdentifier ?? 'identifier');
+        return $this->userIdentifier ?? 'identifier';
     }
 
     public function eraseCredentials(): void
