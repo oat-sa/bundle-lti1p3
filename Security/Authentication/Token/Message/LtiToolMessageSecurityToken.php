@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\User\User;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResultInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\MessagePayloadInterface;
-use Symfony\Component\Security\Core\User\InMemoryUser;
 
 class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
 {
@@ -44,7 +44,7 @@ class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
                 $userIdentity = $payload->getUserIdentity();
 
                 if (null !== $userIdentity) {
-                    $user = new InMemoryUser($userIdentity->getIdentifier(), null);
+                    $user = new User($userIdentity->getIdentifier());
                     $this->setUser($user);
                 }
 

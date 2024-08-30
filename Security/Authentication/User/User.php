@@ -15,27 +15,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2024 (original work) Open Assessment Technologies SA;
  */
 
-declare(strict_types=1);
+namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\User;
 
-namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\User\User;
-use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResultInterface;
-
-class LtiPlatformMessageSecurityToken extends AbstractLtiMessageSecurityToken
+class User implements UserInterface
 {
-    protected function applyValidationResult(?LaunchValidationResultInterface $validationResult = null): void
+    public function __construct(
+        private ?string $userIdentifier = null,
+        private array $roles = ['ROLE_USER'],
+    ) {
+    }
+
+    public function getRoles(): array
     {
-        $this->validationResult = $validationResult;
+        return $this->roles;
+    }
 
-        $this->roleNames = [];
+    public function getUserIdentifier(): string
+    {
+        return (string) ($this->userIdentifier ?? 'identifier');
+    }
 
-        if (null !== $this->validationResult) {
-            $user = new User();
-            $this->setUser($user);
-        }
+    public function eraseCredentials(): void
+    {
     }
 }

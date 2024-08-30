@@ -22,11 +22,11 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service;
 
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\User\User;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Security\Jwt\TokenInterface;
 use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResultInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
-use Symfony\Component\Security\Core\User\InMemoryUser;
 
 class LtiServiceSecurityToken extends AbstractToken
 {
@@ -93,9 +93,9 @@ class LtiServiceSecurityToken extends AbstractToken
 
             if (!$this->validationResult->hasError()) {
                 if (null !== $registration) {
-                    $user = new InMemoryUser($registration->getTool()->getName(), null);
+                    $user = new User($registration->getTool()->getName());
                 } else {
-                    $user = new InMemoryUser('lti tool', null);
+                    $user = new User();
                 }
                 $this->setUser($user);
             }
