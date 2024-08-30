@@ -22,14 +22,12 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiPlatformMessageSecurityToken;
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiToolMessageSecurityToken;
 use OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidatorInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -81,12 +79,6 @@ class LtiToolMessageAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-//        $request = $event->getRequest();
-
-//        $token = new LtiToolMessageSecurityToken();
-//        $token->setAttribute('request', $this->factory->createRequest($request));
-//        $token->setAttribute('firewall_config', $this->firewallMap->getFirewallConfig($request));
-
         $username = 'lti-tool';
 
         $passport = new SelfValidatingPassport(new UserBadge($username), [
@@ -107,7 +99,7 @@ class LtiToolMessageAuthenticator extends AbstractAuthenticator
                 throw new LtiException($validationResult->getError());
             }
 
-            $messageType = $validationResult->getPayload()->getMessageType();
+            $messageType = $validationResult->getPayload()?->getMessageType();
 
             if (!empty($this->types) && !in_array($messageType, $this->types)) {
                 throw new BadRequestHttpException(sprintf('Invalid LTI message type %s', $messageType));

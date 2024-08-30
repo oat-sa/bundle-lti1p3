@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiPlatformMessageSecurityToken;
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service\LtiServiceSecurityToken;
 use OAT\Library\Lti1p3Core\Exception\LtiException;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Platform\PlatformLaunchValidatorInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
@@ -96,7 +95,7 @@ class LtiPlatformMessageAuthenticator extends AbstractAuthenticator
                 throw new LtiException($validationResult->getError());
             }
 
-            $messageType = $validationResult->getPayload()->getMessageType();
+            $messageType = $validationResult->getPayload()?->getMessageType();
 
             if (!empty($this->types) && !in_array($messageType, $this->types)) {
                 throw new BadRequestHttpException(sprintf('Invalid LTI message type %s', $messageType));

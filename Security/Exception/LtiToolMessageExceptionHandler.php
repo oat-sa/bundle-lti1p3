@@ -46,16 +46,15 @@ class LtiToolMessageExceptionHandler implements LtiToolMessageExceptionHandlerIn
     public function handle(Throwable $exception, Request $request): Response
     {
         $payload = new LtiMessagePayload($this->parser->parse($this->getIdTokenFromRequest($request)));
-
         $launchPresentation = $payload->getLaunchPresentation();
-
         $message = urlencode($exception->getMessage());
+        $returnUrl = $launchPresentation?->getReturnUrl();
 
-        if (null !== $launchPresentation && null !== $launchPresentation->getReturnUrl()) {
+        if (null !== $returnUrl) {
             $redirectUrl = sprintf(
                 '%s%slti_msg=%s&lti_log=%s&lti_errormsg=%s&lti_errorlog=%s',
-                $launchPresentation->getReturnUrl(),
-                strpos($launchPresentation->getReturnUrl(), '?') ? '&' : '?',
+                $returnUrl,
+                strpos($returnUrl, '?') ? '&' : '?',
                 $message,
                 $message,
                 $message,

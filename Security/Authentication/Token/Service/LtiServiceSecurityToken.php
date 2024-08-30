@@ -27,7 +27,6 @@ use OAT\Library\Lti1p3Core\Security\Jwt\TokenInterface;
 use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResultInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\User\InMemoryUser;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class LtiServiceSecurityToken extends AbstractToken
 {
