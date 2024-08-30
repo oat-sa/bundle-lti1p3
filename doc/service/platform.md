@@ -109,7 +109,7 @@ platform_service_ags_result:
     controller: App\Action\Platform\Service\Ags\ResultAction
 ```
 
-To protect your endpoint, this bundle provides the `lti1p3_service` [security firewall](../../Security/Firewall/Service/LtiServiceAuthenticationListener.php) to put in front of your routes:
+To protect your endpoint, this bundle provides the `lti1p3_service` [security firewall](../../Security/Firewall/Service/LtiServiceAuthenticator.php) to put in front of your routes:
 
 ```yaml
 # config/packages/security.yaml

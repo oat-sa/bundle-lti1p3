@@ -211,7 +211,7 @@ platform_return:
     controller: App\Action\Platform\ReturnAction
 ```
 
-To protect your endpoint, this bundle provides the `lti1p3_message_platform` [security firewall](../../Security/Firewall/Message/LtiPlatformMessageAuthenticationListener.php) to put in front of your routes:
+To protect your endpoint, this bundle provides the `lti1p3_message_platform` [security firewall](../../Security/Firewall/Message/LtiPlatformMessageAuthenticator.php) to put in front of your routes:
 
 ```yaml
 # config/packages/security.yaml

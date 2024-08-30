@@ -97,7 +97,7 @@ platform_service:
     controller: App\Action\Tool\LtiLaunchAction
 ```
 
-To protect your endpoint, this bundle provides the `lti1p3_message_tool` [security firewall](../../Security/Firewall/Message/LtiToolMessageAuthenticationListener.php) to put in front of your routes:
+To protect your endpoint, this bundle provides the `lti1p3_message_tool` [security firewall](../../Security/Firewall/Message/LtiToolMessageAuthenticator.php) to put in front of your routes:
 
 ```yaml
 # config/packages/security.yaml
