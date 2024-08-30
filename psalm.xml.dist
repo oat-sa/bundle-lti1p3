@@ -33,9 +33,9 @@
         </ArgumentTypeCoercion>
         <InternalMethod>
             <errorLevel type="suppress">
-                <file name="Security/Firewall/Message/LtiPlatformMessageAuthenticationListener.php"/>
-                <file name="Security/Firewall/Message/LtiToolMessageAuthenticationListener.php"/>
-                <file name="Security/Firewall/Service/LtiServiceAuthenticationListener.php"/>
+                <file name="Security/Firewall/Message/LtiPlatformMessageAuthenticator.php"/>
+                <file name="Security/Firewall/Message/LtiToolMessageAuthenticator.php"/>
+                <file name="Security/Firewall/Service/LtiServiceAuthenticator.php"/>
             </errorLevel>
         </InternalMethod>
         <ParamNameMismatch>
@@ -48,8 +48,6 @@
         <PossiblyNullReference>
             <errorLevel type="suppress">
                 <file name="DependencyInjection/Configuration.php"/>
-                <file name="Security/Authentication/Provider/Message/LtiPlatformMessageAuthenticationProvider.php"/>
-                <file name="Security/Authentication/Provider/Message/LtiToolMessageAuthenticationProvider.php"/>
             </errorLevel>
         </PossiblyNullReference>
         <PossiblyUndefinedMethod>
