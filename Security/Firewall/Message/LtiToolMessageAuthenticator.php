@@ -41,33 +41,14 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class LtiToolMessageAuthenticator extends AbstractAuthenticator
 {
-    private HttpMessageFactoryInterface $factory;
-
-    private LtiToolMessageExceptionHandlerInterface $handler;
-
-    private FirewallMap $firewallMap;
-
-    private ToolLaunchValidatorInterface $validator;
-
-    private string $firewallName;
-
-    private array $types;
-
-
     public function __construct(
-        FirewallMap $firewallMap,
-        HttpMessageFactoryInterface $factory,
-        LtiToolMessageExceptionHandlerInterface $handler,
-        ToolLaunchValidatorInterface $validator,
-        string $firewallName,
-        array $types = []
+        private FirewallMap $firewallMap,
+        private HttpMessageFactoryInterface $factory,
+        private LtiToolMessageExceptionHandlerInterface $handler,
+        private ToolLaunchValidatorInterface $validator,
+        private string $firewallName,
+        private array $types = []
     ) {
-        $this->factory = $factory;
-        $this->handler = $handler;
-        $this->firewallMap = $firewallMap;
-        $this->validator = $validator;
-        $this->firewallName = $firewallName;
-        $this->types = $types;
     }
 
     public function supports(Request $request): ?bool
