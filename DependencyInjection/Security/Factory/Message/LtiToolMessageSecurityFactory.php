@@ -22,21 +22,23 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\DependencyInjection\Security\Factory\Message;
 
-use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Provider\Message\LtiToolMessageAuthenticationProvider;
-use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiToolMessageAuthenticationListener;
+use OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface;
+use OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiToolMessageAuthenticator;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Tool\ToolLaunchValidatorInterface;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AuthenticatorFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class LtiToolMessageSecurityFactory implements SecurityFactoryInterface
+class LtiToolMessageSecurityFactory implements AuthenticatorFactoryInterface
 {
-    public function getPosition(): string
+    public const PRIORITY = -10;
+
+    public function getPriority(): int
     {
-        return 'pre_auth';
+        return self::PRIORITY;
     }
 
     public function getKey(): string
@@ -44,30 +46,29 @@ class LtiToolMessageSecurityFactory implements SecurityFactoryInterface
         return 'lti1p3_message_tool';
     }
 
-    public function create(
+    public function createAuthenticator(
         ContainerBuilder $container,
-        $id,
-        $config,
-        $userProvider,
-        $defaultEntryPoint = null
-    ) {
-        $providerId = sprintf('security.authentication.provider.%s.%s', $this->getKey(), $id);
-        $providerDefinition = new Definition(LtiToolMessageAuthenticationProvider::class);
-        $providerDefinition
+        string $firewallName,
+        array $config,
+        string $userProviderId
+    ): array|string {
+        $authenticatorId = sprintf('security.authenticator.%s.%s', $this->getKey(), $firewallName);
+        $authenticatorDefinition = new Definition(LtiToolMessageAuthenticator::class);
+        $authenticatorDefinition
             ->setShared(false)
             ->setArguments(
                 [
+                    new Reference('security.firewall.map'),
+                    new Reference(HttpMessageFactoryInterface::class),
+                    new Reference(LtiToolMessageExceptionHandlerInterface::class),
                     new Reference(ToolLaunchValidatorInterface::class),
-                    $id,
+                    $firewallName,
                     $config['types'] ?? []
                 ]
             );
-        $container->setDefinition($providerId, $providerDefinition);
+        $container->setDefinition($authenticatorId, $authenticatorDefinition);
 
-        $listenerId = sprintf('security.authentication.listener.%s.%s', $this->getKey(), $id);
-        $container->setDefinition($listenerId, new ChildDefinition(LtiToolMessageAuthenticationListener::class));
-
-        return [$providerId, $listenerId, $defaultEntryPoint];
+        return $authenticatorId;
     }
 
     public function addConfiguration(NodeDefinition $node): void

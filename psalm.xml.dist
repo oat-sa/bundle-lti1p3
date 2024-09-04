@@ -33,9 +33,6 @@
         </ArgumentTypeCoercion>
         <InternalMethod>
             <errorLevel type="suppress">
-                <file name="Security/Firewall/Message/LtiPlatformMessageAuthenticationListener.php"/>
-                <file name="Security/Firewall/Message/LtiToolMessageAuthenticationListener.php"/>
-                <file name="Security/Firewall/Service/LtiServiceAuthenticationListener.php"/>
             </errorLevel>
         </InternalMethod>
         <ParamNameMismatch>
@@ -48,8 +45,6 @@
         <PossiblyNullReference>
             <errorLevel type="suppress">
                 <file name="DependencyInjection/Configuration.php"/>
-                <file name="Security/Authentication/Provider/Message/LtiPlatformMessageAuthenticationProvider.php"/>
-                <file name="Security/Authentication/Provider/Message/LtiToolMessageAuthenticationProvider.php"/>
             </errorLevel>
         </PossiblyNullReference>
         <PossiblyUndefinedMethod>
@@ -64,6 +59,19 @@
                 <file name="DependencyInjection/Security/Factory/Service/LtiServiceSecurityFactory.php"/>
             </errorLevel>
         </UndefinedMethod>
+        <UndefinedInterfaceMethod>
+            <errorLevel type="suppress">
+                <file name="DependencyInjection/Configuration.php"/>
+            </errorLevel>
+        </UndefinedInterfaceMethod>
+        <MethodSignatureMismatch>
+            <errorLevel type="suppress">
+                <file name="Security/Authentication/Token/Message/AbstractLtiMessageSecurityToken.php"/>
+                <file name="Security/Authentication/Token/Message/LtiToolMessageSecurityToken.php"/>
+                <file name="Security/Authentication/Token/Service/LtiServiceSecurityToken.php"/>
+                <file name="Security/Authentication/Token/Message/LtiPlatformMessageSecurityToken.php"/>
+            </errorLevel>
+        </MethodSignatureMismatch>
     </issueHandlers>
     <mockClasses>
         <class name="PHPUnit\Framework\MockObject\MockObject"/>

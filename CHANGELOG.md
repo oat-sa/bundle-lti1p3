@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+8.0.0
+-----
+* Upgrade symfony to v6.4
+
 6.1.2
 -----
 

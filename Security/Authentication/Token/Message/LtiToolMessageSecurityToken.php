@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message;
 
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\User\User;
 use OAT\Library\Lti1p3Core\Message\Launch\Validator\Result\LaunchValidationResultInterface;
 use OAT\Library\Lti1p3Core\Message\Payload\MessagePayloadInterface;
 
@@ -29,9 +30,7 @@ class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
 {
     public function getState(): ?MessagePayloadInterface
     {
-        return $this->validationResult
-            ? $this->validationResult->getState()
-            : null;
+        return $this->validationResult?->getState();
     }
 
     protected function applyValidationResult(?LaunchValidationResultInterface $validationResult = null): void
@@ -41,21 +40,18 @@ class LtiToolMessageSecurityToken extends AbstractLtiMessageSecurityToken
         if (null !== $this->validationResult) {
             $payload = $this->validationResult->getPayload();
 
-            if (null !== $payload) {
+            if (null !== $payload && !$this->validationResult->hasError()) {
                 $userIdentity = $payload->getUserIdentity();
 
                 if (null !== $userIdentity) {
-                    $this->setUser($userIdentity->getIdentifier());
+                    $user = new User($userIdentity->getIdentifier());
+                    $this->setUser($user);
                 }
 
                 $this->roleNames = $payload->getRoles();
             }
-
-            $this->setAuthenticated(!$this->validationResult->hasError());
         } else {
             $this->roleNames = [];
-
-            $this->setAuthenticated(false);
         }
     }
 }

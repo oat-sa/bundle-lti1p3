@@ -30,7 +30,7 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 abstract class AbstractLtiMessageSecurityToken extends AbstractToken
 {
     /** @var string[] */
-    protected $roleNames;
+    protected array $roleNames = [];
 
     /** @var LaunchValidationResultInterface|null */
     protected $validationResult;
@@ -49,25 +49,19 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
 
     public function getRegistration(): ?RegistrationInterface
     {
-        return $this->validationResult
-            ? $this->validationResult->getRegistration()
-            : null;
+        return $this->validationResult?->getRegistration();
     }
 
     public function getPayload(): ?LtiMessagePayloadInterface
     {
-        return $this->validationResult
-            ? $this->validationResult->getPayload()
-            : null;
+        return $this->validationResult?->getPayload();
     }
 
     public function getCredentials(): string
     {
         $payload = $this->getPayload();
 
-        return $payload
-            ? $payload->getToken()->toString()
-            : '';
+        return $payload?->getToken()->toString();
     }
 
     public function getRoleNames(): array

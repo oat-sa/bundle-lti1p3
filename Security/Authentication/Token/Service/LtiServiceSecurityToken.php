@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Service;
 
+use OAT\Bundle\Lti1p3Bundle\Security\Authentication\User\User;
 use OAT\Library\Lti1p3Core\Registration\RegistrationInterface;
 use OAT\Library\Lti1p3Core\Security\Jwt\TokenInterface;
 use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenValidationResultInterface;
@@ -90,17 +91,18 @@ class LtiServiceSecurityToken extends AbstractToken
 
             $registration = $this->validationResult->getRegistration();
 
-            if (null !== $registration) {
-                $this->setUser($registration->getTool()->getName());
+            if (!$this->validationResult->hasError()) {
+                if (null !== $registration) {
+                    $user = new User($registration->getTool()->getName());
+                } else {
+                    $user = new User();
+                }
+                $this->setUser($user);
             }
 
             $this->roleNames = $this->validationResult->getScopes();
-
-            $this->setAuthenticated(!$this->validationResult->hasError());
         } else {
             $this->roleNames = [];
-
-            $this->setAuthenticated(false);
         }
     }
 }

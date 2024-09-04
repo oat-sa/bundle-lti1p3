@@ -53,7 +53,7 @@ class OidcAuthenticationActionTest extends WebTestCase
 
         $this->resetTestLogger();
 
-        $this->registration = static::$container
+        $this->registration = static::getContainer()
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
     }
@@ -68,7 +68,7 @@ class OidcAuthenticationActionTest extends WebTestCase
     public function testValidOidcAuthenticationWithPostMethod(): void
     {
         /** @var LtiMessageInterface $message */
-        $message = static::$container->get(LtiResourceLinkLaunchRequestBuilder::class)->buildLtiResourceLinkLaunchRequest(
+        $message = static::getContainer()->get(LtiResourceLinkLaunchRequestBuilder::class)->buildLtiResourceLinkLaunchRequest(
             new LtiResourceLink('resourceLinkIdentifier'),
             $this->registration,
             'loginHint'
@@ -100,7 +100,7 @@ class OidcAuthenticationActionTest extends WebTestCase
     public function testValidOidcAuthenticationWithGetMethod(): void
     {
         /** @var LtiMessageInterface $message */
-        $message = static::$container->get(LtiResourceLinkLaunchRequestBuilder::class)->buildLtiResourceLinkLaunchRequest(
+        $message = static::getContainer()->get(LtiResourceLinkLaunchRequestBuilder::class)->buildLtiResourceLinkLaunchRequest(
             new LtiResourceLink('resourceLinkIdentifier'),
             $this->registration,
             'loginHint'

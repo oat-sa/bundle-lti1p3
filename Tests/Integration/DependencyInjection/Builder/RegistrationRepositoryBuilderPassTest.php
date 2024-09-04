@@ -58,7 +58,7 @@ class RegistrationRepositoryBuilderPassTest extends KernelTestCase
     {
         static::bootKernel();
 
-        $repository = static::$container->get(RegistrationRepositoryInterface::class);
+        $repository = static::getContainer()->get(RegistrationRepositoryInterface::class);
 
         $this->assertInstanceOf(RegistrationRepository::class, $repository);
 

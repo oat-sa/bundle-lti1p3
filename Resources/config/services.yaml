@@ -181,28 +181,6 @@ services:
     OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface:
         alias: OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandler
 
-    OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiPlatformMessageAuthenticationListener:
-        arguments:
-            - '@security.token_storage'
-            - '@security.authentication.manager'
-            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - '@security.firewall.map'
-
-    OAT\Bundle\Lti1p3Bundle\Security\Firewall\Message\LtiToolMessageAuthenticationListener:
-        arguments:
-            - '@security.token_storage'
-            - '@security.authentication.manager'
-            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - '@OAT\Bundle\Lti1p3Bundle\Security\Exception\LtiToolMessageExceptionHandlerInterface'
-            - '@security.firewall.map'
-
-    OAT\Bundle\Lti1p3Bundle\Security\Firewall\Service\LtiServiceAuthenticationListener:
-        arguments:
-            - '@security.token_storage'
-            - '@security.authentication.manager'
-            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - '@security.firewall.map'
-
     OAT\Library\Lti1p3Core\Security\User\UserAuthenticatorInterface: ~
 
     OAT\Library\Lti1p3Core\Message\Launch\Builder\PlatformOriginatingLaunchBuilder:

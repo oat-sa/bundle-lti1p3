@@ -58,9 +58,9 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->builder = static::$container->get(LtiResourceLinkLaunchRequestBuilder::class);
+        $this->builder = static::getContainer()->get(LtiResourceLinkLaunchRequestBuilder::class);
 
-        $this->registration = static::$container
+        $this->registration = static::getContainer()
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
     }
@@ -239,7 +239,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         // Step 4 - Tool message validation
 
         /** @var MessagePayloadBuilderInterface $messagePayloadBuilder */
-        $messagePayloadBuilder =  static::$container->get(MessagePayloadBuilderInterface::class);
+        $messagePayloadBuilder =  static::getContainer()->get(MessagePayloadBuilderInterface::class);
 
         Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessagePayloadInterface::TTL + 1));
 
@@ -323,7 +323,7 @@ class LtiPlatformOriginatingMessageFlowTest extends WebTestCase
         // Step 4 - Tool message validation
 
         /** @var MessagePayloadBuilderInterface $messagePayloadBuilder */
-        $messagePayloadBuilder =  static::$container->get(MessagePayloadBuilderInterface::class);
+        $messagePayloadBuilder =  static::getContainer()->get(MessagePayloadBuilderInterface::class);
 
         Carbon::setTestNow(Carbon::now()->subSeconds(LtiMessagePayloadInterface::TTL + 1));
 

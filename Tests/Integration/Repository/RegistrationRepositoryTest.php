@@ -39,7 +39,7 @@ class RegistrationRepositoryTest extends KernelTestCase
 
         static::bootKernel();
 
-        $this->subject = static::$container->get(RegistrationRepositoryInterface::class);
+        $this->subject = static::getContainer()->get(RegistrationRepositoryInterface::class);
     }
 
     public function testFind(): void

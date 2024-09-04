@@ -54,9 +54,9 @@ class LtiToolOriginatingMessageFlowTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->builder = static::$container->get(ToolOriginatingLaunchBuilder::class);
+        $this->builder = static::getContainer()->get(ToolOriginatingLaunchBuilder::class);
 
-        $this->registration = static::$container
+        $this->registration = static::getContainer()
             ->get(RegistrationRepositoryInterface::class)
             ->find('testRegistration');
     }
