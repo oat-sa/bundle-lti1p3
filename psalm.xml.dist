@@ -20,21 +20,56 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
-        <ReservedWord>
+        <ClassMustBeFinal errorLevel="suppress" />
+        <MissingOverrideAttribute errorLevel="suppress" />
+        <PossiblyUnusedMethod>
             <errorLevel type="suppress">
-                <file name="DependencyInjection/Configuration.php"/>
-                <file name="DependencyInjection/Lti1p3Extension.php"/>
+                <file name="DependencyInjection/Builder/RegistrationRepositoryBuilder.php" method="__construct"/>
+                <file name="DependencyInjection/Builder/RegistrationRepositoryBuilder.php" method="build"/>
+                <file name="Security/Authentication/Token/Message/LtiToolMessageSecurityToken.php" method="getState"/>
+                <file name="Security/Authentication/Token/Service/LtiServiceSecurityToken.php" method="getValidationResult"/>
+                <file name="Security/Authentication/Token/Service/LtiServiceSecurityToken.php" method="getRegistration"/>
+                <file name="Security/Authentication/Token/Service/LtiServiceSecurityToken.php" method="getScopes"/>
+                <file name="Security/Authentication/Token/Service/LtiServiceSecurityToken.php" method="getCredentials"/>
+                <file name="Security/Firewall/Message/LtiToolMessageAuthenticator.php" method="__construct"/>
+                <file name="Security/Firewall/Service/LtiServiceAuthenticator.php" method="__construct"/>
+                <file name="DependencyInjection/Builder/KeyChainRepositoryBuilder.php" method="__construct"/>
+                <file name="DependencyInjection/Builder/KeyChainRepositoryBuilder.php" method="build"/>
+                <file name="Security/Authentication/Token/Message/AbstractLtiMessageSecurityToken.php" method="getValidationResult"/>
+                <file name="Security/Authentication/Token/Message/AbstractLtiMessageSecurityToken.php" method="getRegistration"/>
+                <file name="Security/Authentication/Token/Message/AbstractLtiMessageSecurityToken.php" method="getCredentials"/>
+                <file name="Security/Firewall/Message/LtiPlatformMessageAuthenticator.php" method="__construct"/>
             </errorLevel>
-        </ReservedWord>
+        </PossiblyUnusedMethod>
+        <MoreSpecificReturnType>
+            <errorLevel type="suppress">
+                <file name="Security/Firewall/Message/LtiPlatformMessageAuthenticator.php" method="getJwtFromRequest"/>
+                <file name="Security/Firewall/Message/LtiToolMessageAuthenticator.php" method="getIdTokenFromRequest"/>
+            </errorLevel>
+        </MoreSpecificReturnType>
+        <LessSpecificReturnStatement>
+            <errorLevel type="suppress">
+                <file name="Security/Firewall/Message/LtiPlatformMessageAuthenticator.php" method="getJwtFromRequest"/>
+                <file name="Security/Firewall/Message/LtiToolMessageAuthenticator.php" method="getIdTokenFromRequest"/>
+            </errorLevel>
+        </LessSpecificReturnStatement>
+        <UnusedClass>
+            <errorLevel type="suppress">
+                <file name="Action/Jwks/JwksAction.php"/>
+                <file name="Action/Platform/Message/OidcAuthenticationAction.php"/>
+                <file name="Action/Platform/Service/OAuth2AccessTokenCreationAction.php"/>
+                <file name="Action/Tool/Message/OidcInitiationAction.php"/>
+                <file name="DependencyInjection/Security/Factory/Message/LtiPlatformMessageSecurityFactory.php"/>
+                <file name="DependencyInjection/Security/Factory/Message/LtiToolMessageSecurityFactory.php"/>
+                <file name="DependencyInjection/Security/Factory/Service/LtiServiceSecurityFactory.php"/>
+                <file name="Security/Exception/LtiToolMessageExceptionHandler.php"/>
+            </errorLevel>
+        </UnusedClass>
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
                 <file name="DependencyInjection/Configuration.php"/>
             </errorLevel>
         </ArgumentTypeCoercion>
-        <InternalMethod>
-            <errorLevel type="suppress">
-            </errorLevel>
-        </InternalMethod>
         <ParamNameMismatch>
             <errorLevel type="suppress">
                 <file name="DependencyInjection/Security/Factory/Message/LtiToolMessageSecurityFactory.php"/>
@@ -42,16 +77,6 @@
                 <file name="DependencyInjection/Security/Factory/Service/LtiServiceSecurityFactory.php"/>
             </errorLevel>
         </ParamNameMismatch>
-        <PossiblyNullReference>
-            <errorLevel type="suppress">
-                <file name="DependencyInjection/Configuration.php"/>
-            </errorLevel>
-        </PossiblyNullReference>
-        <PossiblyUndefinedMethod>
-            <errorLevel type="suppress">
-                <file name="DependencyInjection/Configuration.php"/>
-            </errorLevel>
-        </PossiblyUndefinedMethod>
         <UndefinedMethod>
             <errorLevel type="suppress">
                 <file name="DependencyInjection/Security/Factory/Message/LtiPlatformMessageSecurityFactory.php"/>
@@ -64,14 +89,6 @@
                 <file name="DependencyInjection/Configuration.php"/>
             </errorLevel>
         </UndefinedInterfaceMethod>
-        <MethodSignatureMismatch>
-            <errorLevel type="suppress">
-                <file name="Security/Authentication/Token/Message/AbstractLtiMessageSecurityToken.php"/>
-                <file name="Security/Authentication/Token/Message/LtiToolMessageSecurityToken.php"/>
-                <file name="Security/Authentication/Token/Service/LtiServiceSecurityToken.php"/>
-                <file name="Security/Authentication/Token/Message/LtiPlatformMessageSecurityToken.php"/>
-            </errorLevel>
-        </MethodSignatureMismatch>
     </issueHandlers>
     <mockClasses>
         <class name="PHPUnit\Framework\MockObject\MockObject"/>
