@@ -63,7 +63,7 @@ class RegistrationRepository implements RegistrationRepositoryInterface
         return null;
     }
 
-    public function findByPlatformIssuer(string $issuer, string $clientId = null): ?RegistrationInterface
+    public function findByPlatformIssuer(string $issuer, ?string $clientId = null): ?RegistrationInterface
     {
         foreach ($this->registrations->all() as $registration) {
             if ($registration->getPlatform()->getAudience() === $issuer) {
@@ -80,7 +80,7 @@ class RegistrationRepository implements RegistrationRepositoryInterface
         return null;
     }
 
-    public function findByToolIssuer(string $issuer, string $clientId = null): ?RegistrationInterface
+    public function findByToolIssuer(string $issuer, ?string $clientId = null): ?RegistrationInterface
     {
         foreach ($this->registrations->all() as $registration) {
             if ($registration->getTool()->getAudience() === $issuer) {
