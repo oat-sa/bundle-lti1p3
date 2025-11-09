@@ -24,7 +24,7 @@ namespace OAT\Bundle\Lti1p3Bundle\Tests\Resources\Action\Platform\Message;
 
 use OAT\Bundle\Lti1p3Bundle\Security\Authentication\Token\Message\LtiPlatformMessageSecurityToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class TestPlatformMessageAction
 {

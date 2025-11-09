@@ -29,7 +29,7 @@ use OAT\Library\Lti1p3Core\Security\OAuth2\Validator\Result\RequestAccessTokenVa
 use OAT\Library\Lti1p3Core\Service\Server\Handler\LtiServiceServerRequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Throwable;
 
 class TestServiceRequestHandler implements LtiServiceServerRequestHandlerInterface

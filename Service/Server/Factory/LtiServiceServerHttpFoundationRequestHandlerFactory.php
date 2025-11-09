@@ -28,7 +28,7 @@ use OAT\Library\Lti1p3Core\Service\Server\Handler\LtiServiceServerRequestHandler
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class LtiServiceServerHttpFoundationRequestHandlerFactory implements LtiServiceServerHttpFoundationRequestHandlerFactoryInterface
 {
