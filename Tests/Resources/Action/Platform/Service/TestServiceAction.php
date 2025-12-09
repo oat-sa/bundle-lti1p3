@@ -45,7 +45,7 @@ class TestServiceAction
 
     public function __invoke(Request $request): Response
     {
-        $shouldThrowException = $request->get('shouldThrowException');
+        $shouldThrowException = $request->query->get('shouldThrowException');
 
         $handler = $this->factory->create(
             $this->handler,

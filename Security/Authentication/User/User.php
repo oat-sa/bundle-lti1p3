@@ -40,6 +40,11 @@ class User implements UserInterface
         return $this->userIdentifier ?? 'identifier';
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     *
+     * Kept for backwards compatibility with Symfony <8
+     */
     public function eraseCredentials(): void
     {
     }
