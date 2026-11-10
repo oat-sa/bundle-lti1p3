@@ -61,7 +61,9 @@ abstract class AbstractLtiMessageSecurityToken extends AbstractToken
     {
         $payload = $this->getPayload();
 
-        return $payload?->getToken()->toString();
+        return $payload
+            ? $payload->getToken()->toString()
+            : '';
     }
 
     public function getRoleNames(): array
