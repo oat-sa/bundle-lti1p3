@@ -2,9 +2,6 @@ services:
     _defaults:
         public: false
 
-    ########### Vendor services
-    CoderCat\JWKToPEM\JWKConverter: ~
-
     GuzzleHttp\ClientInterface:
         class: GuzzleHttp\Client
 
@@ -48,6 +45,8 @@ services:
 
     ########### Core lib services
     OAT\Library\Lti1p3Core\Security\Jwt\Signer\SignerFactory: ~
+
+    OAT\Library\Lti1p3Core\Security\Jwt\Converter\JWKConverter: ~
 
     OAT\Library\Lti1p3Core\Security\Jwt\Converter\KeyConverter: ~
 
@@ -120,7 +119,7 @@ services:
         arguments:
             - '@Psr\Cache\CacheItemPoolInterface'
             - '@GuzzleHttp\ClientInterface'
-            - '@CoderCat\JWKToPEM\JWKConverter'
+            - '@OAT\Library\Lti1p3Core\Security\Jwt\Converter\JWKConverter'
             - '@Psr\Log\LoggerInterface'
 
     OAT\Library\Lti1p3Core\Security\Oidc\OidcInitiator:
