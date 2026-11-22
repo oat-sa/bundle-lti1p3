@@ -81,11 +81,11 @@ class Lti1p3TestKernel extends Kernel
 
     public function getCacheDir(): string
     {
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->environment . '/cache/' . spl_object_hash($this);
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->environment . '/cache/' . spl_object_id($this);
     }
 
     public function getLogDir(): string
     {
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->environment . '/logs/' . spl_object_hash($this);
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->environment . '/logs/' . spl_object_id($this);
     }
 }
