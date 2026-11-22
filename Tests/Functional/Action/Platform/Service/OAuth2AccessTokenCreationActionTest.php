@@ -132,11 +132,7 @@ class OAuth2AccessTokenCreationActionTest extends WebTestCase
             ]
         );
 
-        if (PHP_VERSION_ID < 70300) {
-            $this->assertEquals(Response::HTTP_UNAUTHORIZED, $this->client->getResponse()->getStatusCode());
-        } else {
-            $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
-        }
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
 
         $this->assertHasLogRecord(
             'OAuth2AccessTokenCreationAction: The user credentials were incorrect.',
